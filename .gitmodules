@@ -1,0 +1,3 @@
+[submodule "src/submodule/base"]
+	path = src/submodule/base
+	url = https://github.com/luongdeveloper/base.git
