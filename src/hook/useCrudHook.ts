@@ -57,7 +57,7 @@ export function useCrudHook<
         if (props.onBeforeDelete) {
             props.onBeforeDelete(item);
         }
-        return props.controller.delete(item.id || "").then((res) => {
+        return props.controller.remove({ id: item.id || "" }).then((res) => {
             if (props.onAfterDelete) {
                 props.onAfterDelete(res);
             }

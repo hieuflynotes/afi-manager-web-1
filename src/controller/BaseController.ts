@@ -1,9 +1,15 @@
 import { AxiosInstance } from "axios";
 
 import { dispatch } from "../rematch/store";
-import { CountFilter, FindFilter, ListFilter, Paging } from "luong-base-model";
+import {
+    CountFilter,
+    FindFilter,
+    IBaseController,
+    ListFilter,
+    Paging,
+} from "luong-base-model";
 
-export class BaseController<T> {
+export class BaseController<T> implements IBaseController<T> {
     protected serviceURL: string;
     protected basePath: string;
     public client: AxiosInstance;
@@ -16,6 +22,13 @@ export class BaseController<T> {
         this.serviceURL = serviceURL;
         this.basePath = basePath;
         this.client = client;
+    }
+    getById(params: { id: string }): Promise<T | undefined> {
+        return this.client
+            .get(`${this.serviceURL}/${this.basePath}/${params.id}`)
+            .then((res) => {
+                return res.data;
+            });
     }
 
     save(t: T): Promise<T> {
@@ -50,16 +63,13 @@ export class BaseController<T> {
                 return res.data;
             });
     }
-    getById(id: string): Promise<T> {
-        return this.client
-            .get(`${this.serviceURL}/${this.basePath}/${id}`)
-            .then((res) => {
-                return res.data;
-            });
+
+    getByIds(params: { id: string[] }): Promise<T[]> {
+        throw new Error("Method not implemented.");
     }
-    delete(id: string): Promise<T> {
+    remove(params: { id: string }): Promise<T> {
         return this.client
-            .delete(`${this.serviceURL}/${this.basePath}/${id}`)
+            .delete(`${this.serviceURL}/${this.basePath}/${params.id}`)
             .then((res) => {
                 dispatch.notification.success("Xóa thành công");
                 return res.data;
