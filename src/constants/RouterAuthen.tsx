@@ -2,113 +2,82 @@ import React, { useMemo } from "react";
 import { Redirect, Route } from "react-router-dom";
 
 import { createBrowserHistory } from "history";
+import AdminScreen from "../container/AdminScreen";
+import { InfoMe } from "@Core/model/InfoMe";
 export const history = createBrowserHistory({});
 
 // Auth route componnet
-
-export function AdminRouter({ role, ...props }: iProtectRoute) {
-	const check = () => {
-		// if (role == Role.ADMIN) return true;
-		return false;
-	};
-	return useMemo(
-		() => (
-			<Route
-				path={props.path}
-				render={({ location }) =>
-					check() ? (
-							<props.component />
-					) : (
-						<Redirect
-							to={{
-								pathname: "/login",
-								state: { from: location },
-							}}
-						/>
-					)
-				}
-			/>
-		),
-		[role, props]
-	);
+export function AdminRoute({ ...props }: iProtectRoute) {
+    return useMemo(
+        () => (
+            <Route
+                path={props.path}
+                render={({ location }) =>
+                    // props.authen?.role == "admin"
+                    true ? (
+                        <AdminScreen>
+                            <props.component />
+                        </AdminScreen>
+                    ) : (
+                        <Redirect
+                            to={{
+                                pathname: "/login",
+                                state: { from: location },
+                            }}
+                        />
+                    )
+                }
+            />
+        ),
+        [props]
+    );
 }
 
-export function BusinessRouter({ role, ...props }: iProtectRoute) {
-	const check = () => {
-		// if (role == Role.ADMIN || role == Role.BUSINESS) return true;
-		return false;
-	};
-	return useMemo(
-		() => (
-			<Route
-				path={props.path}
-				render={({ location }) =>
-					check() ? (
-							<props.component />
-					) : (
-						<Redirect
-							to={{
-								pathname: "/login",
-								state: { from: location },
-							}}
-						/>
-					)
-				}
-			/>
-		),
-		[role, props]
-	);
+export function AuthenRoute({ ...props }: iProtectRoute) {
+    return useMemo(
+        () => (
+            <Route
+                exact={props.exact}
+                path={props.path}
+                render={({ location }) =>
+                    Boolean(props.authen?.role) ? (
+                        <props.component />
+                    ) : (
+                        <Redirect
+                            to={{
+                                pathname: "/login",
+                                state: { from: location },
+                            }}
+                        />
+                    )
+                }
+            />
+        ),
+        [props]
+    );
 }
-
-// Guest route component
-export function GuestRouter({ role, ...props }: iProtectRoute) {
-	const check = () => {
-		return false;
-	};
-	return useMemo(
-		() => (
-			<Route
-				exact={props.exact}
-				path={props.path}
-				render={({ location }) =>
-					check() ? (
-						<props.component />
-					) : (
-						<Redirect
-							to={{
-								pathname: "/login",
-								state: { from: location },
-							}}
-						/>
-					)
-				}
-			/>
-		),
-		[role, props]
-	);
-}
-export function PublicRoute({ role, ...props }: iProtectRoute) {
-	return (
-		<Route
-			exact={props.exact}
-			path={props.path}
-			render={({ location }) => <props.component />}
-		/>
-	);
+export function PublicRoute({ ...props }: iProtectRoute) {
+    return (
+        <Route
+            exact={props.exact}
+            path={props.path}
+            render={({ location }) => <props.component />}
+        />
+    );
 }
 
 export const goTo = (path: string) => {
-	history.push(path);
+    history.push(path);
 };
 
 interface iProtectRoute extends iRoute {
-	role: any;
+    authen: InfoMe | undefined;
 }
 
 export interface iRoute {
-	exact?: boolean;
-	path: string;
-	component: any;
-	requireGuest?: boolean;
-	requireAuth?: boolean;
+    exact?: boolean;
+    path: string;
+    component: any;
+    requireGuest?: boolean;
+    requireAuth?: boolean;
 }

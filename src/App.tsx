@@ -6,7 +6,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import "./App.css";
-import { routers } from "./constants/Route";
+import { routers, TypeScreen } from "./constants/Route";
+import { AdminRoute, AuthenRoute, PublicRoute } from "./constants/RouterAuthen";
 import CustomerManager from "./container/CustomerManager";
 import Login from "./container/Login";
 import UiKit from "./container/UiKit";
@@ -35,16 +36,38 @@ function App() {
                     <TransitionGroup>
                         <CSSTransition classNames="fade" timeout={300}>
                             <Switch>
-                                {routers.map((route) => {})}
-                                <Route path={"/table"}>
-                                    <CustomerManager></CustomerManager>
-                                </Route>
-                                <Route path={"/login"}>
-                                    <Login></Login>
-                                </Route>
-                                <Route path={"*"}>
-                                    <UiKit></UiKit>
-                                </Route>
+                                {routers.map((route) => {
+                                    if (route.typeAuthen === TypeScreen.admin) {
+                                        return (
+                                            <AdminRoute
+                                                exact
+                                                component={route.component}
+                                                path={route.link}
+                                                authen={authen.info}
+                                            />
+                                        );
+                                    } else if (
+                                        route.typeAuthen === TypeScreen.authen
+                                    ) {
+                                        return (
+                                            <AuthenRoute
+                                                exact
+                                                component={route.component}
+                                                path={route.link}
+                                                authen={authen.info}
+                                            />
+                                        );
+                                    } else {
+                                        return (
+                                            <PublicRoute
+                                                exact
+                                                component={route.component}
+                                                path={route.link}
+                                                authen={undefined}
+                                            />
+                                        );
+                                    }
+                                })}
                             </Switch>
                         </CSSTransition>
                     </TransitionGroup>
