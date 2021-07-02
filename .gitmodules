@@ -1,3 +1,6 @@
 [submodule "src/submodule/base"]
 	path = src/submodule/base
 	url = https://github.com/luongdeveloper/base.git
+[submodule "src/afi-manager-base-model"]
+	path = src/afi-manager-base-model
+	url = https://github.com/luongdeveloper/afi-manager-base-model.git
