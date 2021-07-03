@@ -27,82 +27,87 @@ export default function BaseDialog(props: Props) {
     const globalStyles = useGlobalStyles();
     return (
         <Dialog open={props.isDisplay} fullWidth>
-            <Grid>
-                <DialogTitle>
-                    <Grid item xs={12}>
-                        <Typography
-                            variant="h5"
-                            color={"primary"}
-                            align={"center"}
+            <Grid className={clsx(globalStyles.pp3)}>
+                <Grid>
+                    <DialogTitle>
+                        <Grid item xs={12}>
+                            <Typography
+                                variant="h5"
+                                color={"primary"}
+                                align={"center"}
+                            >
+                                {props.title}
+                            </Typography>
+                        </Grid>
+                        <Box
+                            style={{
+                                position: "absolute",
+                                top: "1.5rem",
+                                right: "1.5rem",
+                            }}
                         >
-                            {props.title}
-                        </Typography>
-                    </Grid>
-                    <Box
-                        style={{
-                            position: "absolute",
-                            top: "1.5rem",
-                            right: "1.5rem",
-                        }}
-                    >
-                        <IconButton aria-label="close" onClick={props.onCancel}>
-                            <CloseIcon />
-                        </IconButton>
-                    </Box>
-                </DialogTitle>
-            </Grid>
-            <DialogContent>
-                <Grid
-                    container
-                    xs={12}
-                    direction="column"
-                    className={clsx(globalStyles.mt1)}
-                >
-                    {props.children}
-                </Grid>
-            </DialogContent>
-            <Grid>
-                <DialogActions>
-                    <Grid item container xs={12} justify={"space-between"}>
-                        <Grid
-                            item
-                            container
-                            xs={5}
-                            justify={"center"}
-                            alignItems={"center"}
-                        >
-                            <Button
-                                startIcon={<CloseIcon />}
-                                variant="outlined"
-                                size="large"
-                                color="primary"
-                                fullWidth
+                            <IconButton
+                                aria-label="close"
                                 onClick={props.onCancel}
                             >
-                                Hủy
-                            </Button>
-                        </Grid>
-                        <Grid
-                            item
-                            container
-                            xs={5}
-                            justify={"center"}
-                            alignItems={"center"}
-                        >
-                            <Button
-                                variant="contained"
-                                size="large"
-                                fullWidth
-                                startIcon={<SaveIcon />}
-                                type={"submit"}
-                                color="primary"
-                                onClick={props.onClickConfirm}
-                            >
-                                Lưu
-                            </Button>
-                        </Grid>
+                                <CloseIcon />
+                            </IconButton>
+                        </Box>
+                    </DialogTitle>
+                </Grid>
+                <DialogContent>
+                    <Grid
+                        container
+                        xs={12}
+                        direction="column"
+                        className={clsx(globalStyles.mt1)}
+                    >
+                        {props.children}
                     </Grid>
-                </DialogActions>
+                </DialogContent>
+                <Grid className={clsx(globalStyles.ml2, globalStyles.mr2)}>
+                    <DialogActions>
+                        <Grid item container xs={12} justify={"space-between"}>
+                            <Grid
+                                item
+                                container
+                                xs={5}
+                                justify={"center"}
+                                alignItems={"center"}
+                            >
+                                <Button
+                                    startIcon={<CloseIcon />}
+                                    variant="outlined"
+                                    size="large"
+                                    color="primary"
+                                    fullWidth
+                                    onClick={props.onCancel}
+                                >
+                                    Hủy
+                                </Button>
+                            </Grid>
+                            <Grid
+                                item
+                                container
+                                xs={5}
+                                justify={"center"}
+                                alignItems={"center"}
+                            >
+                                <Button
+                                    variant="contained"
+                                    size="large"
+                                    fullWidth
+                                    startIcon={<SaveIcon />}
+                                    type={"submit"}
+                                    color="primary"
+                                    onClick={props.onClickConfirm}
+                                >
+                                    Lưu
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </DialogActions>
+                </Grid>
             </Grid>
         </Dialog>
     );

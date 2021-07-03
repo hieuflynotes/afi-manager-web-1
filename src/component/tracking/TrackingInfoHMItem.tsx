@@ -39,6 +39,7 @@ const useStyle = makeStyles((theme) => ({
 type Props = {
     onDelete: (item: OrderTracking) => void;
     item: OrderTracking;
+    onEdit: (item: OrderTracking) => void;
 };
 export default function TrackingInfoHMItem(props: Props) {
     const classes = useStyle();
@@ -56,7 +57,10 @@ export default function TrackingInfoHMItem(props: Props) {
                     <Typography variant="body2">#33840317500</Typography>
                     <Grid>
                         <Grid container>
-                            <IconButton className={classes.iconEdit}>
+                            <IconButton
+                                onClick={() => props.onEdit(props.item)}
+                                className={classes.iconEdit}
+                            >
                                 <AiOutlineEdit />
                             </IconButton>
                             <IconButton

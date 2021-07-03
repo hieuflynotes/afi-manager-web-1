@@ -17,6 +17,7 @@
     "@types/react": "^17.0.6",
     "@types/react-dom": "^17.0.5",
     "axios": "^0.21.1",
+    "ckeditor4-react": "^2.0.0-rc.2",
     "connected-react-router": "^6.9.1",
     "date-fns": "latest",
     "formik": "^2.2.9",

@@ -72,6 +72,8 @@ export function useCrudHook<
     };
 
     const onSave = async (item: T): Promise<T> => {
+        console.log(item);
+
         if (props.onBeforeSave) {
             props.onBeforeSave(item);
         }

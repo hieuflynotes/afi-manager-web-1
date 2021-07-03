@@ -7,7 +7,7 @@ import { useGlobalStyles } from "src/theme/GlobalStyle";
 import TextFiled from "src/component/common/TextFiled";
 import Button from "src/component/common/Button";
 import { useCrudHook } from "src/hook/useCrudHook";
-import { userController } from "src/controller";
+import { orderTrackingController, userController } from "src/controller";
 import PopUpConfirm from "src/component/common/PopupConfirm";
 import PopupFlowTrackingHM from "src/component/tracking/PopupFlowTrackingHM";
 
@@ -24,7 +24,7 @@ const useStyle = makeStyles((theme) => ({
 function CheckTrackingHM(props: Props) {
     const classes = useStyle();
     const crudTrackingHM = useCrudHook({
-        controller: userController,
+        controller: orderTrackingController,
     });
     const globalStyles = useGlobalStyles();
     const [state, setState] = useState();
@@ -55,18 +55,23 @@ function CheckTrackingHM(props: Props) {
                     className={clsx(globalStyles.pt1, globalStyles.pb1)}
                 >
                     <TextFiled variant="outlined" label="Search"></TextFiled>
-                    <Button variant="contained" color="primary">
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => crudTrackingHM.onShowPopup({})}
+                    >
                         New Flow
                     </Button>
                 </Grid>
             </Grid>
             <ListGrid minWidthItem={"300px"} gridGap={15}>
-                {new Array(20).fill(2)?.map((item, index) => (
+                {crudTrackingHM.pagingList.rows?.map((item, index) => (
                     <Zoom in={true} timeout={index * 100}>
                         <Grid container justify="center">
                             <TrackingInfoHMItem
                                 onDelete={crudTrackingHM.onConfirm}
-                                item={{}}
+                                item={item}
+                                onEdit={crudTrackingHM.onShowPopup}
                             />
                         </Grid>
                     </Zoom>

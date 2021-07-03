@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { OrderTracking } from "@Core/model/OrderTracking";
+import { OrderTracking } from "../../afi-manager-base-model/model/OrderTracking";
 import { Grid, TextField } from "@material-ui/core";
 import clsx from "clsx";
 import { useFormik } from "formik";
@@ -17,7 +17,13 @@ type Props = {
     onEdit: (item: OrderTracking) => void;
     onCancel: () => void;
 };
-const validate = Yup.object({});
+const validate = Yup.object({
+    orderId: Yup.string()
+        .max(100, "Chữ không được quá 100 kí tự")
+        .required("Is require !!")
+        .trim()
+        .nullable(),
+});
 
 export default function PopupFlowTrackingHM(props: Props) {
     const formik = useFormik<OrderTracking>({
@@ -51,7 +57,7 @@ export default function PopupFlowTrackingHM(props: Props) {
                 onClickConfirm={() => {
                     onSubmit();
                 }}
-                title="Hãng"
+                title="Edit New Flow"
             >
                 <Grid container direction="column" justify="space-around">
                     <Grid>
@@ -60,13 +66,14 @@ export default function PopupFlowTrackingHM(props: Props) {
                             helperText={
                                 formik.touched.orderId && formik.errors.orderId
                             }
-                            name="name"
+                            name="orderId"
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
                             fullWidth
                             variant="outlined"
                             className={clsx(globalStyles.mt1, globalStyles.mb2)}
                             label="OrderID"
+                            rows={4}
                         ></TextField>
                     </Grid>
                     <Grid>
@@ -85,7 +92,7 @@ export default function PopupFlowTrackingHM(props: Props) {
                             label="Tên khách hàng"
                         ></TextField>
                     </Grid>
-                    <Grid>
+                    {/* <Grid>
                         <CKEditor
                             className={clsx(globalStyles.mt2, globalStyles.mb2)}
                             data={formik.values.desc}
@@ -96,7 +103,7 @@ export default function PopupFlowTrackingHM(props: Props) {
                                 });
                             }}
                         />
-                    </Grid>
+                    </Grid> */}
                 </Grid>
             </BaseDialog>
         </Grid>

@@ -2,6 +2,7 @@ import axios, { AxiosError } from "axios";
 import config from "../constants/Config";
 import { dispatch } from "../rematch/store";
 import { LocalStoryController } from "./LocalStoryController";
+import { OrderTrackingController } from "./OrderTrackingController";
 import { TestController } from "./TestController";
 import { UserController } from "./UserController";
 
@@ -62,3 +63,9 @@ export const testController = new TestController(
     "appUser",
     appClient
 );
+export const orderTrackingController = new OrderTrackingController(
+    config.apiGatewayUrl,
+    "orderTracking",
+    appClient
+);
+//
