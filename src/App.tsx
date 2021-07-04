@@ -3,11 +3,23 @@ import { Grid } from "@material-ui/core";
 import { SnackbarProvider, useSnackbar } from "notistack";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { Router } from "react-router";
+
+import {
+    // BrowserRouter as Router,
+    Redirect,
+    Route,
+    Switch,
+} from "react-router-dom";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import "./App.css";
 import { routers, TypeScreen } from "./constants/Route";
-import { AdminRoute, AuthenRoute, PublicRoute } from "./constants/RouterAuthen";
+import {
+    AdminRoute,
+    AuthenRoute,
+    history,
+    PublicRoute,
+} from "./constants/RouterAuthen";
 import CustomerManager from "./container/CustomerManager";
 import Login from "./container/Login";
 import UiKit from "./container/UiKit";
@@ -30,8 +42,8 @@ function App() {
         dispatch.authen.getMe();
     }, []);
     return (
-        <Router>
-            {!authen.isGet ? (
+        <Router history={history}>
+            {authen.isGet ? (
                 <Grid>
                     <TransitionGroup>
                         <CSSTransition classNames="fade" timeout={300}>
@@ -68,6 +80,16 @@ function App() {
                                         );
                                     }
                                 })}
+                                <Route
+                                    path="*"
+                                    render={({ location }) => (
+                                        <Redirect
+                                            to={{
+                                                pathname: "/login",
+                                            }}
+                                        />
+                                    )}
+                                />
                             </Switch>
                         </CSSTransition>
                     </TransitionGroup>

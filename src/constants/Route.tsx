@@ -3,6 +3,7 @@ import { RouteComponentProps, StaticContext } from "react-router";
 import Login from "src/container/Login";
 import { AiFillDashboard } from "react-icons/ai";
 import CheckTrackingHM from "src/container/CheckTrackingHM";
+import Register from "src/container/Register";
 export enum TypeScreen {
     public = "public",
     admin = "admin",
@@ -17,6 +18,14 @@ export const routers: RouteComponent[] = [
         typeAuthen: TypeScreen.public,
         icon: <AiFillDashboard />,
     },
+    {
+        component: Register,
+        label: "Register",
+        link: "/register",
+        typeAuthen: TypeScreen.public,
+        icon: <AiFillDashboard />,
+    },
+
     {
         component: CheckTrackingHM,
         label: "Check Tracking",

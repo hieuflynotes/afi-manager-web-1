@@ -64,11 +64,11 @@ function AdminScreen(props: Props) {
                     link: "",
                     icon: <FiLogOut />,
                 },
-                {
-                    label: "Change Password",
-                    link: "/change-password",
-                    icon: <FaKey />,
-                },
+                // {
+                //     label: "Change Password",
+                //     link: "/change-password",
+                //     icon: <FaKey />,
+                // },
             ],
         });
         setRoute(menu);

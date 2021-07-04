@@ -1,14 +1,32 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { OrderTracking } from "../../afi-manager-base-model/model/OrderTracking";
-import { Grid, TextField } from "@material-ui/core";
+import {
+    Accordion,
+    AccordionDetails,
+    AccordionSummary,
+    Divider,
+    Grid,
+    makeStyles,
+    TextField,
+    Switch,
+    Typography,
+} from "@material-ui/core";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import clsx from "clsx";
 import { useFormik } from "formik";
 import _ from "lodash";
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
+import { hMController } from "src/controller";
 import { useGlobalStyles } from "src/theme/GlobalStyle";
 import * as Yup from "yup";
+import {
+    OrderTracking,
+    EStatusOrderTracking,
+} from "../../afi-manager-base-model/model/OrderTracking";
 import BaseDialog from "../common/BaseDialog";
-
+import PrettoSlider from "../common/PrettoSlider";
+import moment from "moment";
+import { BiErrorCircle } from "react-icons/bi";
+import theme from "src/theme/MuiTheme";
 const CKEditor = require("ckeditor4-react");
 
 type Props = {
@@ -20,12 +38,35 @@ type Props = {
 const validate = Yup.object({
     orderId: Yup.string()
         .max(100, "Chữ không được quá 100 kí tự")
+        .min(11, "ID của HM có trên 11 kí tự")
         .required("Is require !!")
         .trim()
         .nullable(),
 });
 
+const useStyle = makeStyles((theme) => ({
+    containerDetail: {
+        background: "#fff",
+        position: "relative",
+        border: `1px solid ${theme.palette.grey[400]}`,
+        padding: theme.spacing(2),
+        borderRadius: theme.spacing(1),
+        boxShadow: "none",
+    },
+    iconDelete: {
+        color: theme.palette.error.main,
+        margin: 0,
+        padding: 4,
+    },
+    iconEdit: {
+        color: theme.palette.primary.main,
+        margin: 0,
+        padding: 4,
+    },
+}));
 export default function PopupFlowTrackingHM(props: Props) {
+    const classes = useStyle();
+    const globalsStyle = useGlobalStyles();
     const formik = useFormik<OrderTracking>({
         initialValues: {},
         validationSchema: validate,
@@ -43,11 +84,43 @@ export default function PopupFlowTrackingHM(props: Props) {
             formik.setValues(
                 _.cloneDeep({
                     ...props.item,
+                    status: props.item.status || EStatusOrderTracking.FLOWING,
                 })
             );
             formik.setTouched(_.mapValues(new OrderTracking(), () => false));
         }
     }, [props]);
+
+    useEffect(() => {
+        getDataOrderTracking(formik.values.orderId || "", formik.values);
+    }, [formik.values.orderId]);
+
+    const getDataOrderTracking = useCallback(
+        _.debounce((id: string, values) => {
+            return hMController
+                .getTrackingByOrderNo({
+                    orderNo: id,
+                })
+                .then((res) => {
+                    formik.setValues({
+                        ...values,
+                        infoHM: res,
+                        orderId: values.orderId,
+                        trackingId: res?.header?.tracking_number,
+                    });
+                })
+                .catch((err) => {
+                    formik.setValues({
+                        ...values,
+                        infoHM: undefined as any,
+                        orderId: values.orderId,
+                        trackingId: undefined as any,
+                    });
+                });
+        }, 400),
+        []
+    );
+
     const globalStyles = useGlobalStyles();
     return (
         <Grid>
@@ -60,6 +133,25 @@ export default function PopupFlowTrackingHM(props: Props) {
                 title="Edit New Flow"
             >
                 <Grid container direction="column" justify="space-around">
+                    <Grid container justify="flex-end" alignItems="center">
+                        Is Completed :{" "}
+                        <Switch
+                            color={"primary"}
+                            checked={
+                                formik.values.status ==
+                                EStatusOrderTracking.COMPLETED
+                            }
+                            onChange={(e, value) => {
+                                const status = value
+                                    ? EStatusOrderTracking.COMPLETED
+                                    : EStatusOrderTracking.FLOWING;
+                                formik.setValues({
+                                    ...formik.values,
+                                    status,
+                                });
+                            }}
+                        />
+                    </Grid>
                     <Grid>
                         <TextField
                             value={formik.values.orderId}
@@ -70,6 +162,9 @@ export default function PopupFlowTrackingHM(props: Props) {
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
                             fullWidth
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
                             variant="outlined"
                             className={clsx(globalStyles.mt1, globalStyles.mb2)}
                             label="OrderID"
@@ -91,6 +186,119 @@ export default function PopupFlowTrackingHM(props: Props) {
                             className={clsx(globalStyles.mt1, globalStyles.mb2)}
                             label="Tên khách hàng"
                         ></TextField>
+                    </Grid>
+                    <Grid>
+                        {!formik.values.infoHM ? (
+                            <Grid
+                                container
+                                justify="center"
+                                className={clsx(globalsStyle.pp1)}
+                            >
+                                <Grid container justify="center">
+                                    <BiErrorCircle
+                                        style={{
+                                            fontSize: "6rem",
+                                            color: theme.palette.error.main,
+                                            fontWeight: 200,
+                                        }}
+                                    />
+                                </Grid>
+                                <Grid container justify="center">
+                                    <Typography
+                                        variant="h4"
+                                        align="center"
+                                        // color="textPrimary"
+                                    >
+                                        {"Order Error"}
+                                    </Typography>
+                                </Grid>
+                            </Grid>
+                        ) : (
+                            <Accordion className={classes.containerDetail}>
+                                <AccordionSummary
+                                    expandIcon={<ExpandMoreIcon />}
+                                >
+                                    <Grid container>
+                                        <Grid
+                                            container
+                                            justify="space-between"
+                                            alignItems="center"
+                                        >
+                                            <Typography variant="body2">
+                                                {"#" + formik.values.orderId}
+                                            </Typography>
+                                        </Grid>
+                                        {/* <Divider className={clsx(globalsStyle.mt1, globalsStyle.mb1)} /> */}
+                                        <Grid container>
+                                            <PrettoSlider value={70} />
+                                            <Grid
+                                                container
+                                                justify="space-between"
+                                            >
+                                                <Typography variant="subtitle1">
+                                                    In Warehouse
+                                                </Typography>
+                                                <Typography color="secondary">
+                                                    Delivered
+                                                </Typography>
+                                            </Grid>
+                                        </Grid>
+                                        <Grid
+                                            container
+                                            direction="column"
+                                            justify="space-around"
+                                        >
+                                            <Grid>
+                                                <Typography>
+                                                    {
+                                                        formik.values.infoHM
+                                                            ?.header
+                                                            ?.tracking_number
+                                                    }
+                                                </Typography>
+                                            </Grid>
+                                        </Grid>
+                                    </Grid>
+                                </AccordionSummary>
+                                <AccordionDetails>
+                                    <Grid container>
+                                        {formik.values?.infoHM?.body?.map(
+                                            (item) => (
+                                                <Grid style={{ width: "100%" }}>
+                                                    <Divider
+                                                        className={clsx(
+                                                            globalsStyle.mt1,
+                                                            globalsStyle.mb1
+                                                        )}
+                                                    />
+                                                    <Grid>
+                                                        <Typography>
+                                                            {moment(
+                                                                item.timestamp
+                                                            ).format(
+                                                                "DD/MM/YYYY, hh:mm"
+                                                            )}
+                                                        </Typography>
+                                                    </Grid>
+                                                    <Grid>
+                                                        <Typography variant="body2">
+                                                            {item.status_text}
+                                                        </Typography>
+                                                    </Grid>
+                                                    <Grid>
+                                                        <Typography>
+                                                            {
+                                                                item.status_details
+                                                            }
+                                                        </Typography>
+                                                    </Grid>
+                                                </Grid>
+                                            )
+                                        )}
+                                    </Grid>
+                                </AccordionDetails>
+                            </Accordion>
+                        )}
                     </Grid>
                     {/* <Grid>
                         <CKEditor

@@ -20,7 +20,7 @@ const stagingConfig: IConfig = {
 
 const productionConfig: IConfig = {
     applicationUrl: `http://localhost:3000`,
-    apiGatewayUrl: "https://apidev.tracking.afivn.com",
+    apiGatewayUrl: "https://api.afi.afivn.com",
 };
 
 const config =

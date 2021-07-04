@@ -12,6 +12,7 @@ import { useFormik } from "formik";
 import React, { useState } from "react";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
 import { useDispatch } from "react-redux";
+import { history } from "src/constants/RouterAuthen";
 import * as Yup from "yup";
 import { userController } from "../controller";
 import { Dispatch } from "../rematch/store";
@@ -36,8 +37,8 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 const validate = Yup.object({
-    username: Yup.string().required("Không được để trống tài khoản"),
-    password: Yup.string().required("Không được để trống mật khẩu"),
+    username: Yup.string().required("Do not leave username blank"),
+    password: Yup.string().required("Do not leave the password blank"),
 });
 export default function Login() {
     const dispatch = useDispatch<Dispatch>();
@@ -52,25 +53,21 @@ export default function Login() {
                     password: values.password,
                     username: values.username,
                 })
-                .then((res) => {
-                    // dispatch.authen
-                    //     .login({
-                    //         info: res,
-                    //         jwt: res.jwt,
-                    //         isAuthenticated: true,
-                    //         isAuthor: res.role === "admin" ? true : false,
-                    //     })
-                    //     .then((res1) => {
-                    //         const link =
-                    //             res.role === "admin"
-                    //                 ? "admin/dashboard"
-                    //                 : "gift-card";
-                    //         window.location.href = link;
-                    //         // history.push(link)
-                    //     });
+                .then((res: any) => {
+                    console.log(res);
+                    dispatch.authen
+                        .login({
+                            info: res,
+                            jwt: res["jwt"],
+                            role: "admin",
+                        })
+                        .then((res1) => {
+                            window.location.href = "check-tracking";
+                            // history.push(link)
+                        });
                 })
                 .catch((err) => {
-                    setError("Tài khoản hoặc mật khẩu không đúng");
+                    setError("Incorrect account or password");
                 });
         },
     });
@@ -98,7 +95,7 @@ export default function Login() {
                             variant="h4"
                             color="primary"
                         >
-                            Đăng nhập
+                            Login
                         </Typography>
                         <Typography color="error" variant="caption">
                             {error}
@@ -114,7 +111,7 @@ export default function Login() {
                         <TextField
                             className={globalStyles.mm1}
                             fullWidth
-                            label="Tài khoản"
+                            label="username"
                             name="username"
                             value={formik.values.username}
                             onChange={formik.handleChange}
@@ -144,7 +141,7 @@ export default function Login() {
                         ></TextField>
                         <TextField
                             fullWidth
-                            label="Mật khẩu"
+                            label="password"
                             className={globalStyles.mm1}
                             name="password"
                             value={formik.values.password}
@@ -185,8 +182,16 @@ export default function Login() {
                             color="primary"
                             // onClick={() => onSubmit()}
                         >
-                            Đăng nhập
+                            Login
                         </Button>
+                        <Grid container justify="center">
+                            <Button
+                                onClick={() => history.push("/register")}
+                                color="primary"
+                            >
+                                Create a new account
+                            </Button>
+                        </Grid>
                     </form>
                 </Grid>
             </Slide>

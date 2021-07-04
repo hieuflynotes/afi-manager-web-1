@@ -152,6 +152,13 @@ export function useCrudHook<
         setQuery({ ...query });
     };
 
+    const setFilter = (params: FilterQuery<T>) => {
+        setQuery({
+            ...query,
+            filter: params,
+        });
+    };
+
     useEffect(() => {
         if (props.onBeforeQuery) {
             props.onBeforeQuery(query);
@@ -187,6 +194,7 @@ export function useCrudHook<
         itemSelected: state.itemSelected,
         pagingList,
         query,
+        setFilter,
     };
 }
 

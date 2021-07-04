@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import clsx from "clsx";
-import { Grid, makeStyles, Zoom, Typography } from "@material-ui/core";
+import { Grid, makeStyles, Zoom, Typography, Divider } from "@material-ui/core";
 import ListGrid from "src/component/common/ListGrid";
 import TrackingInfoHMItem from "src/component/tracking/TrackingInfoHMItem";
 import { useGlobalStyles } from "src/theme/GlobalStyle";
@@ -10,6 +10,15 @@ import { useCrudHook } from "src/hook/useCrudHook";
 import { orderTrackingController, userController } from "src/controller";
 import PopUpConfirm from "src/component/common/PopupConfirm";
 import PopupFlowTrackingHM from "src/component/tracking/PopupFlowTrackingHM";
+import { Pagination } from "@material-ui/lab";
+import {
+    EStatusOrderTracking,
+    OrderTracking,
+} from "../afi-manager-base-model/model/OrderTracking";
+import { ListFilter } from "luong-base-model/lib";
+import SelectBox from "src/component/common/SelectBox";
+import PopupFlowManyTrackingHM from "src/component/tracking/PopupFlowManyTrackingHM";
+import { handleWithPopupHook } from "src/hook/HandleWithPopupHook";
 
 type Props = {};
 const useStyle = makeStyles((theme) => ({
@@ -23,8 +32,27 @@ const useStyle = makeStyles((theme) => ({
 }));
 function CheckTrackingHM(props: Props) {
     const classes = useStyle();
-    const crudTrackingHM = useCrudHook({
+    const handleWithPopupMany = handleWithPopupHook<{
+        orderId?: string[];
+    }>({
+        onConfirmByPopup: (item) => {
+            orderTrackingController
+                .createManyFlow({
+                    orderId: item?.orderId || [],
+                })
+                .then((res) => {
+                    crudTrackingHM.onRefreshList();
+                });
+        },
+    });
+    const crudTrackingHM = useCrudHook<
+        OrderTracking,
+        ListFilter<OrderTracking>
+    >({
         controller: orderTrackingController,
+        initQuery: {
+            searchFields: ["orderId", "trackingId"],
+        },
     });
     const globalStyles = useGlobalStyles();
     const [state, setState] = useState();
@@ -47,21 +75,76 @@ function CheckTrackingHM(props: Props) {
                 onCancel={crudTrackingHM.onCancelPopup}
                 onEdit={crudTrackingHM.onSave}
             />
-            <Typography variant="h4">Order Tracking H&M</Typography>
+            <PopupFlowManyTrackingHM
+                isDisplay={handleWithPopupMany.isDisplayPopup}
+                onCancel={handleWithPopupMany.handleClosePopup}
+                onEdit={handleWithPopupMany.handleConfirmByPopup}
+            />
+            <Typography variant="h4" align="center">
+                Order Tracking H&M
+            </Typography>
             <Grid className={classes.frFilter}>
                 <Grid
                     container
                     justify="space-between"
                     className={clsx(globalStyles.pt1, globalStyles.pb1)}
                 >
-                    <TextFiled variant="outlined" label="Search"></TextFiled>
-                    <Button
-                        variant="contained"
+                    <TextFiled
+                        variant="outlined"
+                        label="Search"
+                        onChange={(e) =>
+                            crudTrackingHM.onQueryChanged(e.target.value)
+                        }
+                    ></TextFiled>
+                    <Grid>
+                        <Button
+                            className={clsx(globalStyles.ml2, globalStyles.mr2)}
+                            variant="contained"
+                            color="primary"
+                            onClick={() =>
+                                handleWithPopupMany.handleShowPopup({})
+                            }
+                        >
+                            New Many Flow
+                        </Button>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={() => crudTrackingHM.onShowPopup({})}
+                        >
+                            New Flow
+                        </Button>
+                    </Grid>
+                </Grid>
+                {/* <Divider className={clsx(globalStyles.mt1, globalStyles.mb1)} /> */}
+                <Grid
+                    container
+                    justify="space-between"
+                    className={clsx(globalStyles.pt1, globalStyles.pb1)}
+                    alignItems="center"
+                >
+                    <Pagination
+                        count={crudTrackingHM.pagingList.totalPages}
+                        onChange={(e, page) => {
+                            crudTrackingHM.setQuery({
+                                ...crudTrackingHM.query,
+                            });
+                        }}
                         color="primary"
-                        onClick={() => crudTrackingHM.onShowPopup({})}
-                    >
-                        New Flow
-                    </Button>
+                    />
+                    <SelectBox
+                        variant="outlined"
+                        data={["All", ...Object.values(EStatusOrderTracking)]}
+                        labelOption={(label) => label}
+                        valueOption={(value) => value}
+                        onChange={(value: any) => {
+                            crudTrackingHM.setFilter({
+                                status: value == "All" ? undefined : value,
+                            });
+                        }}
+                        label={"Status"}
+                        value={crudTrackingHM.query.filter?.status || "All"}
+                    />
                 </Grid>
             </Grid>
             <ListGrid minWidthItem={"300px"} gridGap={15}>

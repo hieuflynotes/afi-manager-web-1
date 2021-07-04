@@ -1,6 +1,7 @@
 import axios, { AxiosError } from "axios";
 import config from "../constants/Config";
 import { dispatch } from "../rematch/store";
+import { HMController } from "./HMController";
 import { LocalStoryController } from "./LocalStoryController";
 import { OrderTrackingController } from "./OrderTrackingController";
 import { TestController } from "./TestController";
@@ -37,7 +38,9 @@ appClient.interceptors.response.use(
             dispatch.notification.error(
                 err.response?.data?.message || "Login again"
             );
-            // window.location.href = '/login'
+            if (window.location.pathname != "/login") {
+                window.location.href = "/login";
+            }
         } else if (err.response?.status === 403) {
         } else {
             dispatch.notification.error(
@@ -67,5 +70,10 @@ export const orderTrackingController = new OrderTrackingController(
     config.apiGatewayUrl,
     "orderTracking",
     appClient
+);
+
+export const hMController = new HMController(
+    "https://api.parcellab.com/v2",
+    ""
 );
 //

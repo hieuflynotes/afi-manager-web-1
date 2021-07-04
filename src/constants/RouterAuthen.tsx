@@ -3,7 +3,7 @@ import { Redirect, Route } from "react-router-dom";
 
 import { createBrowserHistory } from "history";
 import AdminScreen from "../container/AdminScreen";
-import { InfoMe } from "@Core/model/InfoMe";
+import { InfoMe } from "../afi-manager-base-model/model/InfoMe";
 export const history = createBrowserHistory({});
 
 // Auth route componnet

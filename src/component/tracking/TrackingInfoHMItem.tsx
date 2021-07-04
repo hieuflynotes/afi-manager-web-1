@@ -13,12 +13,20 @@ import { useGlobalStyles } from "src/theme/GlobalStyle";
 import PrettoSlider from "../common/PrettoSlider";
 import { IoCloseOutline } from "react-icons/io5";
 import { AiOutlineEdit } from "react-icons/ai";
-import { OrderTracking } from "@Core/model/OrderTracking";
+import {
+    EStatusOrderTracking,
+    OrderTracking,
+} from "../../afi-manager-base-model/model/OrderTracking";
+import { hMController } from "src/controller";
+import moment from "moment";
+import { BiErrorCircle } from "react-icons/bi";
+import theme from "src/theme/MuiTheme";
+import { CircularProgress } from "@material-ui/core";
 
 const useStyle = makeStyles((theme) => ({
     root: {
-        width: 310,
-        height: 220,
+        minWidth: 300,
+        minHeight: 260,
         background: "#fff",
         position: "relative",
         border: `1px solid ${theme.palette.grey[200]}`,
@@ -35,6 +43,14 @@ const useStyle = makeStyles((theme) => ({
         margin: 0,
         padding: 4,
     },
+    iconStatus: {
+        background: theme.palette.success.main,
+        height: 15,
+        width: 15,
+        // padding: 10,
+        borderRadius: "50%",
+        margin: 0,
+    },
 }));
 type Props = {
     onDelete: (item: OrderTracking) => void;
@@ -43,57 +59,192 @@ type Props = {
 };
 export default function TrackingInfoHMItem(props: Props) {
     const classes = useStyle();
+    const [state, setState] = useState<{
+        infoOrderTracking: OrderTracking;
+        isGet: boolean;
+        isError: boolean;
+    }>({
+        infoOrderTracking: {},
+        isGet: false,
+        isError: false,
+    });
     const globalsStyle = useGlobalStyles();
-    useEffect(() => {}, []);
-    return (
-        <Grid>
-            <Grid
-                className={clsx(classes.root)}
-                container
-                direction="column"
-                // justify="space-around"
-            >
+    useEffect(() => {
+        setState({
+            infoOrderTracking: {},
+            isError: false,
+            isGet: false,
+        });
+        hMController
+            .getTrackingByOrderNo({
+                orderNo: props.item.orderId || "",
+            })
+            .then((res) => {
+                setState({
+                    infoOrderTracking: {
+                        ...props.item,
+                        infoHM: res,
+                        trackingId: res.header?.tracking_number,
+                    },
+                    isError: false,
+                    isGet: true,
+                });
+            })
+            .catch((err) => {
+                setState({
+                    infoOrderTracking: props.item,
+                    isError: true,
+                    isGet: true,
+                });
+            });
+    }, [props.item]);
+    const main = () => {
+        return (
+            <Grid container>
                 <Grid container justify="space-between" alignItems="center">
-                    <Typography variant="body2">#33840317500</Typography>
+                    <div
+                        className={classes.iconStatus}
+                        style={{
+                            background:
+                                state.infoOrderTracking.status ==
+                                EStatusOrderTracking.COMPLETED
+                                    ? theme.palette.success.main
+                                    : theme.palette.grey[500],
+                        }}
+                    ></div>
+                    <Typography variant="body2">
+                        {`#${state.infoOrderTracking.orderId}`}
+                    </Typography>
                     <Grid>
                         <Grid container>
                             <IconButton
-                                onClick={() => props.onEdit(props.item)}
+                                onClick={() =>
+                                    props.onEdit(state.infoOrderTracking)
+                                }
                                 className={classes.iconEdit}
                             >
                                 <AiOutlineEdit />
                             </IconButton>
                             <IconButton
                                 className={classes.iconDelete}
-                                onClick={() => props.onDelete(props.item)}
+                                onClick={() =>
+                                    props.onDelete(state.infoOrderTracking)
+                                }
                             >
                                 <IoCloseOutline />
                             </IconButton>
                         </Grid>
                     </Grid>
                 </Grid>
-                {/* <Divider className={clsx(globalsStyle.mt1, globalsStyle.mb1)} /> */}
-                <Grid container>
-                    <PrettoSlider value={70} />
-                    <Grid container justify="space-between">
-                        <Typography variant="subtitle1">
-                            In Warehouse
-                        </Typography>
-                        <Typography color="secondary">Delivered</Typography>
-                    </Grid>
-                </Grid>
                 <Divider className={clsx(globalsStyle.mt1, globalsStyle.mb1)} />
-                <Grid container direction="column" justify="space-around">
-                    <Grid>
-                        <Typography>In transit</Typography>
+                {state.isError ? (
+                    <Grid
+                        container
+                        justify="center"
+                        className={clsx(globalsStyle.pp1)}
+                    >
+                        <Grid container justify="center">
+                            <BiErrorCircle
+                                style={{
+                                    fontSize: "6rem",
+                                    color: theme.palette.error.main,
+                                    fontWeight: 200,
+                                }}
+                            />
+                        </Grid>
+                        <Grid container justify="center">
+                            <Typography
+                                variant="h4"
+                                align="center"
+                                // color="textPrimary"
+                            >
+                                {"Order Error"}
+                            </Typography>
+                        </Grid>
                     </Grid>
-                    <Grid>
-                        <Typography variant="body2">In transit</Typography>
+                ) : (
+                    <>
+                        <Grid container>
+                            <PrettoSlider value={70} />
+                            <Grid container justify="space-between">
+                                <Typography variant="subtitle1">
+                                    In Warehouse
+                                </Typography>
+                                <Typography color="secondary">
+                                    Delivered
+                                </Typography>
+                            </Grid>
+                        </Grid>
+                        <Divider
+                            className={clsx(globalsStyle.mt1, globalsStyle.mb1)}
+                        />
+                        <Grid
+                            container
+                            direction="column"
+                            justify="space-around"
+                        >
+                            {state.infoOrderTracking?.infoHM?.body?.map(
+                                (item, index) => {
+                                    if (index == 0) {
+                                        return (
+                                            <Grid style={{ width: "100%" }}>
+                                                <Grid>
+                                                    <Typography variant="caption">
+                                                        {moment(
+                                                            item.timestamp
+                                                        ).format(
+                                                            "DD/MM/YYYY, hh:mm"
+                                                        )}
+                                                    </Typography>
+                                                </Grid>
+                                                <Grid>
+                                                    <Typography variant="body2">
+                                                        {item.status_text}
+                                                    </Typography>
+                                                </Grid>
+                                                <Grid>
+                                                    <Typography>
+                                                        {item.status_details}
+                                                    </Typography>
+                                                </Grid>
+                                            </Grid>
+                                        );
+                                    }
+                                }
+                            )}
+                        </Grid>
+                        <Divider
+                            className={clsx(globalsStyle.mt1, globalsStyle.mb1)}
+                        />
+                        <Grid
+                            container
+                            direction="column"
+                            justify="space-around"
+                        >
+                            <Grid>
+                                <Typography variant="body2">
+                                    {state.infoOrderTracking.trackingId}
+                                </Typography>
+                                <Typography>
+                                    {state.infoOrderTracking.customerName}
+                                </Typography>
+                            </Grid>
+                        </Grid>
+                    </>
+                )}
+            </Grid>
+        );
+    };
+    return (
+        <Grid>
+            <Grid className={clsx(classes.root)} container>
+                {state.isGet ? (
+                    main()
+                ) : (
+                    <Grid container justify="center" alignContent="center">
+                        <CircularProgress />
                     </Grid>
-                    <Grid>
-                        <Typography>The goods are on the way.</Typography>
-                    </Grid>
-                </Grid>
+                )}
             </Grid>
         </Grid>
     );
