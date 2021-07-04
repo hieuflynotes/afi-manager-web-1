@@ -31,7 +31,7 @@ const CKEditor = require("ckeditor4-react");
 
 type Props = {
     isDisplay: boolean;
-    onEdit: (item: { orderId: string[] }) => void;
+    onEdit: (item: { orderId: string[]; customerName: string }) => void;
     onCancel: () => void;
 };
 const validate = Yup.object({
@@ -46,15 +46,17 @@ const useStyle = makeStyles((theme) => ({}));
 export default function PopupFlowManyTrackingHM(props: Props) {
     const classes = useStyle();
     const globalsStyle = useGlobalStyles();
-    const formik = useFormik<{ orderId: string }>({
+    const formik = useFormik<{ orderId: string; customerName: string }>({
         initialValues: {
             orderId: "",
+            customerName: "",
         },
         validationSchema: validate,
         onSubmit: () => {
             const values = formik.values.orderId;
             props.onEdit({
                 orderId: values.split("\n"),
+                customerName: formik.values?.customerName || "",
             });
         },
     });
@@ -98,6 +100,24 @@ export default function PopupFlowManyTrackingHM(props: Props) {
                             variant="outlined"
                             className={clsx(globalStyles.mt1, globalStyles.mb2)}
                             label="OrderID"
+                        ></TextField>
+                    </Grid>
+                    <Grid>
+                        <TextField
+                            helperText={
+                                formik.touched.customerName &&
+                                formik.errors.customerName
+                            }
+                            name="customerName"
+                            onBlur={formik.handleBlur}
+                            onChange={formik.handleChange}
+                            fullWidth
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
+                            variant="outlined"
+                            className={clsx(globalStyles.mt1, globalStyles.mb2)}
+                            label="Name customer"
                         ></TextField>
                     </Grid>
                 </Grid>

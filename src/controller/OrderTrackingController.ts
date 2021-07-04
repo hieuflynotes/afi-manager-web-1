@@ -7,7 +7,17 @@ export class OrderTrackingController
     extends BaseController<User>
     implements IOrderTrackingController
 {
-    createManyFlow(params: { orderId: string[] }): Promise<OrderTracking[]> {
+    syncSortTracking(params: {}): Promise<OrderTracking[]> {
+        return this.client
+            .get(`${this.serviceURL}/${this.basePath}/sync`, params)
+            .then((res) => {
+                return res.data;
+            });
+    }
+    createManyFlow(params: {
+        orderId: string[];
+        customerName: string;
+    }): Promise<OrderTracking[]> {
         return this.client
             .post(
                 `${this.serviceURL}/${this.basePath}/create-many-flow`,

@@ -25,8 +25,16 @@ type Props = {
 
 export default function BaseDialog(props: Props) {
     const globalStyles = useGlobalStyles();
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+        if (e.key === "Enter") {
+            props.onClickConfirm();
+        }
+        if (e.key === "Escape") {
+            props.onCancel();
+        }
+    };
     return (
-        <Dialog open={props.isDisplay} fullWidth>
+        <Dialog open={props.isDisplay} fullWidth onKeyDown={handleKeyDown}>
             <Grid className={clsx(globalStyles.pp3)}>
                 <Grid>
                     <DialogTitle>

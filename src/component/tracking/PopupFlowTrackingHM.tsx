@@ -27,6 +27,7 @@ import PrettoSlider from "../common/PrettoSlider";
 import moment from "moment";
 import { BiErrorCircle } from "react-icons/bi";
 import theme from "src/theme/MuiTheme";
+import { TrackingHMHelper } from "src/helper/TrackingHMHelper";
 const CKEditor = require("ckeditor4-react");
 
 type Props = {
@@ -102,11 +103,19 @@ export default function PopupFlowTrackingHM(props: Props) {
                     orderNo: id,
                 })
                 .then((res) => {
+                    const firstData = res.body && res.body[0];
                     formik.setValues({
                         ...values,
                         infoHM: res,
                         orderId: values.orderId,
                         trackingId: res?.header?.tracking_number,
+                        lastTimeTracking: new Date(
+                            firstData?.timestamp || new Date()
+                        ),
+                        status:
+                            res.header?.last_delivery_status.code == "Delivered"
+                                ? EStatusOrderTracking.COMPLETED
+                                : EStatusOrderTracking.FLOWING,
                     });
                 })
                 .catch((err) => {
@@ -133,7 +142,7 @@ export default function PopupFlowTrackingHM(props: Props) {
                 title="Edit New Flow"
             >
                 <Grid container direction="column" justify="space-around">
-                    <Grid container justify="flex-end" alignItems="center">
+                    {/* <Grid container justify="flex-end" alignItems="center">
                         Is Completed :{" "}
                         <Switch
                             color={"primary"}
@@ -151,7 +160,7 @@ export default function PopupFlowTrackingHM(props: Props) {
                                 });
                             }}
                         />
-                    </Grid>
+                    </Grid> */}
                     <Grid>
                         <TextField
                             value={formik.values.orderId}
@@ -230,7 +239,13 @@ export default function PopupFlowTrackingHM(props: Props) {
                                         </Grid>
                                         {/* <Divider className={clsx(globalsStyle.mt1, globalsStyle.mb1)} /> */}
                                         <Grid container>
-                                            <PrettoSlider value={70} />
+                                            <PrettoSlider
+                                                value={TrackingHMHelper.getOrderProcess(
+                                                    formik.values.infoHM?.header
+                                                        ?.last_delivery_status
+                                                        .code || ""
+                                                )}
+                                            />
                                             <Grid
                                                 container
                                                 justify="space-between"
@@ -239,7 +254,12 @@ export default function PopupFlowTrackingHM(props: Props) {
                                                     In Warehouse
                                                 </Typography>
                                                 <Typography color="secondary">
-                                                    Delivered
+                                                    {
+                                                        formik.values.infoHM
+                                                            ?.header
+                                                            ?.last_delivery_status
+                                                            .status
+                                                    }
                                                 </Typography>
                                             </Grid>
                                         </Grid>

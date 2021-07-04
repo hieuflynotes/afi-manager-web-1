@@ -22,6 +22,7 @@ import moment from "moment";
 import { BiErrorCircle } from "react-icons/bi";
 import theme from "src/theme/MuiTheme";
 import { CircularProgress } from "@material-ui/core";
+import { TrackingHMHelper } from "src/helper/TrackingHMHelper";
 
 const useStyle = makeStyles((theme) => ({
     root: {
@@ -165,13 +166,21 @@ export default function TrackingInfoHMItem(props: Props) {
                 ) : (
                     <>
                         <Grid container>
-                            <PrettoSlider value={70} />
+                            <PrettoSlider
+                                value={TrackingHMHelper.getOrderProcess(
+                                    state.infoOrderTracking.infoHM?.header
+                                        ?.last_delivery_status.code || ""
+                                )}
+                            />
                             <Grid container justify="space-between">
                                 <Typography variant="subtitle1">
                                     In Warehouse
                                 </Typography>
                                 <Typography color="secondary">
-                                    Delivered
+                                    {
+                                        state.infoOrderTracking.infoHM?.header
+                                            ?.last_delivery_status.status
+                                    }
                                 </Typography>
                             </Grid>
                         </Grid>

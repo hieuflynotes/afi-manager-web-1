@@ -1,7 +1,7 @@
 import axios, { AxiosError } from "axios";
 import config from "../constants/Config";
 import { dispatch } from "../rematch/store";
-import { HMController } from "./HMController";
+import { HMController } from "../afi-manager-base-model/controllers/HMController";
 import { LocalStoryController } from "./LocalStoryController";
 import { OrderTrackingController } from "./OrderTrackingController";
 import { TestController } from "./TestController";

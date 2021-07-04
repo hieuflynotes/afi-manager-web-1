@@ -7,7 +7,11 @@ import { useGlobalStyles } from "src/theme/GlobalStyle";
 import TextFiled from "src/component/common/TextFiled";
 import Button from "src/component/common/Button";
 import { useCrudHook } from "src/hook/useCrudHook";
-import { orderTrackingController, userController } from "src/controller";
+import {
+    hMController,
+    orderTrackingController,
+    userController,
+} from "src/controller";
 import PopUpConfirm from "src/component/common/PopupConfirm";
 import PopupFlowTrackingHM from "src/component/tracking/PopupFlowTrackingHM";
 import { Pagination } from "@material-ui/lab";
@@ -19,6 +23,7 @@ import { ListFilter } from "luong-base-model/lib";
 import SelectBox from "src/component/common/SelectBox";
 import PopupFlowManyTrackingHM from "src/component/tracking/PopupFlowManyTrackingHM";
 import { handleWithPopupHook } from "src/hook/HandleWithPopupHook";
+import { OrderTrackingController } from "src/controller/OrderTrackingController";
 
 type Props = {};
 const useStyle = makeStyles((theme) => ({
@@ -34,11 +39,13 @@ function CheckTrackingHM(props: Props) {
     const classes = useStyle();
     const handleWithPopupMany = handleWithPopupHook<{
         orderId?: string[];
+        customerName?: string;
     }>({
         onConfirmByPopup: (item) => {
             orderTrackingController
                 .createManyFlow({
                     orderId: item?.orderId || [],
+                    customerName: item?.customerName || "",
                 })
                 .then((res) => {
                     crudTrackingHM.onRefreshList();
@@ -59,6 +66,12 @@ function CheckTrackingHM(props: Props) {
     useEffect(() => {
         return () => {};
     }, []);
+
+    const syncSort = () => {
+        orderTrackingController.syncSortTracking({}).then((res) => {
+            crudTrackingHM.onRefreshList();
+        });
+    };
 
     return (
         <Grid className={globalStyles.pp3}>
@@ -132,19 +145,41 @@ function CheckTrackingHM(props: Props) {
                         }}
                         color="primary"
                     />
-                    <SelectBox
-                        variant="outlined"
-                        data={["All", ...Object.values(EStatusOrderTracking)]}
-                        labelOption={(label) => label}
-                        valueOption={(value) => value}
-                        onChange={(value: any) => {
-                            crudTrackingHM.setFilter({
-                                status: value == "All" ? undefined : value,
-                            });
-                        }}
-                        label={"Status"}
-                        value={crudTrackingHM.query.filter?.status || "All"}
-                    />
+                    <Grid>
+                        <Grid container alignItems="center">
+                            <Button
+                                className={clsx(
+                                    globalStyles.ml2,
+                                    globalStyles.mr2
+                                )}
+                                variant="contained"
+                                color="primary"
+                                onClick={() => syncSort()}
+                                disabled
+                            >
+                                Sort All Date Change
+                            </Button>
+                            <SelectBox
+                                variant="outlined"
+                                data={[
+                                    "All",
+                                    ...Object.values(EStatusOrderTracking),
+                                ]}
+                                labelOption={(label) => label}
+                                valueOption={(value) => value}
+                                onChange={(value: any) => {
+                                    crudTrackingHM.setFilter({
+                                        status:
+                                            value == "All" ? undefined : value,
+                                    });
+                                }}
+                                label={"Status"}
+                                value={
+                                    crudTrackingHM.query.filter?.status || "All"
+                                }
+                            />
+                        </Grid>
+                    </Grid>
                 </Grid>
             </Grid>
             <ListGrid minWidthItem={"300px"} gridGap={15}>

@@ -13,6 +13,7 @@ import {
 } from "react-router-dom";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import "./App.css";
+import BackdropLoading from "./component/common/BackdropLoading";
 import { routers, TypeScreen } from "./constants/Route";
 import {
     AdminRoute,
@@ -45,6 +46,7 @@ function App() {
         <Router history={history}>
             {authen.isGet ? (
                 <Grid>
+                    <BackdropLoading />
                     <TransitionGroup>
                         <CSSTransition classNames="fade" timeout={300}>
                             <Switch>
