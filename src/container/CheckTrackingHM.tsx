@@ -24,6 +24,7 @@ import SelectBox from "src/component/common/SelectBox";
 import PopupFlowManyTrackingHM from "src/component/tracking/PopupFlowManyTrackingHM";
 import { handleWithPopupHook } from "src/hook/HandleWithPopupHook";
 import { OrderTrackingController } from "src/controller/OrderTrackingController";
+import { PropsCreateManyFlow } from "src/afi-manager-base-model/controllers/IOrderTrackingController";
 
 type Props = {};
 const useStyle = makeStyles((theme) => ({
@@ -37,19 +38,16 @@ const useStyle = makeStyles((theme) => ({
 }));
 function CheckTrackingHM(props: Props) {
     const classes = useStyle();
-    const handleWithPopupMany = handleWithPopupHook<{
-        orderId?: string[];
-        customerName?: string;
-    }>({
+    const handleWithPopupMany = handleWithPopupHook<PropsCreateManyFlow>({
         onConfirmByPopup: (item) => {
-            orderTrackingController
-                .createManyFlow({
-                    orderId: item?.orderId || [],
-                    customerName: item?.customerName || "",
-                })
-                .then((res) => {
-                    crudTrackingHM.onRefreshList();
-                });
+            if (item)
+                orderTrackingController
+                    .createManyFlow({
+                        ...item,
+                    })
+                    .then((res) => {
+                        crudTrackingHM.onRefreshList();
+                    });
         },
     });
     const crudTrackingHM = useCrudHook<
@@ -58,7 +56,7 @@ function CheckTrackingHM(props: Props) {
     >({
         controller: orderTrackingController,
         initQuery: {
-            searchFields: ["orderId", "trackingId"],
+            searchFields: ["orderId", "trackingId", "customerName", "email"],
         },
     });
     const globalStyles = useGlobalStyles();
@@ -115,7 +113,7 @@ function CheckTrackingHM(props: Props) {
                             variant="contained"
                             color="primary"
                             onClick={() =>
-                                handleWithPopupMany.handleShowPopup({})
+                                handleWithPopupMany.handleShowPopup({} as any)
                             }
                         >
                             New Many Flow

@@ -54,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
         height: "100vh",
         background: "white", // todo : hard code
         boxShadow: theme.shadows[1],
-        width: cssInfo.widthNarBar,
+        // width: cssInfo.widthNarBar,
         zIndex: 1000,
         overflow: "hidden",
         transition: "0.3s",

@@ -197,6 +197,21 @@ export default function PopupFlowTrackingHM(props: Props) {
                         ></TextField>
                     </Grid>
                     <Grid>
+                        <TextField
+                            helperText={
+                                formik.touched.email && formik.errors.email
+                            }
+                            name="email"
+                            value={formik.values.email}
+                            onBlur={formik.handleBlur}
+                            onChange={formik.handleChange}
+                            fullWidth
+                            variant="outlined"
+                            className={clsx(globalStyles.mt1, globalStyles.mb2)}
+                            label="Email"
+                        ></TextField>
+                    </Grid>
+                    <Grid>
                         {!formik.values.infoHM ? (
                             <Grid
                                 container

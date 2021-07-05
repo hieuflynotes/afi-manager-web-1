@@ -51,6 +51,7 @@ export const authen = createModel<RootModel>()({
                         return authen.update({
                             isGet: true,
                             role: "admin",
+                            info: res,
                         });
                     })
                     .catch((err) => {

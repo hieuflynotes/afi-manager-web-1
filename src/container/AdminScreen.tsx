@@ -16,7 +16,7 @@ const useStyle = makeStyles((theme) => ({
         background: theme.palette.background.default,
     },
     navbar: {
-        width: cssInfo.widthNarBar,
+        // width: cssInfo.widthNarBar,
         position: "fixed",
         height: "100vh",
         zIndex: 1000,
@@ -52,7 +52,7 @@ function AdminScreen(props: Props) {
             };
         });
         menu.push({
-            label: `Account`,
+            label: `Account ${authen.info?.fullName}`,
             icon: <RiAccountPinBoxFill />,
             link: "",
             subMenu: [

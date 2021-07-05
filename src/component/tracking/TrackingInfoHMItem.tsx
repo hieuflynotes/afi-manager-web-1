@@ -237,6 +237,9 @@ export default function TrackingInfoHMItem(props: Props) {
                                 <Typography>
                                     {state.infoOrderTracking.customerName}
                                 </Typography>
+                                <Typography>
+                                    {state.infoOrderTracking.email}
+                                </Typography>
                             </Grid>
                         </Grid>
                     </>

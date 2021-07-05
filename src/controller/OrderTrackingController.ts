@@ -1,5 +1,8 @@
 import { OrderTracking } from "src/afi-manager-base-model/model/OrderTracking";
-import { IOrderTrackingController } from "../afi-manager-base-model/controllers/IOrderTrackingController";
+import {
+    IOrderTrackingController,
+    PropsCreateManyFlow,
+} from "../afi-manager-base-model/controllers/IOrderTrackingController";
 import { User } from "../afi-manager-base-model/model/User";
 import { BaseController } from "./BaseController";
 
@@ -14,10 +17,7 @@ export class OrderTrackingController
                 return res.data;
             });
     }
-    createManyFlow(params: {
-        orderId: string[];
-        customerName: string;
-    }): Promise<OrderTracking[]> {
+    createManyFlow(params: PropsCreateManyFlow): Promise<OrderTracking[]> {
         return this.client
             .post(
                 `${this.serviceURL}/${this.basePath}/create-many-flow`,
