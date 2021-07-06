@@ -17,6 +17,7 @@ import BackdropLoading from "./component/common/BackdropLoading";
 import { routers, TypeScreen } from "./constants/Route";
 import {
     AdminRoute,
+    AfiRoute,
     AuthenRoute,
     history,
     PublicRoute,
@@ -71,6 +72,17 @@ function App() {
                                                 authen={authen.info}
                                             />
                                         );
+                                    } else if (
+                                        route.typeAuthen === TypeScreen.afi
+                                    ) {
+                                        return (
+                                            <AfiRoute
+                                                exact
+                                                component={route.component}
+                                                path={route.link}
+                                                authen={authen.info}
+                                            />
+                                        );
                                     } else {
                                         return (
                                             <PublicRoute
@@ -82,6 +94,28 @@ function App() {
                                         );
                                     }
                                 })}
+                                <Route
+                                    path="/afi/*"
+                                    exact={false}
+                                    render={({ location }) => (
+                                        <Redirect
+                                            to={{
+                                                pathname: "/tool-change-text",
+                                            }}
+                                        />
+                                    )}
+                                />
+                                <Route
+                                    path="/afi"
+                                    exact={false}
+                                    render={({ location }) => (
+                                        <Redirect
+                                            to={{
+                                                pathname: "/tool-change-text",
+                                            }}
+                                        />
+                                    )}
+                                />
                                 <Route
                                     path="*"
                                     render={({ location }) => (
@@ -110,5 +144,3 @@ export default function IntegrationNotistack() {
         </SnackbarProvider>
     );
 }
-
-// export default App;

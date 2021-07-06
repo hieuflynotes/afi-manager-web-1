@@ -1,5 +1,6 @@
 import {
     Button,
+    Chip,
     Grid,
     IconButton,
     makeStyles,
@@ -14,7 +15,7 @@ import { BsEye, BsEyeSlash } from "react-icons/bs";
 import { useDispatch } from "react-redux";
 import { history } from "src/constants/RouterAuthen";
 import * as Yup from "yup";
-import { userController } from "../controller";
+import { localStoryController, userController } from "../controller";
 import { Dispatch } from "../rematch/store";
 import { useGlobalStyles } from "../theme/GlobalStyle";
 
@@ -54,7 +55,9 @@ export default function Login() {
                     username: values.username,
                 })
                 .then((res: any) => {
-                    console.log(res);
+                    localStoryController.addUserLogin({
+                        ...formik.values,
+                    });
                     dispatch.authen
                         .login({
                             info: res,
@@ -89,6 +92,28 @@ export default function Login() {
         >
             <Slide in={true} timeout={900} direction="down">
                 <Grid className={classes.frLogin} container>
+                    <Grid container>
+                        {localStoryController
+                            .getListUserLogin()
+                            .map((item, index) => (
+                                <Chip
+                                    label={item.username}
+                                    onDelete={() => {
+                                        localStoryController.removeLogin({
+                                            username: item.username,
+                                        });
+                                        formik.setValues({
+                                            ...formik.values,
+                                        });
+                                    }}
+                                    onClick={() => {
+                                        formik.setValues({
+                                            ...item,
+                                        });
+                                    }}
+                                />
+                            ))}
+                    </Grid>
                     <Grid className={globalStyles.pp1}>
                         <Typography
                             className={classes.titleLogin}

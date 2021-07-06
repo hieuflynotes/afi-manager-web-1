@@ -34,11 +34,10 @@ const useStyle = makeStyles((theme) => ({
 type Props = {
     children: React.ReactElement;
 };
-const link = ["/check-tracking"];
-function AdminScreen(props: Props) {
+const link = ["/tool-change-text"];
+function AfiScreen(props: Props) {
     const classes = useStyle();
     const [route, setRoute] = useState<RouteComponent[]>([]);
-    const authen = useSelector((state: RootState) => state.authen);
     const [hiddenNavBar, setHiddenNavBar] = useState<boolean>();
     const dispath = useDispatch<Dispatch>();
     useEffect(() => {
@@ -59,7 +58,7 @@ function AdminScreen(props: Props) {
                 {
                     label: "Logout",
                     action: () => {
-                        dispath.authen.logOut();
+                        window.location.href = "/login";
                     },
                     link: "",
                     icon: <FiLogOut />,
@@ -97,4 +96,4 @@ function AdminScreen(props: Props) {
         </Grid>
     );
 }
-export default AdminScreen;
+export default AfiScreen;

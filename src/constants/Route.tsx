@@ -4,10 +4,12 @@ import Login from "src/container/Login";
 import { AiFillDashboard } from "react-icons/ai";
 import CheckTrackingHM from "src/container/CheckTrackingHM";
 import Register from "src/container/Register";
+import ToolAutoChangeTextHM from "src/container/ToolAutoChangeTextHM";
 export enum TypeScreen {
     public = "public",
     admin = "admin",
     authen = "authen",
+    afi = "afi",
 }
 
 export const routers: RouteComponent[] = [
@@ -15,6 +17,20 @@ export const routers: RouteComponent[] = [
         component: Login,
         label: "Login",
         link: "/login",
+        typeAuthen: TypeScreen.public,
+        icon: <AiFillDashboard />,
+    },
+    {
+        component: ToolAutoChangeTextHM,
+        label: "Tool change text",
+        link: "/tool-change-text",
+        typeAuthen: TypeScreen.afi,
+        icon: <AiFillDashboard />,
+    },
+    {
+        component: Register,
+        label: "Register",
+        link: "/register",
         typeAuthen: TypeScreen.public,
         icon: <AiFillDashboard />,
     },

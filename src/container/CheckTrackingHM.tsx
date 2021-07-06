@@ -22,9 +22,13 @@ import {
 import { ListFilter } from "luong-base-model/lib";
 import SelectBox from "src/component/common/SelectBox";
 import PopupFlowManyTrackingHM from "src/component/tracking/PopupFlowManyTrackingHM";
+import PopupFlowManyByOrdersEmailsCustomersTrackingHM from "src/component/tracking/PopupFlowManyByOrdersEmailsCustomersTrackingHM";
+
 import { handleWithPopupHook } from "src/hook/HandleWithPopupHook";
 import { OrderTrackingController } from "src/controller/OrderTrackingController";
 import { PropsCreateManyFlow } from "src/afi-manager-base-model/controllers/IOrderTrackingController";
+import { useSelector } from "react-redux";
+import { RootState } from "src/rematch/store";
 
 type Props = {};
 const useStyle = makeStyles((theme) => ({
@@ -50,6 +54,19 @@ function CheckTrackingHM(props: Props) {
                     });
         },
     });
+    const handleWithPopupManyByEmails =
+        handleWithPopupHook<PropsCreateManyFlow>({
+            onConfirmByPopup: (item) => {
+                if (item)
+                    orderTrackingController
+                        .createManyByEmailsAndOrders({
+                            ...item,
+                        })
+                        .then((res) => {
+                            crudTrackingHM.onRefreshList();
+                        });
+            },
+        });
     const crudTrackingHM = useCrudHook<
         OrderTracking,
         ListFilter<OrderTracking>
@@ -70,6 +87,7 @@ function CheckTrackingHM(props: Props) {
             crudTrackingHM.onRefreshList();
         });
     };
+    const authen = useSelector((state: RootState) => state.authen);
 
     return (
         <Grid className={globalStyles.pp3}>
@@ -91,8 +109,17 @@ function CheckTrackingHM(props: Props) {
                 onCancel={handleWithPopupMany.handleClosePopup}
                 onEdit={handleWithPopupMany.handleConfirmByPopup}
             />
+            <PopupFlowManyByOrdersEmailsCustomersTrackingHM
+                isDisplay={handleWithPopupManyByEmails.isDisplayPopup}
+                onCancel={handleWithPopupManyByEmails.handleClosePopup}
+                onEdit={handleWithPopupManyByEmails.handleConfirmByPopup}
+            />
+
             <Typography variant="h4" align="center">
                 Order Tracking H&M
+            </Typography>
+            <Typography variant="subtitle1" align="center">
+                ({authen.info.fullName})
             </Typography>
             <Grid className={classes.frFilter}>
                 <Grid
@@ -139,6 +166,7 @@ function CheckTrackingHM(props: Props) {
                         onChange={(e, page) => {
                             crudTrackingHM.setQuery({
                                 ...crudTrackingHM.query,
+                                page: page,
                             });
                         }}
                         color="primary"
@@ -152,10 +180,13 @@ function CheckTrackingHM(props: Props) {
                                 )}
                                 variant="contained"
                                 color="primary"
-                                onClick={() => syncSort()}
-                                disabled
+                                onClick={() => {
+                                    handleWithPopupManyByEmails.handleShowPopup(
+                                        {} as any
+                                    );
+                                }}
                             >
-                                Sort All Date Change
+                                Flow many by Emails and Orders
                             </Button>
                             <SelectBox
                                 variant="outlined"
@@ -187,6 +218,7 @@ function CheckTrackingHM(props: Props) {
                             <TrackingInfoHMItem
                                 onDelete={crudTrackingHM.onConfirm}
                                 item={item}
+                                searchString={crudTrackingHM.query.search || ""}
                                 onEdit={crudTrackingHM.onShowPopup}
                             />
                         </Grid>

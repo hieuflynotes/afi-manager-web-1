@@ -30,7 +30,6 @@ export class LocalStoryController {
             params.column = getTable?.column || [];
         }
         getTable.column = params.column;
-        console.log("🚀 ~ file: LocalStoryController.ts ~ line 33 ~ LocalStoryController ~ setSettingColumnTable ~ getTable", getTable)
         table[params.idTable] = getTable;
         this.setDataByKey("table", table);
     }
@@ -38,5 +37,48 @@ export class LocalStoryController {
         const table = this.getByKey("table") || {};
         const getTable = table[idTable] || {};
         return getTable.column;
+    }
+
+    setStateTool(value: any) {
+        this.setDataByKey("stateToolKey", value);
+    }
+    getStateTool(): any {
+        const data = this.getByKey("stateToolKey");
+        if (data) {
+            return data;
+        }
+        return {
+            variables: [],
+            text: [
+                {
+                    title: "text1",
+                    value: "",
+                },
+            ],
+            textIndex: 0,
+        };
+    }
+
+    getListUserLogin(): { username: string; password: string }[] {
+        const get = this.getByKey("account");
+        return get || [];
+    }
+    addUserLogin(params: { username: string; password: string }) {
+        const get = this.getListUserLogin();
+        const index = get.findIndex((item) => item.username == params.username);
+        if (index >= 0) {
+            get[index] = params;
+        } else {
+            get.push(params);
+        }
+        this.setDataByKey("account", get);
+    }
+    removeLogin(params: { username: string }) {
+        const get = this.getListUserLogin();
+        const index = get.findIndex((item) => item.username == params.username);
+        if (index >= 0) {
+            get.splice(index, 1);
+        }
+        this.setDataByKey("account", get);
     }
 }

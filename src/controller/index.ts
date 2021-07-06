@@ -6,6 +6,7 @@ import { LocalStoryController } from "./LocalStoryController";
 import { OrderTrackingController } from "./OrderTrackingController";
 import { TestController } from "./TestController";
 import { UserController } from "./UserController";
+import { routersMap, TypeScreen } from "src/constants/Route";
 
 export const appClient = axios.create({
     baseURL: config.apiGatewayUrl,
@@ -38,7 +39,13 @@ appClient.interceptors.response.use(
             dispatch.notification.error(
                 err.response?.data?.message || "Login again"
             );
-            if (window.location.pathname != "/login") {
+            const linkNow = window.location.pathname;
+            const getRoute = routersMap.get(linkNow);
+            if (
+                getRoute &&
+                getRoute?.typeAuthen != TypeScreen.public &&
+                getRoute?.typeAuthen != TypeScreen.afi
+            ) {
                 window.location.href = "/login";
             }
         } else if (err.response?.status === 403) {

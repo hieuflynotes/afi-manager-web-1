@@ -4,6 +4,7 @@ import { Redirect, Route } from "react-router-dom";
 import { createBrowserHistory } from "history";
 import AdminScreen from "../container/AdminScreen";
 import { InfoMe } from "../afi-manager-base-model/model/InfoMe";
+import AfiScreen from "src/container/AfiScreen";
 export const history = createBrowserHistory({});
 
 // Auth route componnet
@@ -27,6 +28,23 @@ export function AdminRoute({ ...props }: iProtectRoute) {
                         />
                     )
                 }
+            />
+        ),
+        [props]
+    );
+}
+
+export function AfiRoute({ ...props }: iProtectRoute) {
+    return useMemo(
+        () => (
+            <Route
+                path={props.path}
+                render={({ location }) => (
+                    // props.authen?.role == "admin"
+                    <AfiScreen>
+                        <props.component />
+                    </AfiScreen>
+                )}
             />
         ),
         [props]

@@ -6,7 +6,9 @@ import {
     IconButton,
     makeStyles,
     Slide,
+    FormControlLabel,
     TextField,
+    Checkbox,
     Typography,
 } from "@material-ui/core";
 import clsx from "clsx";
@@ -232,6 +234,21 @@ export default function Register() {
                                         formik.errors.password
                                     }
                                 ></TextField>
+                            </Grid>
+                            <Grid container className={globalStyles.pp1}>
+                                <FormControlLabel
+                                    control={
+                                        <Checkbox
+                                            checked={showPassword}
+                                            onChange={(e) => {
+                                                setShowPassword(
+                                                    e.target.checked as boolean
+                                                );
+                                            }}
+                                        />
+                                    }
+                                    label="Show password"
+                                />
                             </Grid>
                         </Grid>
 

@@ -16,7 +16,10 @@ import React, { useEffect, useState } from "react";
 import { CgPlayListRemove } from "react-icons/cg";
 import { FiChevronDown } from "react-icons/fi";
 import { VscMenu } from "react-icons/vsc";
+import { useSelector } from "react-redux";
 import { NavLink, useHistory } from "react-router-dom";
+import { RootState } from "src/rematch/store";
+import theme from "src/theme/MuiTheme";
 import { cssInfo } from "../../constants/Other";
 import { localStoryController } from "../../controller";
 import { useGlobalStyles } from "../../theme/GlobalStyle";
@@ -149,6 +152,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 export default function NavBar(props: Props) {
+    const authen = useSelector((state: RootState) => state.authen);
     const [state, setState] = useState<{
         hiddenNavBar: boolean;
     }>({

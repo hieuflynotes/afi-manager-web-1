@@ -23,6 +23,7 @@ import { BiErrorCircle } from "react-icons/bi";
 import theme from "src/theme/MuiTheme";
 import { CircularProgress } from "@material-ui/core";
 import { TrackingHMHelper } from "src/helper/TrackingHMHelper";
+import { StringUtil } from "src/helper/StringUtil";
 
 const useStyle = makeStyles((theme) => ({
     root: {
@@ -57,6 +58,7 @@ type Props = {
     onDelete: (item: OrderTracking) => void;
     item: OrderTracking;
     onEdit: (item: OrderTracking) => void;
+    searchString: string;
 };
 export default function TrackingInfoHMItem(props: Props) {
     const classes = useStyle();
@@ -114,7 +116,11 @@ export default function TrackingInfoHMItem(props: Props) {
                         }}
                     ></div>
                     <Typography variant="body2">
-                        {`#${state.infoOrderTracking.orderId}`}
+                        #
+                        {StringUtil.getHighlightedText(
+                            state.infoOrderTracking.orderId,
+                            props.searchString
+                        )}
                     </Typography>
                     <Grid>
                         <Grid container>
@@ -232,13 +238,22 @@ export default function TrackingInfoHMItem(props: Props) {
                         >
                             <Grid>
                                 <Typography variant="body2">
-                                    {state.infoOrderTracking.trackingId}
+                                    {StringUtil.getHighlightedText(
+                                        state.infoOrderTracking.trackingId,
+                                        props.searchString
+                                    )}
                                 </Typography>
                                 <Typography>
-                                    {state.infoOrderTracking.customerName}
+                                    {StringUtil.getHighlightedText(
+                                        state.infoOrderTracking.customerName,
+                                        props.searchString
+                                    )}
                                 </Typography>
                                 <Typography>
-                                    {state.infoOrderTracking.email}
+                                    {StringUtil.getHighlightedText(
+                                        state.infoOrderTracking.email,
+                                        props.searchString
+                                    )}
                                 </Typography>
                             </Grid>
                         </Grid>
