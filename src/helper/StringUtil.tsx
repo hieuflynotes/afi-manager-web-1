@@ -2,6 +2,8 @@ import React from "react";
 
 export class StringUtil {
     static getHighlightedText = (text?: string, highlight?: string) => {
+        highlight = highlight?.replaceAll(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
         if (
             highlight == null ||
             highlight.length === 0 ||
@@ -16,7 +18,7 @@ export class StringUtil {
                     <span
                         key={i}
                         style={
-                            part.toLowerCase() === highlight.toLowerCase()
+                            part.toLowerCase() === highlight?.toLowerCase()
                                 ? { backgroundColor: "#ffed59" }
                                 : {}
                         }

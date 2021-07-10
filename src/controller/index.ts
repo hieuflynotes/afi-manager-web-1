@@ -7,6 +7,7 @@ import { OrderTrackingController } from "./OrderTrackingController";
 import { TestController } from "./TestController";
 import { UserController } from "./UserController";
 import { routersMap, TypeScreen } from "src/constants/Route";
+import { MetaDataController } from "./MetaDataController";
 
 export const appClient = axios.create({
     baseURL: config.apiGatewayUrl,
@@ -76,6 +77,12 @@ export const testController = new TestController(
 export const orderTrackingController = new OrderTrackingController(
     config.apiGatewayUrl,
     "orderTracking",
+    appClient
+);
+
+export const metaDataController = new MetaDataController(
+    config.apiGatewayUrl,
+    "metaData",
     appClient
 );
 

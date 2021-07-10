@@ -209,14 +209,14 @@ export default function Login() {
                         >
                             Login
                         </Button>
-                        <Grid container justify="center">
+                        {/* <Grid container justify="center">
                             <Button
                                 onClick={() => history.push("/register")}
                                 color="primary"
                             >
                                 Create a new account
                             </Button>
-                        </Grid>
+                        </Grid> */}
                     </form>
                 </Grid>
             </Slide>
