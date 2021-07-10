@@ -30,18 +30,10 @@ export const routers: RouteComponent[] = [
     {
         component: Register,
         label: "Register",
-        link: "/register",
+        link: "/register-hoangcute",
         typeAuthen: TypeScreen.public,
         icon: <AiFillDashboard />,
     },
-    {
-        component: Register,
-        label: "Register",
-        link: "/register",
-        typeAuthen: TypeScreen.public,
-        icon: <AiFillDashboard />,
-    },
-
     {
         component: CheckTrackingHM,
         label: "Check Tracking",

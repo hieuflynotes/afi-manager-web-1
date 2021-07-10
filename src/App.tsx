@@ -73,6 +73,16 @@ function App() {
                                             />
                                         );
                                     } else if (
+                                        route.typeAuthen === TypeScreen.public
+                                    ) {
+                                        return (
+                                            <Route
+                                                exact
+                                                component={route.component}
+                                                path={route.link}
+                                            />
+                                        );
+                                    } else if (
                                         route.typeAuthen === TypeScreen.afi
                                     ) {
                                         return (
