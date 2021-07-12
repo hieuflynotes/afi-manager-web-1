@@ -53,6 +53,7 @@ export default function PopupFlowManyByOrdersEmailsCustomersTrackingHM(
             orderId: "",
             orderIds: [],
             email: "",
+            link: "",
             customerName: "",
         },
         validationSchema: validate,
@@ -60,11 +61,7 @@ export default function PopupFlowManyByOrdersEmailsCustomersTrackingHM(
             const customerNames = formik.values.customerName.trim().split("\n");
             const orderIds = formik.values.orderId.trim().split("\n");
             const emails = formik.values.email.trim().split("\n");
-            console.log({
-                customerNames,
-                orderIds,
-                emails,
-            });
+            const links = formik.values.link.trim().split("\n");
 
             if (
                 !formik.values.orderId ||
@@ -86,6 +83,7 @@ export default function PopupFlowManyByOrdersEmailsCustomersTrackingHM(
                     ...formik.values,
                     orderIds: orderIds,
                     emails: emails,
+                    links: links,
                     customerNames: customerNames,
                 });
             }
@@ -100,6 +98,10 @@ export default function PopupFlowManyByOrdersEmailsCustomersTrackingHM(
     const emailsCount = !formik.values.email
         ? 0
         : formik.values.email.trim().split("\n").length;
+
+    const linksCount = !formik.values.link
+        ? 0
+        : formik.values.link.trim().split("\n").length;
     const onSubmit = () => {
         formik.handleSubmit();
         formik.setTouched({
@@ -139,6 +141,9 @@ export default function PopupFlowManyByOrdersEmailsCustomersTrackingHM(
                         </Typography>
                         <Typography color={"error"}>
                             Email : {emailsCount}
+                        </Typography>
+                        <Typography color={"error"}>
+                            Link : {linksCount}
                         </Typography>
                     </Grid>
                     <Grid>
@@ -193,6 +198,24 @@ export default function PopupFlowManyByOrdersEmailsCustomersTrackingHM(
                             variant="outlined"
                             className={clsx(globalStyles.mt1, globalStyles.mb2)}
                             label="Email"
+                        ></TextField>
+                    </Grid>
+
+                    <Grid>
+                        <TextField
+                            helperText={
+                                formik.touched.link && formik.errors.link
+                            }
+                            value={formik.values.link}
+                            name="link"
+                            onBlur={formik.handleBlur}
+                            onChange={formik.handleChange}
+                            fullWidth
+                            multiline
+                            rows={8}
+                            variant="outlined"
+                            className={clsx(globalStyles.mt1, globalStyles.mb2)}
+                            label="Link"
                         ></TextField>
                     </Grid>
                 </Grid>

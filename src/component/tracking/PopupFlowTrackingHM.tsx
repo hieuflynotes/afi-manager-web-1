@@ -72,7 +72,13 @@ export default function PopupFlowTrackingHM(props: Props) {
         initialValues: {},
         validationSchema: validate,
         onSubmit: () => {
-            props.onEdit(formik.values);
+            // .filter((item) => Boolean(item))
+            props.onEdit({
+                ...formik.values,
+                productLink: formik.values?.productLink?.filter((item) =>
+                    Boolean(item)
+                ),
+            });
         },
     });
     const onSubmit = () => {
@@ -209,6 +215,24 @@ export default function PopupFlowTrackingHM(props: Props) {
                             variant="outlined"
                             className={clsx(globalStyles.mt1, globalStyles.mb2)}
                             label="Email"
+                        ></TextField>
+                    </Grid>
+                    <Grid>
+                        <TextField
+                            name="email"
+                            value={formik.values?.productLink?.join(";")}
+                            onBlur={formik.handleBlur}
+                            onChange={(e) => {
+                                formik.setValues({
+                                    ...formik.values,
+                                    productInfo: undefined,
+                                    productLink: e.target.value.split(";"),
+                                });
+                            }}
+                            fullWidth
+                            variant="outlined"
+                            className={clsx(globalStyles.mt1, globalStyles.mb2)}
+                            label="Link sản phẩm"
                         ></TextField>
                     </Grid>
                     <Grid>

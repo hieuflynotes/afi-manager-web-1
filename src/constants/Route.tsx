@@ -5,6 +5,7 @@ import { AiFillDashboard } from "react-icons/ai";
 import CheckTrackingHM from "src/container/CheckTrackingHM";
 import Register from "src/container/Register";
 import ToolAutoChangeTextHM from "src/container/ToolAutoChangeTextHM";
+import UserHmManager from "src/container/hm-manager/UserHmManager";
 export enum TypeScreen {
     public = "public",
     admin = "admin",
@@ -28,9 +29,16 @@ export const routers: RouteComponent[] = [
         icon: <AiFillDashboard />,
     },
     {
+        component: UserHmManager,
+        label: "User HM",
+        link: "/user-hm",
+        typeAuthen: TypeScreen.afi,
+        icon: <AiFillDashboard />,
+    },
+    {
         component: Register,
         label: "Register",
-        link: "/register-hoangcute",
+        link: "/register-afi",
         typeAuthen: TypeScreen.public,
         icon: <AiFillDashboard />,
     },

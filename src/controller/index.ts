@@ -8,6 +8,7 @@ import { TestController } from "./TestController";
 import { UserController } from "./UserController";
 import { routersMap, TypeScreen } from "src/constants/Route";
 import { MetaDataController } from "./MetaDataController";
+import { UserHmController } from "./UserHmController";
 
 export const appClient = axios.create({
     baseURL: config.apiGatewayUrl,
@@ -90,4 +91,12 @@ export const hMController = new HMController(
     "https://api.parcellab.com/v2",
     ""
 );
+
+export const userHmController = new UserHmController(
+    config.apiGatewayUrl,
+    "afi/userHm",
+    appClient
+);
+
+//
 //

@@ -52,6 +52,7 @@ export default function PopupFlowManyTrackingHM(props: Props) {
             orderId: "",
             orderIds: [],
             email: "",
+            link: "",
             customerName: "",
         },
         validationSchema: validate,

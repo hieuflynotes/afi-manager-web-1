@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable react-hooks/exhaustive-deps */
 import {
     Button,
@@ -24,6 +25,8 @@ import theme from "src/theme/MuiTheme";
 import { CircularProgress } from "@material-ui/core";
 import { TrackingHMHelper } from "src/helper/TrackingHMHelper";
 import { StringUtil } from "src/helper/StringUtil";
+import { HMTracking } from "src/afi-manager-base-model/model/HMTracking";
+import CheckTrackingHM from "src/container/CheckTrackingHM";
 
 const useStyle = makeStyles((theme) => ({
     root: {
@@ -59,6 +62,7 @@ type Props = {
     item: OrderTracking;
     onEdit: (item: OrderTracking) => void;
     searchString: string;
+    index: number;
 };
 export default function TrackingInfoHMItem(props: Props) {
     const classes = useStyle();
@@ -72,26 +76,56 @@ export default function TrackingInfoHMItem(props: Props) {
         isError: false,
     });
     const globalsStyle = useGlobalStyles();
-    useEffect(() => {
-        setState({
-            infoOrderTracking: {},
-            isError: false,
-            isGet: false,
-        });
+
+    const updateInfoProduct = async (item: HMTracking) => {
+        if (
+            props.item.productLink &&
+            props.item.productLink?.length > 0 &&
+            !props.item.productInfo
+        ) {
+            let info;
+            for (const link of props.item.productLink) {
+                try {
+                    const id = link.split("productpage.")[1].split(".html")[0];
+                    info = await hMController.getInfoProduct(id);
+                } catch (error) {
+                    info = undefined;
+                }
+                if (info) {
+                    props.item.productInfo = props.item.productInfo || [];
+                    props.item.productInfo?.push(info);
+                }
+            }
+            // orderTrackingController.save(props.item);
+            setState({
+                infoOrderTracking: {
+                    ...props.item,
+                    infoHM: item,
+                    trackingId: item.header?.tracking_number,
+                },
+                isError: false,
+                isGet: true,
+            });
+        } else {
+            setState({
+                infoOrderTracking: {
+                    ...props.item,
+                    infoHM: item,
+                    trackingId: item.header?.tracking_number,
+                },
+                isError: false,
+                isGet: true,
+            });
+        }
+    };
+
+    const updateValue = () => {
         hMController
             .getTrackingByOrderNo({
                 orderNo: props.item.orderId || "",
             })
             .then((res) => {
-                setState({
-                    infoOrderTracking: {
-                        ...props.item,
-                        infoHM: res,
-                        trackingId: res.header?.tracking_number,
-                    },
-                    isError: false,
-                    isGet: true,
-                });
+                updateInfoProduct(res);
             })
             .catch((err) => {
                 setState({
@@ -100,6 +134,14 @@ export default function TrackingInfoHMItem(props: Props) {
                     isGet: true,
                 });
             });
+    };
+    useEffect(() => {
+        setState({
+            infoOrderTracking: {},
+            isError: false,
+            isGet: false,
+        });
+        setTimeout(updateValue, props.index * 200);
     }, [props.item]);
     const main = () => {
         return (
@@ -234,6 +276,9 @@ export default function TrackingInfoHMItem(props: Props) {
                         <Grid
                             container
                             direction="column"
+                            style={{
+                                borderTop: `1px solid ${theme.palette.divider}`,
+                            }}
                             justify="space-around"
                         >
                             <Grid>
@@ -256,6 +301,72 @@ export default function TrackingInfoHMItem(props: Props) {
                                     )}
                                 </Typography>
                             </Grid>
+                        </Grid>
+                        <Divider
+                            className={clsx(globalsStyle.mt1, globalsStyle.mb1)}
+                        />
+                        {state.infoOrderTracking.productInfo?.map((info) => (
+                            <Grid
+                                style={{
+                                    borderTop: `1px solid ${theme.palette.divider}`,
+                                    padding: theme.spacing(2),
+                                }}
+                                container
+                                alignItems="center"
+                                alignContent="center"
+                                justify="space-around"
+                            >
+                                <Grid>
+                                    <img
+                                        style={{
+                                            width: 50,
+                                        }}
+                                        src={
+                                            info._embedded.base_image.images
+                                                .normal
+                                        }
+                                    />
+                                </Grid>
+                                <Grid>
+                                    <Typography variant="body2">
+                                        {info.name}
+                                    </Typography>
+                                    <Typography>
+                                        <a
+                                            href={info.product_url}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            style={{
+                                                color: theme.palette.secondary
+                                                    .main,
+                                            }}
+                                        >
+                                            See detail
+                                        </a>
+                                    </Typography>
+                                </Grid>
+                            </Grid>
+                        ))}
+                        <Grid
+                            container
+                            justify="center"
+                            style={{
+                                borderTop: `1px solid ${theme.palette.divider}`,
+                                padding: theme.spacing(2),
+                            }}
+                        >
+                            <Typography>
+                                <a
+                                    style={{
+                                        color: theme.palette.secondary.main,
+                                    }}
+                                    href={`https://hm.delivery-status.com/gb/en/?orderNo=${state.infoOrderTracking.orderId}`}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                >
+                                    See Tracking
+                                </a>
+                            </Typography>
                         </Grid>
                     </>
                 )}

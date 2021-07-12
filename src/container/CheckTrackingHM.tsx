@@ -74,6 +74,7 @@ function CheckTrackingHM(props: Props) {
         controller: orderTrackingController,
         initQuery: {
             searchFields: ["orderId", "trackingId", "customerName", "email"],
+            pageSize: 100,
         },
     });
     const globalStyles = useGlobalStyles();
@@ -135,16 +136,6 @@ function CheckTrackingHM(props: Props) {
                         }
                     ></TextFiled>
                     <Grid>
-                        <Button
-                            className={clsx(globalStyles.ml2, globalStyles.mr2)}
-                            variant="contained"
-                            color="primary"
-                            onClick={() =>
-                                handleWithPopupMany.handleShowPopup({} as any)
-                            }
-                        >
-                            New Many Flow
-                        </Button>
                         <Button
                             variant="contained"
                             color="primary"
@@ -216,6 +207,7 @@ function CheckTrackingHM(props: Props) {
                     <Zoom in={true} timeout={index * 100}>
                         <Grid container justify="center">
                             <TrackingInfoHMItem
+                                index={index}
                                 onDelete={crudTrackingHM.onConfirm}
                                 item={item}
                                 searchString={crudTrackingHM.query.search || ""}
