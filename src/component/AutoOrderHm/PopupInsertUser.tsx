@@ -96,6 +96,7 @@ export default function PopupInsertUser(props: Props) {
             formik.setValues(
                 _.cloneDeep({
                     ...props.item,
+                    isDone: props.item.isDone || false,
                 })
             );
             formik.setTouched(_.mapValues(new UserHm(), () => false));
@@ -118,24 +119,21 @@ export default function PopupInsertUser(props: Props) {
                     <Grid>
                         <FormGroup row>
                             <FormControlLabel
-                                disabled
-                                control={<Switch checked={true} />}
-                                label="Disabled"
+                                control={
+                                    <Switch
+                                        onChange={(e) => {
+                                            formik.setValues({
+                                                ...formik.values,
+                                                isDone:
+                                                    e.target.checked || false,
+                                            });
+                                        }}
+                                        checked={formik.values.isDone}
+                                    />
+                                }
+                                label="IsDone"
                             />
                         </FormGroup>
-                        <TextField
-                            value={formik.values.username}
-                            helperText={
-                                formik.touched.username &&
-                                formik.errors.username
-                            }
-                            name="username"
-                            onChange={formik.handleChange}
-                            fullWidth
-                            variant="outlined"
-                            className={clsx(globalStyles.mt1, globalStyles.mb2)}
-                            label="User name"
-                        ></TextField>
                     </Grid>
                     <Grid>
                         <TextField
