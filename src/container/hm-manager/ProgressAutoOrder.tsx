@@ -33,6 +33,7 @@ function ProgressAutoOrder(props: Props) {
         listController: orderTrackingController.listForProgress,
         initQuery: {
             searchFields: ["orderId", "trackingId", "customerName", "email"],
+            sort: ["totalPrice"],
             pageSize: 100,
             filter: {
                 userHMId: userHmId,
@@ -73,7 +74,7 @@ function ProgressAutoOrder(props: Props) {
                         // justify="center"
                         className={clsx(globalStyle.pt2, globalStyle.pb2)}
                     >
-                        <ListGrid minWidthItem={"300px"} gridGap={20}>
+                        <ListGrid minWidthItem={"420px"} gridGap={20}>
                             {crudTrackingHM.pagingList?.rows?.map((item) => (
                                 <Grid>
                                     <ProgressHmItemList

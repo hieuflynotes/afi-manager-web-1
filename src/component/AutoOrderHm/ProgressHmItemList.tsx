@@ -14,7 +14,7 @@ type Props = {
 };
 const useStyle = makeStyles((theme) => ({
     root: {
-        // width: 300,
+        width: 400,
         borderRadius: theme.spacing(1),
         border: `1px solid ${theme.palette.divider}`,
     },
@@ -69,6 +69,9 @@ function ProgressHmItemList(props: Props) {
                 <Typography variant="body2">{getStatus(props.item)}</Typography>
             </Grid>
             <Grid container className={clsx(classes.frInfo)}>
+                {props.item.errorDesc && (
+                    <TextDesc title={"Lỗi"} desc={props.item.errorDesc || ""} />
+                )}
                 <TextDesc
                     title={"OrderId"}
                     desc={
@@ -76,6 +79,14 @@ function ProgressHmItemList(props: Props) {
                             ? "Rỗng"
                             : props.item.orderId || "   "
                     }
+                />
+                <TextDesc
+                    title={"Tổng giá"}
+                    desc={`${props.item.totalPrice}` || ""}
+                />
+                <TextDesc
+                    title={"Tổng chi gift"}
+                    desc={`${props.item.totalPriceBuy}` || ""}
                 />
                 <TextDesc title={"Email"} desc={props.item.email || ""} />
                 <TextDesc
@@ -90,10 +101,12 @@ function ProgressHmItemList(props: Props) {
                             title={"Id sản phẩm"}
                             desc={item.productId || ""}
                         />
-                        <TextDesc
-                            title={"Số lượng"}
-                            desc={item.quantity?.toString() || ""}
-                        />
+                        {(item.quantity || 0) > 1 && (
+                            <TextDesc
+                                title={"Số lượng"}
+                                desc={item.quantity?.toString() || ""}
+                            />
+                        )}
                         <TextDesc title={"Size"} desc={item.size || ""} />
                         <TextDesc
                             title={"Giá gốc"}

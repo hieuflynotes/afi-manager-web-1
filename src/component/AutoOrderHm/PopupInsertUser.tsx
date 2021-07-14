@@ -225,6 +225,21 @@ export default function PopupInsertUser(props: Props) {
                     </Grid>
                     <Grid>
                         <TextField
+                            value={formik.values.address2}
+                            helperText={
+                                formik.touched.address2 &&
+                                formik.errors.address2
+                            }
+                            name="address2"
+                            onChange={formik.handleChange}
+                            fullWidth
+                            variant="outlined"
+                            className={clsx(globalStyles.mt1, globalStyles.mb2)}
+                            label="Address 2"
+                        ></TextField>
+                    </Grid>
+                    <Grid>
+                        <TextField
                             value={formik.values.town}
                             helperText={
                                 formik.touched.town && formik.errors.town
