@@ -11,6 +11,7 @@ type Props = {
     item: UserHm;
     onEdit: (item: UserHm) => void;
     onDelete: (item: UserHm) => void;
+    onSeeDetail: (item: UserHm) => void;
 };
 const useStyle = makeStyles((theme) => ({
     root: {
@@ -86,6 +87,14 @@ function UserHmItemList(props: Props) {
                     onClick={() => props.onEdit(props.item)}
                 >
                     Edit
+                </Button>
+
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => props.onSeeDetail(props.item)}
+                >
+                    See Detail
                 </Button>
             </Grid>
         </Grid>

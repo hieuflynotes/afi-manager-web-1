@@ -6,11 +6,13 @@ import CheckTrackingHM from "src/container/CheckTrackingHM";
 import Register from "src/container/Register";
 import ToolAutoChangeTextHM from "src/container/ToolAutoChangeTextHM";
 import UserHmManager from "src/container/hm-manager/UserHmManager";
+import ProgressAutoOrder from "src/container/hm-manager/ProgressAutoOrder";
 export enum TypeScreen {
     public = "public",
     admin = "admin",
     authen = "authen",
     afi = "afi",
+    toolHm = "toolHm",
 }
 
 export const routers: RouteComponent[] = [
@@ -32,7 +34,14 @@ export const routers: RouteComponent[] = [
         component: UserHmManager,
         label: "User HM",
         link: "/user-hm",
-        typeAuthen: TypeScreen.afi,
+        typeAuthen: TypeScreen.toolHm,
+        icon: <AiFillDashboard />,
+    },
+    {
+        component: ProgressAutoOrder,
+        label: "Progress",
+        link: "/progress-order/:userHmId",
+        typeAuthen: TypeScreen.toolHm,
         icon: <AiFillDashboard />,
     },
     {

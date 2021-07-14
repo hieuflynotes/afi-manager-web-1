@@ -21,6 +21,7 @@ import {
     AuthenRoute,
     history,
     PublicRoute,
+    ToolHmRoute,
 } from "./constants/RouterAuthen";
 import CustomerManager from "./container/CustomerManager";
 import Login from "./container/Login";
@@ -93,6 +94,19 @@ function App() {
                                                 authen={authen.info}
                                             />
                                         );
+                                        // ToolHmRoute
+                                    } else if (
+                                        route.typeAuthen === TypeScreen.toolHm
+                                    ) {
+                                        return (
+                                            <ToolHmRoute
+                                                exact
+                                                component={route.component}
+                                                path={route.link}
+                                                authen={authen.info}
+                                            />
+                                        );
+                                        // ToolHmRoute
                                     } else {
                                         return (
                                             <PublicRoute

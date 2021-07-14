@@ -1,3 +1,4 @@
+import { ListFilter, Paging } from "luong-base-model/lib";
 import { OrderTracking } from "src/afi-manager-base-model/model/OrderTracking";
 import {
     IOrderTrackingController,
@@ -35,6 +36,22 @@ export class OrderTrackingController
                 `${this.serviceURL}/${this.basePath}/create-many-flow`,
                 params
             )
+            .then((res) => {
+                return res.data;
+            });
+    }
+    public listForProgress(
+        params: ListFilter<OrderTracking>
+    ): Promise<Paging<OrderTracking>> {
+        params = { ...params, sort: this.convertSort(params.sort) };
+        params = {
+            ...params,
+            searchFields: this.convertSearch(params.searchFields) as any,
+        };
+        return this.client
+            .get(`${this.serviceURL}/${this.basePath}/list-for-progress`, {
+                params: params,
+            })
             .then((res) => {
                 return res.data;
             });

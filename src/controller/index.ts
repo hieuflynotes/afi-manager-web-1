@@ -38,9 +38,6 @@ appClient.interceptors.response.use(
             // window.location.href = "network-error"
         }
         if (err.response?.status === 401) {
-            dispatch.notification.error(
-                err.response?.data?.message || "Login again"
-            );
             const linkNow = window.location.pathname;
             const getRoute = routersMap.get(linkNow);
             if (
@@ -48,6 +45,9 @@ appClient.interceptors.response.use(
                 getRoute?.typeAuthen != TypeScreen.public &&
                 getRoute?.typeAuthen != TypeScreen.afi
             ) {
+                dispatch.notification.error(
+                    err.response?.data?.message || "Login again"
+                );
                 window.location.href = "/login";
             }
         } else if (err.response?.status === 403) {

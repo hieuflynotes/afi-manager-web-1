@@ -8,20 +8,36 @@ import { useGlobalStyles } from "../../theme/GlobalStyle";
 import { useCrudHook } from "../../hook/useCrudHook";
 import { Pagination } from "@material-ui/lab";
 import PopUpConfirm from "../../component/common/PopupConfirm";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { UserHm } from "src/afi-manager-base-model/model/UserHm";
-import { userHmController } from "src/controller";
+import { orderTrackingController, userHmController } from "src/controller";
 import UserHmItemList from "src/component/AutoOrderHm/UserHmItemList";
 import PopupInsertUser from "src/component/AutoOrderHm/PopupInsertUser";
 import theme from "src/theme/MuiTheme";
+import { OrderTracking } from "src/afi-manager-base-model/model/OrderTracking";
+import ProgressHmItemList from "src/component/AutoOrderHm/ProgressHmItemList";
+import PopupAddOrderId from "src/component/AutoOrderHm/PopupAddOrderId";
+import { ListFilter } from "luong-base-model/lib";
 
 type Props = {};
 const useStyle = makeStyles((theme) => ({}));
-function UserHmManager(props: Props) {
+function ProgressAutoOrder(props: Props) {
+    const { userHmId } = useParams<{ userHmId: string }>();
     const history = useHistory();
-    const crudCompany = useCrudHook<UserHm>({
-        controller: userHmController,
-        initQuery: {},
+
+    const crudTrackingHM = useCrudHook<
+        OrderTracking,
+        ListFilter<OrderTracking>
+    >({
+        controller: orderTrackingController,
+        listController: orderTrackingController.listForProgress,
+        initQuery: {
+            searchFields: ["orderId", "trackingId", "customerName", "email"],
+            pageSize: 100,
+            filter: {
+                userHMId: userHmId,
+            },
+        },
     });
     const classes = useStyle();
     const globalStyle = useGlobalStyles();
@@ -30,7 +46,7 @@ function UserHmManager(props: Props) {
         return () => {};
     }, []);
 
-    return (
+    return (crudTrackingHM.pagingList?.rows?.length || 0) > 0 ? (
         <Grid
             container
             style={{
@@ -39,44 +55,18 @@ function UserHmManager(props: Props) {
                 padding: theme.spacing(2),
             }}
         >
+            <PopupAddOrderId
+                isDisplay={crudTrackingHM.isShowPopup}
+                item={crudTrackingHM.itemSelected}
+                onCancel={crudTrackingHM.onCancelPopup}
+                onEdit={crudTrackingHM.onSave}
+            />
             <Grid container justify="center" className={clsx(globalStyle.pp2)}>
-                <PopUpConfirm
-                    isDisplay={crudCompany.isShowConfirm}
-                    onCancel={crudCompany.onCancelConfirm}
-                    onConfirm={() =>
-                        crudCompany.onDelete(crudCompany.itemSelected)
-                    }
-                />
-
-                <PopupInsertUser
-                    isDisplay={crudCompany.isShowPopup}
-                    item={crudCompany.itemSelected}
-                    onCancel={crudCompany.onCancelPopup}
-                    onEdit={crudCompany.onSave}
-                />
                 <Grid md={10}>
                     <Grid container justify="center">
                         <Typography align="center" variant="h4">
-                            Company
+                            Check order
                         </Typography>
-                    </Grid>
-                    <Grid container justify="space-between">
-                        <TextField
-                            onChange={(e) =>
-                                crudCompany.onQueryChanged(e.target.value)
-                            }
-                            className={clsx(globalStyle.mt2, globalStyle.mb2)}
-                            label="search"
-                            variant="outlined"
-                        ></TextField>
-                        <Button
-                            className={clsx(globalStyle.mt2, globalStyle.mb2)}
-                            variant="contained"
-                            color="primary"
-                            onClick={() => crudCompany.onShowPopup({})}
-                        >
-                            New company
-                        </Button>
                     </Grid>
                     <Grid
                         container
@@ -84,17 +74,13 @@ function UserHmManager(props: Props) {
                         className={clsx(globalStyle.pt2, globalStyle.pb2)}
                     >
                         <ListGrid minWidthItem={"300px"} gridGap={20}>
-                            {crudCompany.pagingList?.rows?.map((item) => (
+                            {crudTrackingHM.pagingList?.rows?.map((item) => (
                                 <Grid>
-                                    <UserHmItemList
+                                    <ProgressHmItemList
                                         item={item}
-                                        onDelete={crudCompany.onConfirm}
-                                        onEdit={crudCompany.onShowPopup}
-                                        onSeeDetail={(item) => {
-                                            history.push(
-                                                `/progress-order/${item.id}`
-                                            );
-                                        }}
+                                        updateOrderId={
+                                            crudTrackingHM.onShowPopup
+                                        }
                                     />
                                 </Grid>
                             ))}
@@ -105,11 +91,11 @@ function UserHmManager(props: Props) {
                         className={clsx(globalStyle.pt2, globalStyle.pb2)}
                     >
                         <Pagination
-                            count={crudCompany.pagingList.totalPages || 1}
-                            page={crudCompany.pagingList.page || 1}
+                            count={crudTrackingHM.pagingList.totalPages || 1}
+                            page={crudTrackingHM.pagingList.page || 1}
                             onChange={(e, page) => {
-                                crudCompany.setQuery({
-                                    ...crudCompany.query,
+                                crudTrackingHM.setQuery({
+                                    ...crudTrackingHM.query,
                                     page: page,
                                 });
                             }}
@@ -119,7 +105,13 @@ function UserHmManager(props: Props) {
                 </Grid>
             </Grid>
         </Grid>
+    ) : (
+        <Grid container justify="center">
+            <Typography variant="h2">
+                Tài khoản này chưa tiến hành lấy order hoặc order bị trống
+            </Typography>
+        </Grid>
     );
 }
 
-export default React.memo(UserHmManager);
+export default React.memo(ProgressAutoOrder);

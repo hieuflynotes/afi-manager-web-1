@@ -34,8 +34,8 @@ const useStyle = makeStyles((theme) => ({
 type Props = {
     children: React.ReactElement;
 };
-const link = ["/tool-change-text"];
-function AfiScreen(props: Props) {
+const link = ["/user-hm"];
+function ToolHmScreen(props: Props) {
     const classes = useStyle();
     const [route, setRoute] = useState<RouteComponent[]>([]);
     const [hiddenNavBar, setHiddenNavBar] = useState<boolean>();
@@ -96,4 +96,4 @@ function AfiScreen(props: Props) {
         </Grid>
     );
 }
-export default AfiScreen;
+export default ToolHmScreen;
