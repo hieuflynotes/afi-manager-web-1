@@ -7,6 +7,7 @@ import { IconButton } from "@material-ui/core";
 import { UserHm } from "src/afi-manager-base-model/model/UserHm";
 import TextDesc from "../common/TextDesc";
 import { OrderTracking } from "src/afi-manager-base-model/model/OrderTracking";
+import theme from "src/theme/MuiTheme";
 
 type Props = {
     item: OrderTracking;
@@ -70,7 +71,17 @@ function ProgressHmItemList(props: Props) {
             </Grid>
             <Grid container className={clsx(classes.frInfo)}>
                 {props.item.errorDesc && (
-                    <TextDesc title={"Lỗi"} desc={props.item.errorDesc || ""} />
+                    <Grid
+                        container
+                        style={{
+                            color: theme.palette.error.main,
+                        }}
+                    >
+                        <TextDesc
+                            title={"Lỗi"}
+                            desc={props.item.errorDesc || ""}
+                        />
+                    </Grid>
                 )}
                 <TextDesc
                     title={"OrderId"}
