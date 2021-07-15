@@ -118,21 +118,20 @@ function ProgressHmItemList(props: Props) {
                         />
                     </Grid>
                 ))}
-            {props.item.isOrder && (
-                <Grid
-                    container
-                    justify="space-between"
-                    className={clsx(globalStyle.pp2)}
+
+            <Grid
+                container
+                justify="space-between"
+                className={clsx(globalStyle.pp2)}
+            >
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => props.updateOrderId(props.item)}
                 >
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => props.updateOrderId(props.item)}
-                    >
-                        Edit
-                    </Button>
-                </Grid>
-            )}
+                    Edit
+                </Button>
+            </Grid>
         </Grid>
     );
 }

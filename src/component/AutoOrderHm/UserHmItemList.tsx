@@ -12,6 +12,7 @@ type Props = {
     onEdit: (item: UserHm) => void;
     onDelete: (item: UserHm) => void;
     onSeeDetail: (item: UserHm) => void;
+    onMergeUser: (item: UserHm) => void;
 };
 const useStyle = makeStyles((theme) => ({
     root: {
@@ -87,6 +88,14 @@ function UserHmItemList(props: Props) {
                     onClick={() => props.onEdit(props.item)}
                 >
                     Edit
+                </Button>
+
+                <Button
+                    variant="outlined"
+                    color="primary"
+                    onClick={() => props.onMergeUser(props.item)}
+                >
+                    Merge user
                 </Button>
 
                 <Button
