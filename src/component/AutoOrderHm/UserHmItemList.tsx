@@ -76,6 +76,7 @@ function UserHmItemList(props: Props) {
                 <TextDesc title={"password"} desc={props.item.password || ""} />
                 <TextDesc title={"postcode"} desc={props.item.postcode || ""} />
                 <TextDesc title={"town"} desc={props.item.town || ""} />
+                <TextDesc title={"Note"} desc={props.item.note || ""} />
             </Grid>
             <Grid
                 container

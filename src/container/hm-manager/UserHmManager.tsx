@@ -137,6 +137,19 @@ function UserHmManager(props: Props) {
                                 }
                             }}
                         />
+                        <TextField
+                            style={{ marginTop: 24 }}
+                            fullWidth
+                            variant="outlined"
+                            placeholder="Search by username and note"
+                            value={crudCompany.query?.search}
+                            onChange={(e) => {
+                                crudCompany.setQuery({
+                                    search: e.target.value,
+                                    searchFields: ["note", "username"],
+                                });
+                            }}
+                        ></TextField>
                         <Button
                             className={clsx(globalStyle.mt2, globalStyle.mb2)}
                             variant="contained"
