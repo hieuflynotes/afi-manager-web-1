@@ -26,9 +26,21 @@ const useStyle = makeStyles((theme) => ({
             padding: 10,
         },
     },
+    giftCardForm:{
+        display: "flex",
+        flexDirection:"row",
+        "& .MuiFormControl-fullWidth":{
+            margin: 16
+        }
+    }
 }));
 function ProgressAutoOrder(props: Props) {
     const { userHmId } = useParams<{ userHmId: string }>();
+    const [giftCard, setGiftCard] = useState<Giftcard>({
+        serialNumber: "",
+        pin: "",
+    });
+
     const history = useHistory();
 
     const crudTrackingHM = useCrudHook<
@@ -117,6 +129,36 @@ function ProgressAutoOrder(props: Props) {
                             </Typography>
                         </Grid>
                     </Grid>
+
+                    <div className={classes.giftCardForm}>
+                        <TextField
+                            fullWidth
+                            variant="outlined"
+                            label="Serial number"
+                            size="small"
+                            value={giftCard.serialNumber}
+                            onChange={(e) => {
+                                setGiftCard({
+                                    ...giftCard,
+                                    serialNumber: e.target.value,
+                                });
+                            }}
+                        />
+                        <TextField
+                            fullWidth
+                            variant="outlined"
+                            label="Pin"
+                            size="small"
+                            value={giftCard.pin}
+                            onChange={(e) => {
+                                setGiftCard({
+                                    ...giftCard,
+                                    pin: e.target.value,
+                                });
+                            }}
+                        />
+                    </div>
+
                     <Grid
                         container
                         // justify="center"
@@ -126,6 +168,7 @@ function ProgressAutoOrder(props: Props) {
                             {crudTrackingHM.pagingList?.rows?.map((item) => (
                                 <Grid>
                                     <ProgressHmItemList
+                                        giftCard={giftCard}
                                         item={item}
                                         updateOrderId={
                                             crudTrackingHM.onShowPopup
@@ -161,6 +204,11 @@ function ProgressAutoOrder(props: Props) {
             </Typography>
         </Grid>
     );
+}
+
+export interface Giftcard {
+    serialNumber: string;
+    pin: string;
 }
 
 export default React.memo(ProgressAutoOrder);
