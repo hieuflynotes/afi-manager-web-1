@@ -19,7 +19,7 @@ ${
         ? "TAG POS=1 TYPE=DIV ATTR=TXT:Add<SP>code<SP>£3"
         : "TAG POS=1 TYPE=SPAN ATTR=TXT:PICK<SP>A<SP>DISCOUNT"
 }
-wait seconds=5
+wait seconds=10
 TAG POS=2 TYPE=SPAN ATTR=TXT:Add<SP>gift<SP>cards
 TAG POS=1 TYPE=INPUT:TEXT FORM=ACTION:https://www2.hm.com/en_gb/checkout-r ATTR=ID:cardNumber CONTENT=${cardNumber}
 TAG POS=1 TYPE=INPUT:TEXT FORM=ACTION:https://www2.hm.com/en_gb/checkout-r ATTR=ID:cardPin CONTENT=${cardPin}
