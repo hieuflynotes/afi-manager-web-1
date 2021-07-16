@@ -6,6 +6,7 @@ import { IoClose } from "react-icons/io5";
 import { IconButton } from "@material-ui/core";
 import { UserHm } from "src/afi-manager-base-model/model/UserHm";
 import TextDesc from "../common/TextDesc";
+import moment from "moment";
 
 type Props = {
     item: UserHm;
@@ -65,6 +66,10 @@ function UserHmItemList(props: Props) {
                 </Grid>
             </Grid>
             <Grid container className={clsx(classes.frInfo)}>
+                <TextDesc
+                    title={"Created at"}
+                    desc={props.item.createdAt? moment(props.item.createdAt).format('HH:mm DD:MM:yyyy') :""}
+                />
                 <TextDesc
                     title={"firstName"}
                     desc={props.item.firstName || ""}
