@@ -20,7 +20,13 @@ import PopupAddOrderId from "src/component/AutoOrderHm/PopupEditProgressAutoOrde
 import { ListFilter } from "luong-base-model/lib";
 
 type Props = {};
-const useStyle = makeStyles((theme) => ({}));
+const useStyle = makeStyles((theme) => ({
+    statuses: {
+        "& p": {
+            padding: 10,
+        },
+    },
+}));
 function ProgressAutoOrder(props: Props) {
     const { userHmId } = useParams<{ userHmId: string }>();
     const history = useHistory();
@@ -68,6 +74,48 @@ function ProgressAutoOrder(props: Props) {
                         <Typography align="center" variant="h4">
                             Check order
                         </Typography>
+                        <Grid
+                            container
+                            className={classes.statuses}
+                            justify="center"
+                        >
+                            <Typography>
+                                Total account:{" "}
+                                {crudTrackingHM.pagingList?.rows?.length}
+                            </Typography>
+                            <Typography>
+                                Created account:{" "}
+                                {
+                                    crudTrackingHM.pagingList?.rows?.filter(
+                                        (i) => i.isRegister
+                                    ).length
+                                }
+                            </Typography>
+                            <Typography>
+                                Added to cart:{" "}
+                                {
+                                    crudTrackingHM.pagingList?.rows?.filter(
+                                        (i) => i.isOrder
+                                    ).length
+                                }
+                            </Typography>
+                            <Typography>
+                                Done:{" "}
+                                {
+                                    crudTrackingHM.pagingList?.rows?.filter(
+                                        (i) => i.errorDesc
+                                    ).length
+                                }
+                            </Typography>
+                            <Typography>
+                                Error:{" "}
+                                {
+                                    crudTrackingHM.pagingList?.rows?.filter(
+                                        (i) => i.errorDesc
+                                    ).length
+                                }
+                            </Typography>
+                        </Grid>
                     </Grid>
                     <Grid
                         container
