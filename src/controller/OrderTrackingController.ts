@@ -65,6 +65,7 @@ export class OrderTrackingController
     public listForProgress(
         params: ListFilter<OrderTracking>
     ): Promise<Paging<OrderTracking>> {
+        params.sort = "totalPrice";
         params = { ...params, sort: this.convertSort(params.sort) };
         params = {
             ...params,

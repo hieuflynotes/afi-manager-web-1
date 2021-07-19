@@ -26,6 +26,4 @@ TAG POS=1 TYPE=INPUT:TEXT FORM=ACTION:https://www2.hm.com/en_gb/checkout-r ATTR=
 TAG POS=1 TYPE=BUTTON FORM=ACTION:https://www2.hm.com/en_gb/checkout-r ATTR=TXT:ADD
 Wait seconds=2
 TAG POS=1 TYPE=BUTTON FORM=ACTION:https://www2.hm.com/en_gb/checkout-r ATTR=TXT:SAVE
-Wait seconds=3
-TAG POS=1 TYPE=SPAN ATTR=TXT:COMPLETE<SP>PURCHASE
 Wait seconds=10`;

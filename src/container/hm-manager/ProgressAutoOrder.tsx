@@ -26,13 +26,13 @@ const useStyle = makeStyles((theme) => ({
             padding: 10,
         },
     },
-    giftCardForm:{
+    giftCardForm: {
         display: "flex",
-        flexDirection:"row",
-        "& .MuiFormControl-fullWidth":{
-            margin: 16
-        }
-    }
+        flexDirection: "row",
+        "& .MuiFormControl-fullWidth": {
+            margin: 16,
+        },
+    },
 }));
 function ProgressAutoOrder(props: Props) {
     const { userHmId } = useParams<{ userHmId: string }>();
@@ -115,7 +115,7 @@ function ProgressAutoOrder(props: Props) {
                                 Done:{" "}
                                 {
                                     crudTrackingHM.pagingList?.rows?.filter(
-                                        (i) => i.errorDesc
+                                        (i) => i.orderId
                                     ).length
                                 }
                             </Typography>
