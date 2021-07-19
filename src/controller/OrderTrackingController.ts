@@ -4,6 +4,7 @@ import { dispatch } from "src/rematch/store";
 import {
     IOrderTrackingController,
     PropsCreateManyFlow,
+    PropsExportData,
 } from "../afi-manager-base-model/controllers/IOrderTrackingController";
 import { User } from "../afi-manager-base-model/model/User";
 import { BaseController } from "./BaseController";
@@ -12,6 +13,9 @@ export class OrderTrackingController
     extends BaseController<OrderTracking>
     implements IOrderTrackingController
 {
+    exportData(params: PropsExportData): Promise<OrderTracking[]> {
+        throw new Error("Method not implemented.");
+    }
     saveNotAuthen(t: OrderTracking): Promise<OrderTracking> {
         return this.client
             .post(`${this.serviceURL}/${this.basePath}/save-not-authen`, t)

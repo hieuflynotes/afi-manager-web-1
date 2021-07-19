@@ -16,7 +16,6 @@ import PopupInsertUser from "src/component/AutoOrderHm/PopupInsertUser";
 import theme from "src/theme/MuiTheme";
 import { OrderTracking } from "src/afi-manager-base-model/model/OrderTracking";
 import ProgressHmItemList from "src/component/AutoOrderHm/ProgressHmItemList";
-import PopupAddOrderId from "src/component/AutoOrderHm/PopupAddOrderId";
 import { ListFilter } from "luong-base-model/lib";
 import DatePicker from "src/component/common/DatePicker";
 import Autocomplete from '@material-ui/lab/Autocomplete';
