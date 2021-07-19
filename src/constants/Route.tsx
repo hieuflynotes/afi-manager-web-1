@@ -7,6 +7,7 @@ import Register from "src/container/Register";
 import ToolAutoChangeTextHM from "src/container/ToolAutoChangeTextHM";
 import UserHmManager from "src/container/hm-manager/UserHmManager";
 import ProgressAutoOrder from "src/container/hm-manager/ProgressAutoOrder";
+import ExportExcel from "src/container/hm-manager/ExportExcel";
 export enum TypeScreen {
     public = "public",
     admin = "admin",
@@ -41,6 +42,13 @@ export const routers: RouteComponent[] = [
         component: ProgressAutoOrder,
         label: "Progress",
         link: "/progress-order/:userHmId",
+        typeAuthen: TypeScreen.toolHm,
+        icon: <AiFillDashboard />,
+    },
+    {
+        component: ExportExcel,
+        label: "Export Data",
+        link: "/export-data",
         typeAuthen: TypeScreen.toolHm,
         icon: <AiFillDashboard />,
     },

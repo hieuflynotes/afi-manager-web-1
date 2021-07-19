@@ -275,6 +275,7 @@ export default function PopupInsertUser(props: Props) {
                                 formik.touched.emailCheckout &&
                                 formik.errors.emailCheckout
                             }
+                            disabled = {formik.values.isDone}
                             name="emailCheckout"
                             onChange={formik.handleChange}
                             fullWidth

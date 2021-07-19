@@ -34,7 +34,7 @@ const useStyle = makeStyles((theme) => ({
 type Props = {
     children: React.ReactElement;
 };
-const link = ["/user-hm"];
+const link = ["/user-hm", "/export-data"];
 function ToolHmScreen(props: Props) {
     const classes = useStyle();
     const [route, setRoute] = useState<RouteComponent[]>([]);
