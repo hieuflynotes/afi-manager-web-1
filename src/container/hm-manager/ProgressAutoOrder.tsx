@@ -16,13 +16,31 @@ import PopupInsertUser from "src/component/AutoOrderHm/PopupInsertUser";
 import theme from "src/theme/MuiTheme";
 import { OrderTracking } from "src/afi-manager-base-model/model/OrderTracking";
 import ProgressHmItemList from "src/component/AutoOrderHm/ProgressHmItemList";
-import PopupAddOrderId from "src/component/AutoOrderHm/PopupAddOrderId";
+import PopupAddOrderId from "src/component/AutoOrderHm/PopupEditProgressAutoOrder";
 import { ListFilter } from "luong-base-model/lib";
 
 type Props = {};
-const useStyle = makeStyles((theme) => ({}));
+const useStyle = makeStyles((theme) => ({
+    statuses: {
+        "& p": {
+            padding: 10,
+        },
+    },
+    giftCardForm: {
+        display: "flex",
+        flexDirection: "row",
+        "& .MuiFormControl-fullWidth": {
+            margin: 16,
+        },
+    },
+}));
 function ProgressAutoOrder(props: Props) {
     const { userHmId } = useParams<{ userHmId: string }>();
+    const [giftCard, setGiftCard] = useState<Giftcard>({
+        serialNumber: "",
+        pin: "",
+    });
+
     const history = useHistory();
 
     const crudTrackingHM = useCrudHook<
@@ -68,7 +86,79 @@ function ProgressAutoOrder(props: Props) {
                         <Typography align="center" variant="h4">
                             Check order
                         </Typography>
+                        <Grid
+                            container
+                            className={classes.statuses}
+                            justify="center"
+                        >
+                            <Typography>
+                                Total account:{" "}
+                                {crudTrackingHM.pagingList?.rows?.length}
+                            </Typography>
+                            <Typography>
+                                Created account:{" "}
+                                {
+                                    crudTrackingHM.pagingList?.rows?.filter(
+                                        (i) => i.isRegister
+                                    ).length
+                                }
+                            </Typography>
+                            <Typography>
+                                Added to cart:{" "}
+                                {
+                                    crudTrackingHM.pagingList?.rows?.filter(
+                                        (i) => i.isOrder
+                                    ).length
+                                }
+                            </Typography>
+                            <Typography>
+                                Done:{" "}
+                                {
+                                    crudTrackingHM.pagingList?.rows?.filter(
+                                        (i) => i.orderId
+                                    ).length
+                                }
+                            </Typography>
+                            <Typography>
+                                Error:{" "}
+                                {
+                                    crudTrackingHM.pagingList?.rows?.filter(
+                                        (i) => i.errorDesc
+                                    ).length
+                                }
+                            </Typography>
+                        </Grid>
                     </Grid>
+
+                    <div className={classes.giftCardForm}>
+                        <TextField
+                            fullWidth
+                            variant="outlined"
+                            label="Serial number"
+                            size="small"
+                            value={giftCard.serialNumber}
+                            onChange={(e) => {
+                                setGiftCard({
+                                    ...giftCard,
+                                    serialNumber: e.target.value,
+                                });
+                            }}
+                        />
+                        <TextField
+                            fullWidth
+                            variant="outlined"
+                            label="Pin"
+                            size="small"
+                            value={giftCard.pin}
+                            onChange={(e) => {
+                                setGiftCard({
+                                    ...giftCard,
+                                    pin: e.target.value,
+                                });
+                            }}
+                        />
+                    </div>
+
                     <Grid
                         container
                         // justify="center"
@@ -78,6 +168,7 @@ function ProgressAutoOrder(props: Props) {
                             {crudTrackingHM.pagingList?.rows?.map((item) => (
                                 <Grid>
                                     <ProgressHmItemList
+                                        giftCard={giftCard}
                                         item={item}
                                         updateOrderId={
                                             crudTrackingHM.onShowPopup
@@ -113,6 +204,11 @@ function ProgressAutoOrder(props: Props) {
             </Typography>
         </Grid>
     );
+}
+
+export interface Giftcard {
+    serialNumber: string;
+    pin: string;
 }
 
 export default React.memo(ProgressAutoOrder);

@@ -6,12 +6,14 @@ import { IoClose } from "react-icons/io5";
 import { IconButton } from "@material-ui/core";
 import { UserHm } from "src/afi-manager-base-model/model/UserHm";
 import TextDesc from "../common/TextDesc";
+import moment from "moment";
 
 type Props = {
     item: UserHm;
     onEdit: (item: UserHm) => void;
     onDelete: (item: UserHm) => void;
     onSeeDetail: (item: UserHm) => void;
+    onMergeUser: (item: UserHm) => void;
 };
 const useStyle = makeStyles((theme) => ({
     root: {
@@ -65,6 +67,10 @@ function UserHmItemList(props: Props) {
             </Grid>
             <Grid container className={clsx(classes.frInfo)}>
                 <TextDesc
+                    title={"Created at"}
+                    desc={props.item.createdAt? moment(props.item.createdAt).format('HH:mm DD:MM:yyyy') :""}
+                />
+                <TextDesc
                     title={"firstName"}
                     desc={props.item.firstName || ""}
                 />
@@ -75,6 +81,7 @@ function UserHmItemList(props: Props) {
                 <TextDesc title={"password"} desc={props.item.password || ""} />
                 <TextDesc title={"postcode"} desc={props.item.postcode || ""} />
                 <TextDesc title={"town"} desc={props.item.town || ""} />
+                <TextDesc title={"Note"} desc={props.item.note || ""} />
             </Grid>
             <Grid
                 container
@@ -87,6 +94,14 @@ function UserHmItemList(props: Props) {
                     onClick={() => props.onEdit(props.item)}
                 >
                     Edit
+                </Button>
+
+                <Button
+                    variant="outlined"
+                    color="primary"
+                    onClick={() => props.onMergeUser(props.item)}
+                >
+                    Merge user
                 </Button>
 
                 <Button

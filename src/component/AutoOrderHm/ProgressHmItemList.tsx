@@ -2,14 +2,20 @@ import React, { useEffect, useState } from "react";
 import clsx from "clsx";
 import { Button, Grid, makeStyles, Typography } from "@material-ui/core";
 import { useGlobalStyles } from "../../theme/GlobalStyle";
-import { IoClose } from "react-icons/io5";
+import { IoClose, IoCopyOutline, IoSave } from "react-icons/io5";
 import { IconButton } from "@material-ui/core";
 import { UserHm } from "src/afi-manager-base-model/model/UserHm";
 import TextDesc from "../common/TextDesc";
 import { OrderTracking } from "src/afi-manager-base-model/model/OrderTracking";
-
+import theme from "src/theme/MuiTheme";
+import { checkoutCode } from "src/constants/IMacros";
+import { useSelector } from "react-redux";
+import { RootState } from "src/rematch/store";
+import { dispatch } from "../../rematch/store";
+import { Giftcard } from "../../container/hm-manager/ProgressAutoOrder";
 type Props = {
     item: OrderTracking;
+    giftCard: Giftcard;
     updateOrderId: (item: OrderTracking) => void;
 };
 const useStyle = makeStyles((theme) => ({
@@ -41,6 +47,7 @@ function ProgressHmItemList(props: Props) {
     const classes = useStyle();
     const [state, setState] = useState();
     const globalStyle = useGlobalStyles();
+
     const getStatus = (item: OrderTracking) => {
         if (!item.isRegister) {
             return "Order này chưa được tạo tài khoản";
@@ -63,14 +70,44 @@ function ProgressHmItemList(props: Props) {
         <Grid container justify="center" className={clsx(classes.root)}>
             <Grid
                 container
-                justify="center"
+                justify="space-between"
+                alignItems="center"
                 className={clsx(classes.nameUserHm)}
             >
                 <Typography variant="body2">{getStatus(props.item)}</Typography>
+                <IconButton
+                    onClick={() => {
+                        navigator.clipboard.writeText(
+                            checkoutCode(
+                                props.item.email || "email@gmail.com",
+                                props.item.userHM?.password || "123456a@",
+                                props.giftCard.serialNumber,
+                                props.giftCard.pin,
+                                Number(props.item.totalPrice || "0")
+                            )
+                        );
+                        dispatch.notification.success(
+                            "Copy to clipboard successfully!"
+                        );
+                    }}
+                    size="small"
+                >
+                    <IoCopyOutline />
+                </IconButton>
             </Grid>
             <Grid container className={clsx(classes.frInfo)}>
                 {props.item.errorDesc && (
-                    <TextDesc title={"Lỗi"} desc={props.item.errorDesc || ""} />
+                    <Grid
+                        container
+                        style={{
+                            color: theme.palette.error.main,
+                        }}
+                    >
+                        <TextDesc
+                            title={"Lỗi"}
+                            desc={props.item.errorDesc || ""}
+                        />
+                    </Grid>
                 )}
                 <TextDesc
                     title={"OrderId"}
@@ -118,21 +155,20 @@ function ProgressHmItemList(props: Props) {
                         />
                     </Grid>
                 ))}
-            {props.item.isOrder && (
-                <Grid
-                    container
-                    justify="space-between"
-                    className={clsx(globalStyle.pp2)}
+
+            <Grid
+                container
+                justify="space-between"
+                className={clsx(globalStyle.pp2)}
+            >
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => props.updateOrderId(props.item)}
                 >
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => props.updateOrderId(props.item)}
-                    >
-                        Edit
-                    </Button>
-                </Grid>
-            )}
+                    Edit
+                </Button>
+            </Grid>
         </Grid>
     );
 }

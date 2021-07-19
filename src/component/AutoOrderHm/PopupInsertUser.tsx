@@ -97,6 +97,7 @@ export default function PopupInsertUser(props: Props) {
                 _.cloneDeep({
                     ...props.item,
                     isDone: props.item.isDone || false,
+                    isMerge: props.item.isMerge || false,
                 })
             );
             formik.setTouched(_.mapValues(new UserHm(), () => false));
@@ -132,6 +133,25 @@ export default function PopupInsertUser(props: Props) {
                                     />
                                 }
                                 label="IsDone"
+                            />
+                        </FormGroup>
+                    </Grid>
+                    <Grid>
+                        <FormGroup row>
+                            <FormControlLabel
+                                control={
+                                    <Switch
+                                        onChange={(e) => {
+                                            formik.setValues({
+                                                ...formik.values,
+                                                isMerge:
+                                                    e.target.checked || false,
+                                            });
+                                        }}
+                                        checked={formik.values.isMerge}
+                                    />
+                                }
+                                label="Đánh dấu đã merge"
                             />
                         </FormGroup>
                     </Grid>

@@ -10,18 +10,35 @@ import { Pagination } from "@material-ui/lab";
 import PopUpConfirm from "../../component/common/PopupConfirm";
 import { useHistory } from "react-router-dom";
 import { UserHm } from "src/afi-manager-base-model/model/UserHm";
-import { userHmController } from "src/controller";
+import { orderTrackingController, userHmController } from "src/controller";
 import UserHmItemList from "src/component/AutoOrderHm/UserHmItemList";
 import PopupInsertUser from "src/component/AutoOrderHm/PopupInsertUser";
 import theme from "src/theme/MuiTheme";
+import { handleWithPopupHook } from "src/hook/HandleWithPopupHook";
+import PopupMergeToUser from "src/component/AutoOrderHm/PopupMergeToUser";
+import { OrderTracking } from "src/afi-manager-base-model/model/OrderTracking";
+import SelectBox from "src/component/common/SelectBox";
 
 type Props = {};
 const useStyle = makeStyles((theme) => ({}));
 function UserHmManager(props: Props) {
     const history = useHistory();
+    const handleWithPopupMerge = handleWithPopupHook<{
+        userHmId?: string;
+        userId?: string;
+    }>({
+        onConfirmByPopup: (item) => {
+            orderTrackingController.mergeOrderTrackingToUser({
+                ...item,
+                userHmId: item?.userHmId || (null as any),
+            });
+        },
+    });
     const crudCompany = useCrudHook<UserHm>({
         controller: userHmController,
-        initQuery: {},
+        initQuery: {
+            pageSize: 50,
+        },
     });
     const classes = useStyle();
     const globalStyle = useGlobalStyles();
@@ -48,6 +65,13 @@ function UserHmManager(props: Props) {
                     }
                 />
 
+                <PopupMergeToUser
+                    isDisplay={handleWithPopupMerge.isDisplayPopup}
+                    item={handleWithPopupMerge.itemSelected}
+                    onCancel={handleWithPopupMerge.handleClosePopup}
+                    onEdit={handleWithPopupMerge.handleConfirmByPopup}
+                />
+
                 <PopupInsertUser
                     isDisplay={crudCompany.isShowPopup}
                     item={crudCompany.itemSelected}
@@ -61,13 +85,70 @@ function UserHmManager(props: Props) {
                         </Typography>
                     </Grid>
                     <Grid container justify="space-between">
-                        <TextField
+                        {/* <TextField
                             onChange={(e) =>
                                 crudCompany.onQueryChanged(e.target.value)
                             }
                             className={clsx(globalStyle.mt2, globalStyle.mb2)}
                             label="search"
                             variant="outlined"
+                        ></TextField> */}
+                        <SelectBox
+                            data={[
+                                "Tất cả",
+                                "Đã xong",
+                                "Chưa xong",
+                                "Đã merge",
+                                "Chưa merge",
+                            ]}
+                            labelOption={(op) => op}
+                            variant="outlined"
+                            label="Filter"
+                            fullWidth
+                            // inputLabelProps={{
+                            //     shrink: true,
+                            // }}
+                            valueOption={(value) => value}
+                            onChange={(e: any) => {
+                                switch (e) {
+                                    case "Đã xong":
+                                        crudCompany.setFilter({
+                                            isDone: true,
+                                        });
+                                        break;
+                                    case "Chưa xong":
+                                        crudCompany.setFilter({
+                                            isDone: [false, null as any],
+                                        });
+                                        break;
+                                    case "Đã merge":
+                                        crudCompany.setFilter({
+                                            isMerge: true,
+                                        });
+                                        break;
+                                    case "Chưa merge":
+                                        crudCompany.setFilter({
+                                            isMerge: [false, null as any],
+                                        });
+                                        break;
+                                    default:
+                                        crudCompany.setFilter({});
+                                        break;
+                                }
+                            }}
+                        />
+                        <TextField
+                            style={{ marginTop: 24 }}
+                            fullWidth
+                            variant="outlined"
+                            placeholder="Search by username and note"
+                            value={crudCompany.query?.search}
+                            onChange={(e) => {
+                                crudCompany.setQuery({
+                                    search: e.target.value,
+                                    searchFields: ["note", "username"],
+                                });
+                            }}
                         ></TextField>
                         <Button
                             className={clsx(globalStyle.mt2, globalStyle.mb2)}
@@ -88,6 +169,13 @@ function UserHmManager(props: Props) {
                                 <Grid>
                                     <UserHmItemList
                                         item={item}
+                                        onMergeUser={(item) => {
+                                            handleWithPopupMerge.handleShowPopup(
+                                                {
+                                                    userHmId: item.id,
+                                                }
+                                            );
+                                        }}
                                         onDelete={crudCompany.onConfirm}
                                         onEdit={crudCompany.onShowPopup}
                                         onSeeDetail={(item) => {

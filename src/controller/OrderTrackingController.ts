@@ -1,5 +1,6 @@
 import { ListFilter, Paging } from "luong-base-model/lib";
 import { OrderTracking } from "src/afi-manager-base-model/model/OrderTracking";
+import { dispatch } from "src/rematch/store";
 import {
     IOrderTrackingController,
     PropsCreateManyFlow,
@@ -8,9 +9,30 @@ import { User } from "../afi-manager-base-model/model/User";
 import { BaseController } from "./BaseController";
 
 export class OrderTrackingController
-    extends BaseController<User>
+    extends BaseController<OrderTracking>
     implements IOrderTrackingController
 {
+    saveNotAuthen(t: OrderTracking): Promise<OrderTracking> {
+        return this.client
+            .post(`${this.serviceURL}/${this.basePath}/save-not-authen`, t)
+            .then((res) => {
+                dispatch.notification.success("Lưu thành công");
+                return res.data;
+            });
+    }
+    mergeOrderTrackingToUser(params: {
+        userHmId?: string;
+        userId?: string;
+    }): Promise<OrderTracking[]> {
+        return this.client
+            .post(
+                `${this.serviceURL}/${this.basePath}/merger-order-to-user`,
+                params
+            )
+            .then((res) => {
+                return res.data;
+            });
+    }
     createManyByEmailsAndOrders(
         params: PropsCreateManyFlow
     ): Promise<OrderTracking[]> {
@@ -43,6 +65,7 @@ export class OrderTrackingController
     public listForProgress(
         params: ListFilter<OrderTracking>
     ): Promise<Paging<OrderTracking>> {
+        params.sort = "totalPrice";
         params = { ...params, sort: this.convertSort(params.sort) };
         params = {
             ...params,
