@@ -61,7 +61,8 @@ function ExportExcel(props: Props) {
     const classes = useStyle();
     const globalStyle = useGlobalStyles();
     const [state, setState] = useState<State>({
-        userHm: new Map()
+        userHm: new Map(),
+        // optionGet : Props
     });
 
     const onLogin = () => {

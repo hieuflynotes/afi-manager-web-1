@@ -117,7 +117,7 @@ export default function PopupInsertUser(props: Props) {
                 title="User HM"
             >
                 <Grid container direction="column" justify="space-around">
-                    <Grid>
+                    {/* <Grid>
                         <FormGroup row>
                             <FormControlLabel
                                 control={
@@ -135,7 +135,7 @@ export default function PopupInsertUser(props: Props) {
                                 label="IsDone"
                             />
                         </FormGroup>
-                    </Grid>
+                    </Grid> */}
                     <Grid>
                         <FormGroup row>
                             <FormControlLabel
