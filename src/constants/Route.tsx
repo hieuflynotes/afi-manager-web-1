@@ -36,7 +36,7 @@ export const routers: RouteComponent[] = [
         component: UserHmManager,
         label: 'User HM',
         link: '/user-hm',
-        typeAuthen: TypeScreen.toolHm,
+        typeAuthen: TypeScreen.afi,
         icon: <AiFillDashboard />,
     },
     {

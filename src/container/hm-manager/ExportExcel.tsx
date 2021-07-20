@@ -104,7 +104,7 @@ function ExportExcel(props: Props) {
         password: string;
         isComfirm: boolean;
     }>({
-        isComfirm: true,
+        isComfirm: false,
         password: '',
     });
 
@@ -410,8 +410,26 @@ function ExportExcel(props: Props) {
         </Grid>
     ) : (
         <Grid container className={classes.rootInputPass} justify="center" alignItems="center">
-            <TextField variant="outlined" label="Input password" value={security.password}></TextField>
-            <Button variant="contained" color="primary" className={globalStyle.ml2} size="medium">
+            <TextField
+                variant="outlined"
+                label="Input password"
+                value={security.password}
+                onChange={(e) => {
+                    setSecurity({
+                        ...security,
+                        password: e.target.value,
+                    });
+                }}
+            ></TextField>
+            <Button
+                variant="contained"
+                color="primary"
+                className={globalStyle.ml2}
+                size="medium"
+                onClick={() => {
+                    onLogin();
+                }}
+            >
                 Login
             </Button>
         </Grid>
