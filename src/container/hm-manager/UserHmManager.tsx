@@ -81,7 +81,7 @@ function UserHmManager(props: Props) {
                 <Grid md={10}>
                     <Grid container justify="center">
                         <Typography align="center" variant="h4">
-                            Company
+                            Danh sách đơn hàng
                         </Typography>
                     </Grid>
                     <Grid container justify="space-between">
@@ -145,7 +145,7 @@ function UserHmManager(props: Props) {
                             value={crudCompany.query?.search}
                             onChange={(e) => {
                                 crudCompany.setQuery({
-                                    search: e.target.value,
+                                    search: e.target.value.trim(),
                                     searchFields: ["note", "username"],
                                 });
                             }}
@@ -156,7 +156,7 @@ function UserHmManager(props: Props) {
                             color="primary"
                             onClick={() => crudCompany.onShowPopup({})}
                         >
-                            New company
+                            Tạo đơn
                         </Button>
                     </Grid>
                     <Grid
