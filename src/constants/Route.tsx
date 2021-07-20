@@ -43,7 +43,7 @@ export const routers: RouteComponent[] = [
         component: ProgressAutoOrder,
         label: 'Progress',
         link: '/progress-order/:userHmId',
-        typeAuthen: TypeScreen.toolHm,
+        typeAuthen: TypeScreen.afi,
         icon: <AiFillDashboard />,
     },
     {

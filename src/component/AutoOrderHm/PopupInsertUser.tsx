@@ -1,22 +1,15 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 
-import {
-    Button,
-    FormControlLabel,
-    FormGroup,
-    Grid,
-    Switch,
-    TextField,
-} from "@material-ui/core";
-import clsx from "clsx";
-import { useFormik } from "formik";
-import _ from "lodash";
-import React, { useEffect } from "react";
-import SelectBox from "../common/SelectBox";
-import * as Yup from "yup";
-import BaseDialog from "../common/BaseDialog";
-import { useGlobalStyles } from "../../theme/GlobalStyle";
-import { UserHm } from "src/afi-manager-base-model/model/UserHm";
+import { Button, FormControlLabel, FormGroup, Grid, Switch, TextField } from '@material-ui/core';
+import clsx from 'clsx';
+import { useFormik } from 'formik';
+import _ from 'lodash';
+import React, { useEffect } from 'react';
+import SelectBox from '../common/SelectBox';
+import * as Yup from 'yup';
+import BaseDialog from '../common/BaseDialog';
+import { useGlobalStyles } from '../../theme/GlobalStyle';
+import { UserHm } from 'src/afi-manager-base-model/model/UserHm';
 
 type Props = {
     isDisplay: boolean;
@@ -26,47 +19,47 @@ type Props = {
 };
 const validate = Yup.object({
     lastName: Yup.string()
-        .max(100, "Value must be less than 100 characters")
+        .max(100, 'Value must be less than 100 characters')
         .required("Can't be left blank !!")
         .trim()
         .nullable(),
     address: Yup.string()
-        .max(100, "Value must be less than 100 characters")
+        .max(100, 'Value must be less than 100 characters')
         .required("Can't be left blank !!")
         .trim()
         .nullable(),
     firstName: Yup.string()
-        .max(100, "Value must be less than 100 characters")
+        .max(100, 'Value must be less than 100 characters')
         .required("Can't be left blank !!")
         .trim()
         .nullable(),
     emailCheckout: Yup.string()
-        .max(100, "Value must be less than 100 characters")
+        .max(100, 'Value must be less than 100 characters')
         .required("Can't be left blank !!")
         .trim()
         .nullable(),
     password: Yup.string()
-        .max(100, "Value must be less than 100 characters")
+        .max(100, 'Value must be less than 100 characters')
         .required("Can't be left blank !!")
         .trim()
         .nullable(),
     phone: Yup.string()
-        .max(100, "Value must be less than 100 characters")
+        .max(100, 'Value must be less than 100 characters')
         .required("Can't be left blank !!")
         .trim()
         .nullable(),
     postcode: Yup.string()
-        .max(100, "Value must be less than 100 characters")
+        .max(100, 'Value must be less than 100 characters')
         .required("Can't be left blank !!")
         .trim()
         .nullable(),
     town: Yup.string()
-        .max(100, "Value must be less than 100 characters")
+        .max(100, 'Value must be less than 100 characters')
         .required("Can't be left blank !!")
         .trim()
         .nullable(),
     username: Yup.string()
-        .max(100, "Value must be less than 100 characters")
+        .max(100, 'Value must be less than 100 characters')
         .required("Can't be left blank !!")
         .trim()
         .nullable(),
@@ -79,6 +72,8 @@ export default function PopupInsertUser(props: Props) {
         onSubmit: () => {
             props.onEdit({
                 ...formik.values,
+                username: formik.values.username?.trim(),
+                password: formik.values.password?.trim(),
             });
         },
     });
@@ -92,18 +87,16 @@ export default function PopupInsertUser(props: Props) {
 
     useEffect(() => {
         if (props.isDisplay) {
-            console.log(props.item);
             formik.setValues(
                 _.cloneDeep({
                     ...props.item,
                     isDone: props.item.isDone || false,
                     isMerge: props.item.isMerge || false,
-                })
+                }),
             );
             formik.setTouched(_.mapValues(new UserHm(), () => false));
         }
     }, [props]);
-    console.log(formik.errors);
 
     const globalStyles = useGlobalStyles();
     return (
@@ -144,8 +137,7 @@ export default function PopupInsertUser(props: Props) {
                                         onChange={(e) => {
                                             formik.setValues({
                                                 ...formik.values,
-                                                isMerge:
-                                                    e.target.checked || false,
+                                                isMerge: e.target.checked || false,
                                             });
                                         }}
                                         checked={formik.values.isMerge}
@@ -158,10 +150,7 @@ export default function PopupInsertUser(props: Props) {
                     <Grid>
                         <TextField
                             value={formik.values.username}
-                            helperText={
-                                formik.touched.username &&
-                                formik.errors.username
-                            }
+                            helperText={formik.touched.username && formik.errors.username}
                             name="username"
                             onChange={formik.handleChange}
                             fullWidth
@@ -173,10 +162,7 @@ export default function PopupInsertUser(props: Props) {
                     <Grid>
                         <TextField
                             value={formik.values.password}
-                            helperText={
-                                formik.touched.password &&
-                                formik.errors.password
-                            }
+                            helperText={formik.touched.password && formik.errors.password}
                             name="password"
                             onChange={formik.handleChange}
                             fullWidth
@@ -188,10 +174,7 @@ export default function PopupInsertUser(props: Props) {
                     <Grid>
                         <TextField
                             value={formik.values.firstName}
-                            helperText={
-                                formik.touched.firstName &&
-                                formik.errors.firstName
-                            }
+                            helperText={formik.touched.firstName && formik.errors.firstName}
                             name="firstName"
                             onChange={formik.handleChange}
                             fullWidth
@@ -203,10 +186,7 @@ export default function PopupInsertUser(props: Props) {
                     <Grid>
                         <TextField
                             value={formik.values.lastName}
-                            helperText={
-                                formik.touched.lastName &&
-                                formik.errors.lastName
-                            }
+                            helperText={formik.touched.lastName && formik.errors.lastName}
                             name="lastName"
                             onChange={formik.handleChange}
                             fullWidth
@@ -218,9 +198,7 @@ export default function PopupInsertUser(props: Props) {
                     <Grid>
                         <TextField
                             value={formik.values.phone}
-                            helperText={
-                                formik.touched.phone && formik.errors.phone
-                            }
+                            helperText={formik.touched.phone && formik.errors.phone}
                             name="phone"
                             onChange={formik.handleChange}
                             fullWidth
@@ -232,9 +210,7 @@ export default function PopupInsertUser(props: Props) {
                     <Grid>
                         <TextField
                             value={formik.values.address}
-                            helperText={
-                                formik.touched.address && formik.errors.address
-                            }
+                            helperText={formik.touched.address && formik.errors.address}
                             name="address"
                             onChange={formik.handleChange}
                             fullWidth
@@ -246,10 +222,7 @@ export default function PopupInsertUser(props: Props) {
                     <Grid>
                         <TextField
                             value={formik.values.address2}
-                            helperText={
-                                formik.touched.address2 &&
-                                formik.errors.address2
-                            }
+                            helperText={formik.touched.address2 && formik.errors.address2}
                             name="address2"
                             onChange={formik.handleChange}
                             fullWidth
@@ -261,9 +234,7 @@ export default function PopupInsertUser(props: Props) {
                     <Grid>
                         <TextField
                             value={formik.values.town}
-                            helperText={
-                                formik.touched.town && formik.errors.town
-                            }
+                            helperText={formik.touched.town && formik.errors.town}
                             name="town"
                             onChange={formik.handleChange}
                             fullWidth
@@ -275,10 +246,7 @@ export default function PopupInsertUser(props: Props) {
                     <Grid>
                         <TextField
                             value={formik.values.postcode}
-                            helperText={
-                                formik.touched.postcode &&
-                                formik.errors.postcode
-                            }
+                            helperText={formik.touched.postcode && formik.errors.postcode}
                             name="postcode"
                             onChange={formik.handleChange}
                             fullWidth
@@ -291,11 +259,8 @@ export default function PopupInsertUser(props: Props) {
                     <Grid>
                         <TextField
                             value={formik.values.emailCheckout}
-                            helperText={
-                                formik.touched.emailCheckout &&
-                                formik.errors.emailCheckout
-                            }
-                            disabled = {formik.values.isDone}
+                            helperText={formik.touched.emailCheckout && formik.errors.emailCheckout}
+                            disabled={formik.values.isDone}
                             name="emailCheckout"
                             onChange={formik.handleChange}
                             fullWidth
@@ -308,9 +273,7 @@ export default function PopupInsertUser(props: Props) {
                     <Grid>
                         <TextField
                             value={formik.values.note}
-                            helperText={
-                                formik.touched.note && formik.errors.note
-                            }
+                            helperText={formik.touched.note && formik.errors.note}
                             name="note"
                             onChange={formik.handleChange}
                             fullWidth

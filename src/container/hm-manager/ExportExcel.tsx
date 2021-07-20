@@ -59,6 +59,9 @@ const useStyle = makeStyles((theme) => ({
     container: {
         maxHeight: 640,
     },
+    styleLinkToProduct: {
+        color: theme.palette.primary.main,
+    },
 }));
 type State = {
     userHm: Map<string, UserHm>;
@@ -83,16 +86,20 @@ const columns: Column[] = [
         label: 'Total Price',
     },
     {
+        id: 'orderId',
+        label: 'Order number',
+    },
+    {
         id: 'isOrder',
-        label: 'Đã order',
+        label: 'Is order',
     },
     {
         id: 'isRegister',
-        label: 'Đã đăng kí',
+        label: 'Is regieter',
     },
     {
         id: 'errorDesc',
-        label: 'Lỗi',
+        label: 'Error',
     },
 ];
 
@@ -196,8 +203,6 @@ function ExportExcel(props: Props) {
     };
 
     const exportExcel = () => {
-        console.log('on export');
-
         const json2csvParser = new Parser({
             fields: Object.keys(state.dataExport[0]),
             header: true,
@@ -217,8 +222,6 @@ function ExportExcel(props: Props) {
                     <Grid className={clsx(globalStyle.pp2)}>
                         <DatePicker
                             onChangeDateRange={(date) => {
-                                console.log(date);
-
                                 setState({
                                     ...state,
                                     optionFilter: {
@@ -383,6 +386,8 @@ function ExportExcel(props: Props) {
                                             {column.label}
                                         </TableCell>
                                     ))}
+                                    <TableCell align={'center'}>Product 1</TableCell>
+                                    <TableCell align={'center'}>Product 2</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -399,6 +404,48 @@ function ExportExcel(props: Props) {
                                                     </TableCell>
                                                 );
                                             })}
+                                            <TableCell align={'center'}>
+                                                <a
+                                                    target="_blank"
+                                                    className={classes.styleLinkToProduct}
+                                                    href={row.linkProduct1}
+                                                >
+                                                    <a
+                                                        target="_blank"
+                                                        className={classes.styleLinkToProduct}
+                                                        href={row.linkProduct1}
+                                                    >
+                                                        <p>
+                                                            {row.productId1} <span>(SL:{row.quantityProduct1})</span>
+                                                        </p>
+                                                        <span style={{ color: theme.palette.error.main }}>
+                                                            £{row.priceProduct1}
+                                                        </span>
+                                                        <span style={{ color: theme.palette.warning.main }}>
+                                                            - size: {row.sizeProduct1}
+                                                        </span>
+                                                    </a>
+                                                </a>
+                                            </TableCell>
+                                            <TableCell align={'center'}>
+                                                {row.productId2 && (
+                                                    <a
+                                                        target="_blank"
+                                                        className={classes.styleLinkToProduct}
+                                                        href={row.linkProduct2}
+                                                    >
+                                                        <p>
+                                                            {row.productId2} <span>(SL:{row.quantityProduct2})</span>{' '}
+                                                        </p>
+                                                        <span style={{ color: theme.palette.error.main }}>
+                                                            £{row.priceProduct2}
+                                                        </span>
+                                                        <span style={{ color: theme.palette.warning.main }}>
+                                                            - size: {row.sizeProduct2}
+                                                        </span>
+                                                    </a>
+                                                )}
+                                            </TableCell>
                                         </TableRow>
                                     );
                                 })}
