@@ -1,18 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import _ from "lodash";
-import { useCallback, useEffect, useState } from "react";
-import { BaseController } from "../controller/BaseController";
-import {
-    BaseModel,
-    Filter as FilterQuery,
-    ListFilter,
-    Paging,
-} from "luong-base-model";
+import _ from 'lodash';
+import { useCallback, useEffect, useState } from 'react';
+import { BaseController } from '../controller/BaseController';
+import { BaseModel, Filter as FilterQuery, ListFilter, Paging } from 'luong-base-model';
 
-export function useCrudHook<
-    T extends BaseModel,
-    Filter extends ListFilter<T> = ListFilter<T>
->(props: Props<T, Filter>) {
+export function useCrudHook<T extends BaseModel, Filter extends ListFilter<T> = ListFilter<T>>(
+    props: Props<T, Filter>,
+) {
     const [state, setState] = useState<State<T>>({
         isShowConfirm: false,
         isShowPopup: false,
@@ -57,7 +51,7 @@ export function useCrudHook<
         if (props.onBeforeDelete) {
             props.onBeforeDelete(item);
         }
-        return props.controller.remove({ id: item.id || "" }).then((res) => {
+        return props.controller.remove({ id: item.id || '' }).then((res) => {
             if (props.onAfterDelete) {
                 props.onAfterDelete(res);
             }
@@ -72,8 +66,6 @@ export function useCrudHook<
     };
 
     const onSave = async (item: T): Promise<T> => {
-        console.log(item);
-
         if (props.onBeforeSave) {
             props.onBeforeSave(item);
         }
@@ -145,7 +137,7 @@ export function useCrudHook<
         _.debounce((value: string) => {
             setQuery({ ...query, search: value, page: 1 });
         }, props.delaySearch || 400),
-        []
+        [],
     );
 
     const onRefreshList = () => {

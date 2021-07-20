@@ -1,22 +1,13 @@
-import React, { useEffect, useState } from "react";
-import clsx from "clsx";
-import {
-    Typography,
-    Button,
-    Grid,
-    makeStyles,
-    TextField,
-    IconButton,
-    Chip,
-    Avatar,
-} from "@material-ui/core";
-import { IoAdd, IoAttachOutline, IoCloseOutline } from "react-icons/io5";
-import { useGlobalStyles } from "src/theme/GlobalStyle";
-import { localStoryController, metaDataController } from "src/controller";
-import theme from "src/theme/MuiTheme";
-import { AiOutlineCloudSync } from "react-icons/ai";
-import { IoMdCopy } from "react-icons/io";
-import { dispatch } from "src/rematch/store";
+import React, { useEffect, useState } from 'react';
+import clsx from 'clsx';
+import { Typography, Button, Grid, makeStyles, TextField, IconButton, Chip, Avatar } from '@material-ui/core';
+import { IoAdd, IoAttachOutline, IoCloseOutline } from 'react-icons/io5';
+import { useGlobalStyles } from 'src/theme/GlobalStyle';
+import { localStoryController, metaDataController } from 'src/controller';
+import theme from 'src/theme/MuiTheme';
+import { AiOutlineCloudSync } from 'react-icons/ai';
+import { IoMdCopy } from 'react-icons/io';
+import { dispatch } from 'src/rematch/store';
 
 type Props = {};
 const useStyle = makeStyles((theme) => ({
@@ -51,14 +42,14 @@ type State = {
 const templateDataSate = {
     variables: [
         {
-            name: "main",
+            name: 'main',
             variable: [],
         },
     ],
     text: [
         {
-            title: "text1",
-            value: "",
+            title: 'text1',
+            value: '',
         },
     ],
     textIndex: 0,
@@ -87,8 +78,8 @@ function ToolAutoChangeTextHM(props: Props) {
     const addNewVariable = () => {
         let variable = state.variables;
         variable[state.variableIndex].variable.push({
-            values: "",
-            variable: "",
+            values: '',
+            variable: '',
         });
         setState({
             ...state,
@@ -142,7 +133,7 @@ function ToolAutoChangeTextHM(props: Props) {
     const addVariableTemplate = () => {
         let variables = state.variables || [];
         variables.push({
-            name: "variable Next",
+            name: 'variable Next',
             variable: [],
         });
         setState({
@@ -173,10 +164,7 @@ function ToolAutoChangeTextHM(props: Props) {
         let variable = state.variables[state.variableIndex] || [];
         variable.variable.forEach((item) => {
             try {
-                text = text.replace(
-                    new RegExp(`{${item.variable}}`, "ig"),
-                    item.values
-                );
+                text = text.replace(new RegExp(`{${item.variable}}`, 'ig'), item.values);
             } catch (error) {}
         });
         return text;
@@ -184,7 +172,7 @@ function ToolAutoChangeTextHM(props: Props) {
 
     const syncOnline = () => {
         metaDataController.saveByKey({
-            key: "tool-replace-text",
+            key: 'tool-replace-text',
             data: state,
         });
     };
@@ -195,8 +183,8 @@ function ToolAutoChangeTextHM(props: Props) {
             text: [
                 ...state.text,
                 {
-                    title: "text",
-                    value: "",
+                    title: 'text',
+                    value: '',
                 },
             ],
         });
@@ -209,11 +197,9 @@ function ToolAutoChangeTextHM(props: Props) {
     };
 
     useEffect(() => {
-        metaDataController
-            .getByKey({ key: "tool-replace-text" })
-            .then((res) => {
-                setState(res.data || templateDataSate);
-            });
+        metaDataController.getByKey({ key: 'tool-replace-text' }).then((res) => {
+            setState(res.data || templateDataSate);
+        });
     }, []);
 
     const autoCheck = () => {
@@ -223,20 +209,16 @@ function ToolAutoChangeTextHM(props: Props) {
             getState.variableIndex = 0;
             error = true;
         }
-        if (
-            !getState.variables[getState.variableIndex] ||
-            !getState.variables[getState.variableIndex].variable
-        ) {
+        if (!getState.variables[getState.variableIndex] || !getState.variables[getState.variableIndex].variable) {
             getState.variables = [
                 {
-                    name: "main",
+                    name: 'main',
                     variable: [],
                 },
             ];
             error = true;
         }
         if (error) {
-            console.log(getState);
             setState({
                 ...state,
                 ...getState,
@@ -248,8 +230,8 @@ function ToolAutoChangeTextHM(props: Props) {
     return (
         <Grid
             style={{
-                minHeight: "100vh",
-                background: "white",
+                minHeight: '100vh',
+                background: 'white',
                 padding: theme.spacing(2),
             }}
         >
@@ -267,11 +249,7 @@ function ToolAutoChangeTextHM(props: Props) {
             </Grid>
             <Grid container direction="row">
                 <Grid className={classes.frVariable} justify="center">
-                    <Grid
-                        container
-                        justify="space-between"
-                        className={globalStyles.pp1}
-                    >
+                    <Grid container justify="space-between" className={globalStyles.pp1}>
                         <Grid>
                             <Grid container className={globalStyles.pp1}>
                                 {state.variables.map((item, index) => (
@@ -280,23 +258,14 @@ function ToolAutoChangeTextHM(props: Props) {
                                             <Avatar
                                                 onClick={(e) => {
                                                     e.stopPropagation();
-                                                    duplicateVariableTemplate(
-                                                        item
-                                                    );
+                                                    duplicateVariableTemplate(item);
                                                 }}
                                             >
                                                 <IoMdCopy />
                                             </Avatar>
                                         }
-                                        color={
-                                            index == state.variableIndex
-                                                ? "primary"
-                                                : undefined
-                                        }
-                                        className={clsx(
-                                            globalStyles.mr1,
-                                            globalStyles.mb1
-                                        )}
+                                        color={index == state.variableIndex ? 'primary' : undefined}
+                                        className={clsx(globalStyles.mr1, globalStyles.mb1)}
                                         label={item.name}
                                         onDelete={() => {
                                             removeVariableTemplate(index);
@@ -320,22 +289,14 @@ function ToolAutoChangeTextHM(props: Props) {
                                 </IconButton>
                             </Grid>
                         </Grid>
-                        <Grid
-                            container
-                            className={clsx(globalStyles.pp1, globalStyles.pt3)}
-                        >
+                        <Grid container className={clsx(globalStyles.pp1, globalStyles.pt3)}>
                             <TextField
                                 label="Giá trị"
                                 variant="outlined"
-                                value={
-                                    state.variables[state.variableIndex]
-                                        ?.name || ""
-                                }
+                                value={state.variables[state.variableIndex]?.name || ''}
                                 onChange={(e) => {
                                     const getState = state;
-                                    getState.variables[
-                                        state.variableIndex
-                                    ].name = e.target.value;
+                                    getState.variables[state.variableIndex].name = e.target.value;
                                     setState({
                                         ...getState,
                                     });
@@ -345,15 +306,8 @@ function ToolAutoChangeTextHM(props: Props) {
                     </Grid>
 
                     <Grid className={globalStyles.pt4}>
-                        {(
-                            state.variables[state.variableIndex]?.variable || []
-                        ).map((item, index) => (
-                            <Grid
-                                container
-                                justify="space-around"
-                                alignItems="center"
-                                className={globalStyles.pp1}
-                            >
+                        {(state.variables[state.variableIndex]?.variable || []).map((item, index) => (
+                            <Grid container justify="space-around" alignItems="center" className={globalStyles.pp1}>
                                 <Grid xs={5}>
                                     <TextField
                                         label="Tên biến"
@@ -361,50 +315,34 @@ function ToolAutoChangeTextHM(props: Props) {
                                         fullWidth
                                         value={item.variable}
                                         onChange={(e) => {
-                                            onChangeVariable(
-                                                e.target.value,
-                                                index
-                                            );
+                                            onChangeVariable(e.target.value, index);
                                         }}
                                     />
                                 </Grid>
                                 <IoAttachOutline
                                     style={{
-                                        fontSize: "2rem",
+                                        fontSize: '2rem',
                                     }}
                                 />
                                 <Grid xs={5}>
                                     <TextField
                                         label="Giá trị"
                                         variant="outlined"
-                                        value={item.values || ""}
+                                        value={item.values || ''}
                                         fullWidth
                                         onChange={(e) => {
-                                            onChangeValue(
-                                                e.target.value,
-                                                index
-                                            );
+                                            onChangeValue(e.target.value, index);
                                         }}
                                     />
                                 </Grid>
-                                <IconButton
-                                    onClick={() => removeVariable(index)}
-                                >
+                                <IconButton onClick={() => removeVariable(index)}>
                                     <IoCloseOutline />
                                 </IconButton>
                             </Grid>
                         ))}
                     </Grid>
-                    <Grid
-                        container
-                        justify="center"
-                        className={globalStyles.pp1}
-                    >
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={() => addNewVariable()}
-                        >
+                    <Grid container justify="center" className={globalStyles.pp1}>
+                        <Button variant="contained" color="primary" onClick={() => addNewVariable()}>
                             Thêm biến
                         </Button>
                     </Grid>
@@ -439,15 +377,8 @@ function ToolAutoChangeTextHM(props: Props) {
                                                     <IoMdCopy />
                                                 </Avatar>
                                             }
-                                            color={
-                                                index == state.textIndex
-                                                    ? "primary"
-                                                    : undefined
-                                            }
-                                            className={clsx(
-                                                globalStyles.mr1,
-                                                globalStyles.mb1
-                                            )}
+                                            color={index == state.textIndex ? 'primary' : undefined}
+                                            className={clsx(globalStyles.mr1, globalStyles.mb1)}
                                             label={item.title}
                                             onDelete={() => {
                                                 removeText(index);
@@ -477,18 +408,14 @@ function ToolAutoChangeTextHM(props: Props) {
                                 value={state.text[state.textIndex || 0].title}
                                 onChange={(e) => {
                                     const text = state.text;
-                                    text[state.textIndex || 0].title =
-                                        e.target.value;
+                                    text[state.textIndex || 0].title = e.target.value;
                                     setState({
                                         ...state,
                                         text: text,
                                     });
                                 }}
                                 variant="outlined"
-                                className={clsx(
-                                    globalStyles.mt1,
-                                    globalStyles.mb1
-                                )}
+                                className={clsx(globalStyles.mt1, globalStyles.mb1)}
                             />
                             <TextField
                                 fullWidth
@@ -498,8 +425,7 @@ function ToolAutoChangeTextHM(props: Props) {
                                 value={state.text[state.textIndex || 0].value}
                                 onChange={(e) => {
                                     const text = state.text;
-                                    text[state.textIndex || 0].value =
-                                        e.target.value;
+                                    text[state.textIndex || 0].value = e.target.value;
                                     setState({
                                         ...state,
                                         text: text,
@@ -511,10 +437,7 @@ function ToolAutoChangeTextHM(props: Props) {
                     </Grid>
                     <Grid container className={clsx(globalStyles.pt2)}>
                         <Grid
-                            className={clsx(
-                                globalStyles.pp2,
-                                classes.frVariable
-                            )}
+                            className={clsx(globalStyles.pp2, classes.frVariable)}
                             style={{
                                 flex: 1,
                             }}
@@ -526,24 +449,14 @@ function ToolAutoChangeTextHM(props: Props) {
                                         className={classes.iconAdd}
                                         color="secondary"
                                         style={{
-                                            borderColor:
-                                                theme.palette.secondary.main,
+                                            borderColor: theme.palette.secondary.main,
                                         }}
                                         onClick={() => {
                                             try {
                                                 navigator.clipboard
-                                                    .writeText(
-                                                        replaceText(
-                                                            state.text[
-                                                                state.textIndex ||
-                                                                    0
-                                                            ].value
-                                                        )
-                                                    )
+                                                    .writeText(replaceText(state.text[state.textIndex || 0].value))
                                                     .then((res) => {
-                                                        dispatch.notification.success(
-                                                            "Copy thành success"
-                                                        );
+                                                        dispatch.notification.success('Copy thành success');
                                                     });
                                             } catch (error) {}
                                         }}
@@ -558,9 +471,7 @@ function ToolAutoChangeTextHM(props: Props) {
                                     label="Value"
                                     variant="outlined"
                                     multiline
-                                    value={replaceText(
-                                        state.text[state.textIndex || 0].value
-                                    )}
+                                    value={replaceText(state.text[state.textIndex || 0].value)}
                                     rows={20}
                                 />
                             </Grid>

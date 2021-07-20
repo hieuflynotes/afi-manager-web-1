@@ -1,24 +1,24 @@
-import { Grid, makeStyles } from "@material-ui/core";
-import React, { useEffect, useState } from "react";
-import { AiFillDashboard } from "react-icons/ai";
-import { FaKey } from "react-icons/fa";
-import { FiLogOut } from "react-icons/fi";
-import { RiAccountPinBoxFill } from "react-icons/ri";
-import { useDispatch, useSelector } from "react-redux";
-import NavBar, { RouteComponent } from "src/component/common/NavBar";
-import { cssInfo } from "../constants/Other";
-import { routersMap } from "../constants/Route";
-import { Dispatch, RootState } from "../rematch/store";
+import { Grid, makeStyles } from '@material-ui/core';
+import React, { useEffect, useState } from 'react';
+import { AiFillDashboard } from 'react-icons/ai';
+import { FaKey } from 'react-icons/fa';
+import { FiLogOut } from 'react-icons/fi';
+import { RiAccountPinBoxFill } from 'react-icons/ri';
+import { useDispatch, useSelector } from 'react-redux';
+import NavBar, { RouteComponent } from 'src/component/common/NavBar';
+import { cssInfo } from '../constants/Other';
+import { routersMap } from '../constants/Route';
+import { Dispatch, RootState } from '../rematch/store';
 
 const useStyle = makeStyles((theme) => ({
     root: {
-        minHeight: "100vh",
+        minHeight: '100vh',
         background: theme.palette.background.default,
     },
     navbar: {
         // width: cssInfo.widthNarBar,
-        position: "fixed",
-        height: "100vh",
+        position: 'fixed',
+        height: '100vh',
         zIndex: 1000,
         // background: theme.palette.background.default,
     },
@@ -27,14 +27,14 @@ const useStyle = makeStyles((theme) => ({
         // paddingTop: 50,
         // paddingLeft: 230,
         flex: 1,
-        height: "100vh",
-        transition: "0.3s",
+        height: '100vh',
+        transition: '0.3s',
     },
 }));
 type Props = {
     children: React.ReactElement;
 };
-const link = ["/tool-change-text"];
+const link = ['/user-hm', '/tool-change-text'];
 function AfiScreen(props: Props) {
     const classes = useStyle();
     const [route, setRoute] = useState<RouteComponent[]>([]);
@@ -46,21 +46,21 @@ function AfiScreen(props: Props) {
             const get = routersMap.get(item);
             return {
                 icon: get?.icon || <></>,
-                label: get?.label || "",
-                link: get?.link || "",
+                label: get?.label || '',
+                link: get?.link || '',
             };
         });
         menu.push({
             label: `Account`,
             icon: <RiAccountPinBoxFill />,
-            link: "",
+            link: '',
             subMenu: [
                 {
-                    label: "Logout",
+                    label: 'Logout',
                     action: () => {
-                        window.location.href = "/login";
+                        window.location.href = '/login';
                     },
-                    link: "",
+                    link: '',
                     icon: <FiLogOut />,
                 },
                 // {

@@ -20,47 +20,43 @@ import {
     TableRow,
     TextField,
     Typography,
-} from "@material-ui/core";
-import Table from "@material-ui/core/Table";
-import { Pagination } from "@material-ui/lab";
-import _ from "lodash";
-import React, { useCallback, useEffect, useState } from "react";
-import { BsLayoutThreeColumns } from "react-icons/bs";
-import {
-    TiArrowSortedDown,
-    TiArrowSortedUp,
-    TiArrowUnsorted,
-} from "react-icons/ti";
-import { createNonNullExpression } from "typescript";
-import { localStoryController } from "../../controller";
-import { Paging, ListFilter, BaseModel } from "luong-base-model";
-import { useGlobalStyles } from "../../theme/GlobalStyle";
-import theme from "../../theme/MuiTheme";
+} from '@material-ui/core';
+import Table from '@material-ui/core/Table';
+import { Pagination } from '@material-ui/lab';
+import _ from 'lodash';
+import React, { useCallback, useEffect, useState } from 'react';
+import { BsLayoutThreeColumns } from 'react-icons/bs';
+import { TiArrowSortedDown, TiArrowSortedUp, TiArrowUnsorted } from 'react-icons/ti';
+import { createNonNullExpression } from 'typescript';
+import { localStoryController } from '../../controller';
+import { Paging, ListFilter, BaseModel } from 'luong-base-model';
+import { useGlobalStyles } from '../../theme/GlobalStyle';
+import theme from '../../theme/MuiTheme';
 
 const useStyle = makeStyles((theme) => ({
     cell: {
         flex: 1,
         borderBottom: `1px solid ${theme.palette.divider}`,
         padding: theme.spacing(2),
-        display: "flex",
-        alignContent: "center",
-        alignItems: "center",
-        whiteSpace: "nowrap",
-        overflow: "hidden",
+        display: 'flex',
+        alignContent: 'center',
+        alignItems: 'center',
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
     },
     buttonHeader: {
         color: theme.palette.primary.main,
         paddingLeft: 0,
-        alignItems: "left",
-        display: "flex",
-        fontSize: "1.1rem",
-        textTransform: "none",
-        background: "none",
-        "&:active": {
-            background: "none",
+        alignItems: 'left',
+        display: 'flex',
+        fontSize: '1.1rem',
+        textTransform: 'none',
+        background: 'none',
+        '&:active': {
+            background: 'none',
         },
-        "& *": {
-            background: "none !important",
+        '& *': {
+            background: 'none !important',
         },
         // borderBottom: `1px solid ${theme.palette.divider}`,
     },
@@ -76,16 +72,16 @@ const useStyle = makeStyles((theme) => ({
         // color: theme.palette.primary.main,
     },
     textAutoHidden: {
-        overflow: "hidden",
-        textOverflow: "ellipsis",
-        wordBreak: "break-word",
-        display: "-webkit-box",
-        WebkitBoxOrient: "vertical",
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        wordBreak: 'break-word',
+        display: '-webkit-box',
+        WebkitBoxOrient: 'vertical',
     },
 }));
 export class ColumnTable<T extends { [key: string]: any }> {
-    id: keyof T = "";
-    label: string = "";
+    id: keyof T = '';
+    label: string = '';
     isDisplay?: boolean = true;
     isSort?: boolean = false;
     acceptSearch?: boolean = false;
@@ -117,13 +113,11 @@ export default function TableCrud<T extends BaseModel>(props: PropsTable<T>) {
     const changeSort = (column: string) => {
         column = column.toString();
         let sort: string[] = (props.query.sort as []) || [];
-        const getColumnIndex: number = sort.findIndex(
-            (item) => _.snakeCase(item) === _.snakeCase(column)
-        );
+        const getColumnIndex: number = sort.findIndex((item) => _.snakeCase(item) === _.snakeCase(column));
         if (getColumnIndex < 0) sort = [column];
         else {
             const getColumn: string = sort[getColumnIndex];
-            if (getColumn.startsWith("-")) {
+            if (getColumn.startsWith('-')) {
                 sort.splice(getColumnIndex, 1);
             } else {
                 sort[getColumnIndex] = `-${column}`;
@@ -158,13 +152,11 @@ export default function TableCrud<T extends BaseModel>(props: PropsTable<T>) {
 
     const componentSort = (column: string) => {
         let sort: string[] = (props.query.sort as []) || [];
-        const getColumnIndex: number = sort.findIndex(
-            (item) => _.snakeCase(item) === _.snakeCase(column)
-        );
+        const getColumnIndex: number = sort.findIndex((item) => _.snakeCase(item) === _.snakeCase(column));
         if (getColumnIndex < 0) return <TiArrowUnsorted />;
         else {
             const getColumn: string = sort[getColumnIndex];
-            if (getColumn.startsWith("-")) {
+            if (getColumn.startsWith('-')) {
                 return <TiArrowSortedDown />;
             } else {
                 return <TiArrowSortedUp />;
@@ -182,7 +174,7 @@ export default function TableCrud<T extends BaseModel>(props: PropsTable<T>) {
                 searchFields: searchField,
             });
         }, 400),
-        []
+        [],
     );
 
     useEffect(() => {
@@ -199,9 +191,7 @@ export default function TableCrud<T extends BaseModel>(props: PropsTable<T>) {
                     _.set(
                         newItemClone,
                         key.id,
-                        <Typography className={classes.textAutoHidden}>
-                            {_.get(newItemClone, key.id)}
-                        </Typography>
+                        <Typography className={classes.textAutoHidden}>{_.get(newItemClone, key.id)}</Typography>,
                     );
                 });
                 return newItem;
@@ -214,8 +204,7 @@ export default function TableCrud<T extends BaseModel>(props: PropsTable<T>) {
         const searchField: string[] = [];
         // eslint-disable-next-line array-callback-return
         props.column.map((column) => {
-            if (column.isDisplay == undefined || column.isDisplay == null)
-                column.isDisplay = true;
+            if (column.isDisplay == undefined || column.isDisplay == null) column.isDisplay = true;
             if (column.acceptSearch && column.isDisplay) {
                 searchField.push(column.id as string);
             }
@@ -226,32 +215,18 @@ export default function TableCrud<T extends BaseModel>(props: PropsTable<T>) {
     useEffect(() => {
         let getColumnDisplay: Map<string, string> | null = null;
         if (props.id) {
-            let getFromLocal = localStoryController.getSettingColumnTable(
-                props.id
-            );
-            console.log(
-                "🚀 ~ file: TableCrud.tsx ~ line 232 ~ useEffect ~ getFromLocal",
-                getFromLocal
-            );
+            let getFromLocal = localStoryController.getSettingColumnTable(props.id);
+
             if (getFromLocal && getFromLocal.length > 0) {
-                getColumnDisplay = new Map(
-                    getFromLocal.map((item) => [item, item])
-                );
+                getColumnDisplay = new Map(getFromLocal.map((item) => [item, item]));
             }
         }
         let columnDisplay: string[] = [];
         props.column.map((column) => {
             if (getColumnDisplay) {
-                console.log(
-                    "🚀 ~ file: TableCrud.tsx ~ line 241 ~ props.column.map ~ getColumnDisplay",
-                    getColumnDisplay
-                );
-                column.isDisplay = getColumnDisplay.get(column.id as string)
-                    ? true
-                    : false;
+                column.isDisplay = getColumnDisplay.get(column.id as string) ? true : false;
             }
-            if (column.isDisplay == undefined || column.isDisplay == null)
-                column.isDisplay = true;
+            if (column.isDisplay == undefined || column.isDisplay == null) column.isDisplay = true;
             if (props.id && column.isDisplay == true) {
                 columnDisplay.push(column.id as string);
             }
@@ -266,18 +241,9 @@ export default function TableCrud<T extends BaseModel>(props: PropsTable<T>) {
 
     return (
         <Grid container spacing={2}>
-            <Grid
-                xs={12}
-                item
-                container
-                justify="space-between"
-                direction="row"
-            >
+            <Grid xs={12} item container justify="space-between" direction="row">
                 <Grid>
-                    <TextField
-                        label="Tìm kiếm"
-                        onChange={(e) => onQueryChanged(e.target.value)}
-                    ></TextField>
+                    <TextField label="Tìm kiếm" onChange={(e) => onQueryChanged(e.target.value)}></TextField>
                 </Grid>
                 <Grid>
                     <IconButton onClick={handleClick}>
@@ -290,21 +256,15 @@ export default function TableCrud<T extends BaseModel>(props: PropsTable<T>) {
                         className={classes.popupShowColumn}
                     >
                         <FormControl className={globalStyle.pp3}>
-                            <Grid className={globalStyle.pp1}>
-                                Cột hiển thị
-                            </Grid>
+                            <Grid className={globalStyle.pp1}>Cột hiển thị</Grid>
                             <FormGroup>
                                 {props.column.map((column) => (
                                     <FormControlLabel
                                         control={
                                             <Checkbox
-                                                color={"primary"}
+                                                color={'primary'}
                                                 checked={column.isDisplay}
-                                                onClick={(e) =>
-                                                    onDisplayColumn(
-                                                        column.id as string
-                                                    )
-                                                }
+                                                onClick={(e) => onDisplayColumn(column.id as string)}
                                             />
                                         }
                                         label={column.label}
@@ -331,12 +291,12 @@ export default function TableCrud<T extends BaseModel>(props: PropsTable<T>) {
             <Grid
                 container
                 style={{
-                    overflow: "auto",
+                    overflow: 'auto',
                 }}
             >
                 <TableContainer
                     style={{
-                        overflow: "auto",
+                        overflow: 'auto',
                     }}
                 >
                     <Table>
@@ -347,38 +307,21 @@ export default function TableCrud<T extends BaseModel>(props: PropsTable<T>) {
                                         <TableCell>
                                             {item.isSort ? (
                                                 <Button
-                                                    className={
-                                                        classes.buttonHeader
-                                                    }
-                                                    onClick={(e) =>
-                                                        changeSort(
-                                                            item.id as string
-                                                        )
-                                                    }
+                                                    className={classes.buttonHeader}
+                                                    onClick={(e) => changeSort(item.id as string)}
                                                 >
                                                     {item.label}
-                                                    {componentSort(
-                                                        item.id as string
-                                                    )}
+                                                    {componentSort(item.id as string)}
                                                 </Button>
                                             ) : (
-                                                <Grid
-                                                    className={
-                                                        classes.headerNotSort
-                                                    }
-                                                >
-                                                    <Typography
-                                                        variant="button"
-                                                        className={
-                                                            classes.buttonHeader
-                                                        }
-                                                    >
+                                                <Grid className={classes.headerNotSort}>
+                                                    <Typography variant="button" className={classes.buttonHeader}>
                                                         {item.label}
                                                     </Typography>
                                                 </Grid>
                                             )}
                                         </TableCell>
-                                    ) : null
+                                    ) : null,
                                 )}
                             </TableRow>
                         </TableHead>
@@ -390,14 +333,14 @@ export default function TableCrud<T extends BaseModel>(props: PropsTable<T>) {
                                         item.isDisplay ? (
                                             <TableCell
                                                 style={{
-                                                    whiteSpace: "nowrap",
+                                                    whiteSpace: 'nowrap',
                                                     minWidth: 50,
-                                                    background: "none",
+                                                    background: 'none',
                                                 }}
                                             >
                                                 {_.get(data, item.id)}
                                             </TableCell>
-                                        ) : null
+                                        ) : null,
                                     )}
                                 </TableRow>
                             ))}
@@ -406,12 +349,7 @@ export default function TableCrud<T extends BaseModel>(props: PropsTable<T>) {
                 </TableContainer>
             </Grid>
             {/*  */}
-            <Grid
-                className={classes.frPaging}
-                justify="flex-end"
-                container
-                alignItems="center"
-            >
+            <Grid className={classes.frPaging} justify="flex-end" container alignItems="center">
                 <FormControl>
                     <Select
                         onChange={(e) =>
