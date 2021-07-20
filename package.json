@@ -24,6 +24,8 @@
     "formik": "^2.2.9",
     "history": "^4.10.1",
     "i": "^0.3.6",
+    "js-file-download": "^0.4.12",
+    "json2csv": "^5.0.6",
     "lodash": "^4.17.21",
     "luong-base-model": "^0.0.8",
     "moment": "^2.29.1",
@@ -69,6 +71,7 @@
   },
   "devDependencies": {
     "@types/history": "^4.7.8",
+    "@types/json2csv": "^5.0.3",
     "@types/lodash": "^4.14.170",
     "@types/react-router-dom": "^5.1.7",
     "prettier": "2.3.0"
