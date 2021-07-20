@@ -169,7 +169,7 @@ function CheckTrackingHM(props: Props) {
                     </Grid>
                 </Grid>
             </Grid>
-            <ListGrid minWidthItem={'400px'} gridGap={15}>
+            <ListGrid minWidthItem={"320px"} gridGap={15}>
                 {crudTrackingHM.pagingList.rows?.map((item, index) => (
                     <Zoom in={true} timeout={index * 100}>
                         <Grid container justify="center">
