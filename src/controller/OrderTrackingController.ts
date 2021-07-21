@@ -49,7 +49,7 @@ export class OrderTrackingController extends BaseController<OrderTracking> imple
         });
     }
     public listForProgress(params: ListFilter<OrderTracking>): Promise<Paging<OrderTracking>> {
-        params.sort = 'totalPrice';
+        params.sort = ['totalPrice','email'];
         params = { ...params, sort: this.convertSort(params.sort) };
         params = {
             ...params,
