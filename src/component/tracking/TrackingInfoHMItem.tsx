@@ -54,7 +54,7 @@ type Props = {
     searchString: string;
     index: number;
 };
-export default function TrackingInfoHMItem(props: Props) {
+function TrackingInfoHMItem(props: Props) {
     const classes = useStyle();
     const [state, setState] = useState<{
         infoOrderTracking: OrderTracking;
@@ -68,6 +68,8 @@ export default function TrackingInfoHMItem(props: Props) {
     const globalsStyle = useGlobalStyles();
 
     const updateInfoProduct = async (item: HMTracking) => {
+        let productInfo: any[] = [];
+
         if (
             props.item.productOrder ||
             (props.item.productLink && props.item.productLink?.length > 0 && !props.item.productInfo)
@@ -82,8 +84,7 @@ export default function TrackingInfoHMItem(props: Props) {
                         info = undefined;
                     }
                     if (info) {
-                        props.item.productInfo = props.item.productInfo || [];
-                        props.item.productInfo?.push(info);
+                        productInfo?.push(info);
                     }
                 }
             } else if (props.item.productOrder) {
@@ -97,11 +98,14 @@ export default function TrackingInfoHMItem(props: Props) {
                         info = undefined;
                     }
                     if (info) {
-                        props.item.productInfo = props.item.productInfo || [];
-                        props.item.productInfo?.push(info);
+                        productInfo?.push(info);
                     }
                 }
             }
+
+            console.log({
+                productInfo,
+            });
 
             // orderTrackingController.save(props.item);
             setState({
@@ -109,6 +113,7 @@ export default function TrackingInfoHMItem(props: Props) {
                     ...props.item,
                     infoHM: item,
                     trackingId: item.header?.tracking_number,
+                    productInfo: productInfo,
                 },
                 isError: false,
                 isGet: true,
@@ -346,3 +351,4 @@ export default function TrackingInfoHMItem(props: Props) {
         </Grid>
     );
 }
+export default React.memo(TrackingInfoHMItem);
