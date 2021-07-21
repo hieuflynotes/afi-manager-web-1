@@ -1,35 +1,35 @@
-import React, { useEffect, useState } from "react";
-import clsx from "clsx";
-import { Grid, makeStyles, Typography } from "@material-ui/core";
-import TextField from "../../component/common/TextFiled";
-import Button from "../../component/common/Button";
-import ListGrid from "../../component/common/ListGrid";
-import { useGlobalStyles } from "../../theme/GlobalStyle";
-import { useCrudHook } from "../../hook/useCrudHook";
-import { Pagination } from "@material-ui/lab";
-import PopUpConfirm from "../../component/common/PopupConfirm";
-import { useHistory, useParams } from "react-router-dom";
-import { UserHm } from "src/afi-manager-base-model/model/UserHm";
-import { orderTrackingController, userHmController } from "src/controller";
-import UserHmItemList from "src/component/AutoOrderHm/UserHmItemList";
-import PopupInsertUser from "src/component/AutoOrderHm/PopupInsertUser";
-import theme from "src/theme/MuiTheme";
-import { OrderTracking } from "src/afi-manager-base-model/model/OrderTracking";
-import ProgressHmItemList from "src/component/AutoOrderHm/ProgressHmItemList";
-import PopupAddOrderId from "src/component/AutoOrderHm/PopupEditProgressAutoOrder";
-import { ListFilter } from "luong-base-model/lib";
+import React, { useEffect, useState } from 'react';
+import clsx from 'clsx';
+import { Grid, makeStyles, Typography } from '@material-ui/core';
+import TextField from '../../component/common/TextFiled';
+import Button from '../../component/common/Button';
+import ListGrid from '../../component/common/ListGrid';
+import { useGlobalStyles } from '../../theme/GlobalStyle';
+import { useCrudHook } from '../../hook/useCrudHook';
+import { Pagination } from '@material-ui/lab';
+import PopUpConfirm from '../../component/common/PopupConfirm';
+import { useHistory, useParams } from 'react-router-dom';
+import { UserHm } from 'src/afi-manager-base-model/model/UserHm';
+import { orderTrackingController, userHmController } from 'src/controller';
+import UserHmItemList from 'src/component/AutoOrderHm/UserHmItemList';
+import PopupInsertUser from 'src/component/AutoOrderHm/PopupInsertUser';
+import theme from 'src/theme/MuiTheme';
+import { OrderTracking } from 'src/afi-manager-base-model/model/OrderTracking';
+import ProgressHmItemList from 'src/component/AutoOrderHm/ProgressHmItemList';
+import PopupAddOrderId from 'src/component/AutoOrderHm/PopupEditProgressAutoOrder';
+import { ListFilter } from 'luong-base-model/lib';
 
 type Props = {};
 const useStyle = makeStyles((theme) => ({
     statuses: {
-        "& p": {
+        '& p': {
             padding: 10,
         },
     },
     giftCardForm: {
-        display: "flex",
-        flexDirection: "row",
-        "& .MuiFormControl-fullWidth": {
+        display: 'flex',
+        flexDirection: 'row',
+        '& .MuiFormControl-fullWidth': {
             margin: 16,
         },
     },
@@ -37,22 +37,19 @@ const useStyle = makeStyles((theme) => ({
 function ProgressAutoOrder(props: Props) {
     const { userHmId } = useParams<{ userHmId: string }>();
     const [giftCard, setGiftCard] = useState<Giftcard>({
-        serialNumber: "",
-        pin: "",
+        serialNumber: '',
+        pin: '',
     });
 
     const history = useHistory();
 
-    const crudTrackingHM = useCrudHook<
-        OrderTracking,
-        ListFilter<OrderTracking>
-    >({
+    const crudTrackingHM = useCrudHook<OrderTracking, ListFilter<OrderTracking>>({
         controller: orderTrackingController,
         listController: orderTrackingController.listForProgress,
         initQuery: {
-            searchFields: ["orderId", "trackingId", "customerName", "email"],
-            sort: ["totalPrice"],
-            pageSize: 100,
+            searchFields: ['orderId', 'trackingId', 'customerName', 'email'],
+            sort: ['totalPrice'],
+            pageSize: 300,
             filter: {
                 userHMId: userHmId,
             },
@@ -69,8 +66,8 @@ function ProgressAutoOrder(props: Props) {
         <Grid
             container
             style={{
-                minHeight: "100vh",
-                background: "white",
+                minHeight: '100vh',
+                background: 'white',
                 padding: theme.spacing(2),
             }}
         >
@@ -86,46 +83,19 @@ function ProgressAutoOrder(props: Props) {
                         <Typography align="center" variant="h4">
                             Check order
                         </Typography>
-                        <Grid
-                            container
-                            className={classes.statuses}
-                            justify="center"
-                        >
+                        <Grid container className={classes.statuses} justify="center">
+                            <Typography>Total account: {crudTrackingHM.pagingList?.rows?.length}</Typography>
                             <Typography>
-                                Total account:{" "}
-                                {crudTrackingHM.pagingList?.rows?.length}
+                                Created account: {crudTrackingHM.pagingList?.rows?.filter((i) => i.isRegister).length}
                             </Typography>
                             <Typography>
-                                Created account:{" "}
-                                {
-                                    crudTrackingHM.pagingList?.rows?.filter(
-                                        (i) => i.isRegister
-                                    ).length
-                                }
+                                Added to cart: {crudTrackingHM.pagingList?.rows?.filter((i) => i.isOrder).length}
                             </Typography>
                             <Typography>
-                                Added to cart:{" "}
-                                {
-                                    crudTrackingHM.pagingList?.rows?.filter(
-                                        (i) => i.isOrder
-                                    ).length
-                                }
+                                Done: {crudTrackingHM.pagingList?.rows?.filter((i) => i.orderId).length}
                             </Typography>
                             <Typography>
-                                Done:{" "}
-                                {
-                                    crudTrackingHM.pagingList?.rows?.filter(
-                                        (i) => i.orderId
-                                    ).length
-                                }
-                            </Typography>
-                            <Typography>
-                                Error:{" "}
-                                {
-                                    crudTrackingHM.pagingList?.rows?.filter(
-                                        (i) => i.errorDesc
-                                    ).length
-                                }
+                                Error: {crudTrackingHM.pagingList?.rows?.filter((i) => i.errorDesc).length}
                             </Typography>
                         </Grid>
                     </Grid>
@@ -164,24 +134,19 @@ function ProgressAutoOrder(props: Props) {
                         // justify="center"
                         className={clsx(globalStyle.pt2, globalStyle.pb2)}
                     >
-                        <ListGrid minWidthItem={"420px"} gridGap={20}>
+                        <ListGrid minWidthItem={'420px'} gridGap={20}>
                             {crudTrackingHM.pagingList?.rows?.map((item) => (
                                 <Grid>
                                     <ProgressHmItemList
                                         giftCard={giftCard}
                                         item={item}
-                                        updateOrderId={
-                                            crudTrackingHM.onShowPopup
-                                        }
+                                        updateOrderId={crudTrackingHM.onShowPopup}
                                     />
                                 </Grid>
                             ))}
                         </ListGrid>
                     </Grid>
-                    <Grid
-                        container
-                        className={clsx(globalStyle.pt2, globalStyle.pb2)}
-                    >
+                    <Grid container className={clsx(globalStyle.pt2, globalStyle.pb2)}>
                         <Pagination
                             count={crudTrackingHM.pagingList.totalPages || 1}
                             page={crudTrackingHM.pagingList.page || 1}
@@ -199,9 +164,7 @@ function ProgressAutoOrder(props: Props) {
         </Grid>
     ) : (
         <Grid container justify="center">
-            <Typography variant="h2">
-                Tài khoản này chưa tiến hành lấy order hoặc order bị trống
-            </Typography>
+            <Typography variant="h2">Tài khoản này chưa tiến hành lấy order hoặc order bị trống</Typography>
         </Grid>
     );
 }
