@@ -47,7 +47,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "start:prod": "REACT_APP_ENV=production react-scripts start",
-    "deploy:prod": "REACT_APP_ENV=production npm run build;  firebase deploy",
+    "deploy:prod": "REACT_APP_ENV=production npm run build;  firebase deploy --token 1//0eF-hXOvgs0GSCgYIARAAGA4SNwF-L9IrVxaZiSJT47Y8ucGRJT6jUBXdUhs0wR8zVPyYtNelx03K76wG8BNFkfTI41lSNaTIH44 --non-interactive",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
