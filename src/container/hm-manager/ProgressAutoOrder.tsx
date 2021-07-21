@@ -17,6 +17,7 @@ import { mathCeilWithRound } from 'src/helper/NumberUtils';
 import { IconButton } from '@material-ui/core';
 import { IoCopyOutline } from 'react-icons/io5';
 import { dispatch } from '../../rematch/store';
+import { countBoughtProduct,countProduct } from 'src/helper/CalculatorHmPrice';
 
 type Props = {};
 const useStyle = makeStyles((theme) => ({
@@ -132,10 +133,18 @@ function ProgressAutoOrder(props: Props) {
                         color="secondary"
                         onClick={() => {
                             navigator.clipboard.writeText(
-                                crudTrackingHM.pagingList?.rows
-                                    ?.filter((i) => i.errorDesc != null && i.errorDesc.length > 0)
-                                    .map((r) => `${r.productOrder?.map((p) => p.productId).join(',')}: ${r.errorDesc}`)
-                                    .join('; ') || '',
+                                `Lỗi: ${
+                                    countProduct(crudTrackingHM.pagingList?.rows || []) -
+                                    countBoughtProduct(crudTrackingHM.pagingList?.rows || [])
+                                } món\n${
+                                    crudTrackingHM.pagingList?.rows
+                                        ?.filter((i) => i.errorDesc != null && i.errorDesc.length > 0)
+                                        .map(
+                                            (r) =>
+                                                `[${r.productOrder?.map((p) => p.productId).join(',')}]: ${r.errorDesc}`,
+                                        )
+                                        .join('\n') || ''
+                                }`,
                             );
                             dispatch.notification.success('Copy danh sách sản phẩm lỗi thành công!');
                         }}
@@ -172,24 +181,9 @@ function ProgressAutoOrder(props: Props) {
                     )}
                 </Typography>
 
-                <Typography>
-                    Tổng món:{' '}
-                    {crudTrackingHM.pagingList?.rows
-                        ?.map((r) => r.productOrder?.map((p) => 1).reduce((i, sum) => (sum += i), 0))
-                        .reduce((i, sum) => (sum = (sum || 0) + (i || 0)), 0)}
-                </Typography>
+                <Typography>Tổng món: {countProduct(crudTrackingHM.pagingList?.rows || [])}</Typography>
 
-                <Typography>
-                    Tổng món đã mua:{' '}
-                    {crudTrackingHM.pagingList?.rows
-                        ?.filter((r) => r.orderId != null && r.orderId.length > 0)
-                        .map((r) => {
-                            const countProd = r.productOrder?.map((p) => 1).reduce((i, sum) => (sum += i), 0) || 1;
-                            if (r.errorDesc != null && r.errorDesc.length > 0) return countProd - 1;
-                            return countProd;
-                        })
-                        .reduce((i, sum) => (sum = (sum || 0) + (i || 0)), 0)}
-                </Typography>
+                <Typography>Tổng món đã mua: {countBoughtProduct(crudTrackingHM.pagingList?.rows || [])}</Typography>
             </Grid>
         );
     };
