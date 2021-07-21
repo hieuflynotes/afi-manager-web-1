@@ -93,7 +93,7 @@ function ProgressHmItemList(props: Props) {
                                     props.item.userHM?.password || "123456a@",
                                     props.giftCard.serialNumber,
                                     props.giftCard.pin,
-                                    Number(props.item.totalPriceBuy || "0")
+                                    Number(props.item.totalPrice || "0")
                                 )
                             );
                             dispatch.notification.success(
@@ -145,7 +145,7 @@ function ProgressHmItemList(props: Props) {
                 <TextDesc
                     title={"Phải trả"}
                     desc={
-                        `${calcBuyPrice(props.item.totalPriceBuy || 0)}` || ""
+                        `${calcBuyPrice(props.item.totalPrice || 0)}` || ""
                     }
                 />
                 <TextDesc title={"Email"} desc={props.item.email || ""} />
