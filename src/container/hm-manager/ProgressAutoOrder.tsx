@@ -118,7 +118,7 @@ function ProgressAutoOrder(props: Props) {
     const renderOrderStatusSummary = () => {
         return (
             <Grid container className={classes.statuses} justify="center">
-                <Typography>Tổng đơn: {crudTrackingHM.pagingList?.rows?.length}</Typography>
+                <Typography>Tổng: {crudTrackingHM.pagingList?.rows?.length}</Typography>
                 <Typography>
                     Đã tạo tài khoản: {crudTrackingHM.pagingList?.rows?.filter((i) => i.isRegister).length}
                 </Typography>
@@ -162,7 +162,7 @@ function ProgressAutoOrder(props: Props) {
                 </Typography>
 
                 <Typography>
-                    Tổng tiền đã checkout:{' '}
+                    Tổng tiền checkout:{' '}
                     {mathCeilWithRound(
                         crudTrackingHM.pagingList?.rows
                             ?.filter((i) => i.orderId != null && i.orderId.length > 0)
@@ -173,14 +173,22 @@ function ProgressAutoOrder(props: Props) {
                 </Typography>
 
                 <Typography>
-                    Tổng tiền lỗi:{' '}
-                    {mathCeilWithRound(
-                        crudTrackingHM.pagingList?.rows
-                            ?.filter((i) => i.errorDesc != null && i.errorDesc.length > 0)
-                            .map((r) => r.totalPrice || 0)
-                            .reduce((price, total) => (total += price), 0) || 0,
-                        2,
-                    )}
+                    Tổng món:{' '}
+                    {crudTrackingHM.pagingList?.rows
+                        ?.map((r) => r.productOrder?.map((p) => 1).reduce((i, sum) => (sum += i), 0))
+                        .reduce((i, sum) => (sum = (sum || 0) + (i || 0)), 0)}
+                </Typography>
+
+                <Typography>
+                    Tổng món đã mua:{' '}
+                    {crudTrackingHM.pagingList?.rows
+                        ?.filter((r) => r.orderId != null && r.orderId.length > 0)
+                        .map((r) => {
+                            const countProd = r.productOrder?.map((p) => 1).reduce((i, sum) => (sum += i), 0) || 1;
+                            if (r.errorDesc != null && r.errorDesc.length > 0) return countProd - 1;
+                            return countProd;
+                        })
+                        .reduce((i, sum) => (sum = (sum || 0) + (i || 0)), 0)}
                 </Typography>
             </Grid>
         );
