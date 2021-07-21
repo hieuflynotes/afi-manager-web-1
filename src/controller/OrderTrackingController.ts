@@ -6,11 +6,26 @@ import {
     IOrderTrackingController,
     PropsCreateManyFlow,
     PropsExportData,
+    StatisticByUserHm,
 } from '../afi-manager-base-model/controllers/IOrderTrackingController';
 import { User } from '../afi-manager-base-model/model/User';
 import { BaseController } from './BaseController';
 
 export class OrderTrackingController extends BaseController<OrderTracking> implements IOrderTrackingController {
+    statisticByUserHm(params: ListFilter<StatisticByUserHm>): Promise<Paging<StatisticByUserHm>> {
+        params = { ...params, sort: this.convertSort(params.sort) };
+        params = {
+            ...params,
+            searchFields: this.convertSearch(params.searchFields) as any,
+        };
+        return this.client
+            .get(`${this.serviceURL}/${this.basePath}/staticti-by-user-hm`, {
+                params: params,
+            })
+            .then((res) => {
+                return res.data;
+            });
+    }
     exportData(params: PropsExportData): Promise<ExportOrderTracking[]> {
         return this.client
             .get(`${this.serviceURL}/${this.basePath}/export-data`, {

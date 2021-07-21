@@ -1,7 +1,7 @@
 import React from 'react';
 import { RouteComponentProps, StaticContext } from 'react-router';
 import Login from 'src/container/Login';
-import { AiFillDashboard } from 'react-icons/ai';
+import { AiFillDashboard, AiOutlineLineChart } from 'react-icons/ai';
 import CheckTrackingHM from 'src/container/CheckTrackingHM';
 import Register from 'src/container/Register';
 import ToolAutoChangeTextHM from 'src/container/ToolAutoChangeTextHM';
@@ -9,6 +9,7 @@ import UserHmManager from 'src/container/hm-manager/UserHmManager';
 import ProgressAutoOrder from 'src/container/hm-manager/ProgressAutoOrder';
 import ExportExcel from 'src/container/hm-manager/ExportExcel';
 import { FaFileCsv } from 'react-icons/fa';
+import StaticByUserHm from 'src/container/hm-manager/StaticByUserHm';
 export enum TypeScreen {
     public = 'public',
     admin = 'admin',
@@ -52,6 +53,13 @@ export const routers: RouteComponent[] = [
         link: '/export-data',
         typeAuthen: TypeScreen.toolHm,
         icon: <FaFileCsv />,
+    },
+    {
+        component: StaticByUserHm,
+        label: 'Statistic user',
+        link: '/statistic-user-hm',
+        typeAuthen: TypeScreen.toolHm,
+        icon: <AiOutlineLineChart />,
     },
     {
         component: Register,

@@ -99,6 +99,7 @@ export type PropsTable<T> = {
     onChangeColumn?: (column: ColumnTable<T>[]) => void;
     onCustomerCell?: (item: T) => ColumnElement<T>;
     otherFilter?: React.ReactElement;
+    pageSize?: number[];
 };
 export default function TableCrud<T extends BaseModel>(props: PropsTable<T>) {
     const classes = useStyle();
@@ -352,17 +353,22 @@ export default function TableCrud<T extends BaseModel>(props: PropsTable<T>) {
             <Grid className={classes.frPaging} justify="flex-end" container alignItems="center">
                 <FormControl>
                     <Select
-                        onChange={(e) =>
+                        onChange={(e) => {
+                            console.log('on change');
+
                             props.onQuery({
                                 ...props.query,
                                 pageSize: (e.target.value as number) || 5,
-                            })
-                        }
+                            });
+                        }}
                         value={props.query.pageSize || 5}
                     >
                         <MenuItem value={5}>5</MenuItem>
                         <MenuItem value={10}>10</MenuItem>
                         <MenuItem value={15}>15</MenuItem>
+                        {props.pageSize &&
+                            props.pageSize.length > 0 &&
+                            props.pageSize.map((item) => <MenuItem value={item}>{item}</MenuItem>)}
                     </Select>
                 </FormControl>
                 <Pagination
