@@ -10,6 +10,7 @@ import { cssInfo } from "../constants/Other";
 import { routersMap } from "../constants/Route";
 import { Dispatch, RootState } from "../rematch/store";
 
+
 const useStyle = makeStyles((theme) => ({
     root: {
         minHeight: "100vh",
