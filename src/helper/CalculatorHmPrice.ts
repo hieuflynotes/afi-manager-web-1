@@ -2,7 +2,7 @@ import { OrderTracking } from "src/afi-manager-base-model/model/OrderTracking";
 
 export const calcBuyPrice = (price: number) =>
     price > 5
-        ? Math.ceil((price - 3 - price * 0.25) * 100) / 100
+        ? Math.ceil((price - 3 - (price - 3) * 0.25) * 100) / 100
         : price >= 4
         ? Math.ceil((price - 3)*100)/100
         : -1;
