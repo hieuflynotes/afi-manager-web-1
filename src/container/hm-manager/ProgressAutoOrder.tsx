@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import clsx from 'clsx';
 import { Grid, makeStyles, MenuItem, Select, Typography } from '@material-ui/core';
 import TextField from '../../component/common/TextFiled';
@@ -7,7 +7,7 @@ import { useGlobalStyles } from '../../theme/GlobalStyle';
 import { useCrudHook } from '../../hook/useCrudHook';
 import { Pagination } from '@material-ui/lab';
 import { useParams } from 'react-router-dom';
-import { orderTrackingController } from 'src/controller';
+import { hMController, orderTrackingController } from 'src/controller';
 import theme from 'src/theme/MuiTheme';
 import { OrderTracking } from 'src/afi-manager-base-model/model/OrderTracking';
 import ProgressHmItemList from 'src/component/AutoOrderHm/ProgressHmItemList';
@@ -17,7 +17,9 @@ import { mathCeilWithRound } from 'src/helper/NumberUtils';
 import { IconButton } from '@material-ui/core';
 import { IoCopyOutline } from 'react-icons/io5';
 import { dispatch } from '../../rematch/store';
-import { countBoughtProduct,countProduct } from 'src/helper/CalculatorHmPrice';
+import { countBoughtProduct, countProduct } from 'src/helper/CalculatorHmPrice';
+import { firebaseConfig } from 'src/constants/FirebaseConfig';
+import _ from 'lodash';
 
 type Props = {};
 const useStyle = makeStyles((theme) => ({
@@ -54,6 +56,8 @@ function ProgressAutoOrder(props: Props) {
         pin: '',
     });
 
+    const [remainGiftCard, setRemainGiftCard] = useState<string>('');
+
     const crudTrackingHM = useCrudHook<OrderTracking, ListFilter<OrderTracking>>({
         controller: orderTrackingController,
         listController: orderTrackingController.listForProgress,
@@ -68,9 +72,46 @@ function ProgressAutoOrder(props: Props) {
     });
     const classes = useStyle();
     const globalStyle = useGlobalStyles();
+    const onListeningNotication = () => {
+        var getDos = firebaseConfig.firestore().collection('notication_order_update').doc(userHmId.toString());
+        console.log({
+            userHmId,
+        });
+        getDos.onSnapshot(
+            {
+                includeMetadataChanges: true,
+            },
+            function (doc) {
+                if (doc.data()) {
+                    const data: any = doc.data();
+                    dispatch.notification.success(`Cập nhật orderId thành công ${data.orderId} - ${data.email}`);
+                    crudTrackingHM.onRefreshList();
+                }
+            },
+        );
+    };
     useEffect(() => {
+        onListeningNotication();
         return () => {};
     }, []);
+
+    const onChagngeGiftCard = useCallback(
+        _.debounce((value: Giftcard) => {
+            hMController
+                .checkGifCart({
+                    cardNumber: value.serialNumber,
+                    cardPin: value.pin,
+                })
+                .then((res) => {
+                    console.log(res);
+                });
+        }, 400),
+        [],
+    );
+
+    // useEffect(() => {
+    //     onChagngeGiftCard(giftCard);
+    // }, [giftCard]);
 
     const filterByStatus = (rows: OrderTracking[]): OrderTracking[] => {
         return rows?.filter((r) => {
@@ -141,7 +182,9 @@ function ProgressAutoOrder(props: Props) {
                                         ?.filter((i) => i.errorDesc != null && i.errorDesc.length > 0)
                                         .map(
                                             (r) =>
-                                                `[${r.productOrder?.map((p) => p.productId).join(',')}]: ${r.errorDesc}`,
+                                                `[${r.productOrder?.map((p) => p.productId).join(',')}]: ${
+                                                    r.errorDesc
+                                                }`,
                                         )
                                         .join('\n') || ''
                                 }`,
