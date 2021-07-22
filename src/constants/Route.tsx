@@ -10,6 +10,7 @@ import ProgressAutoOrder from 'src/container/hm-manager/ProgressAutoOrder';
 import ExportExcel from 'src/container/hm-manager/ExportExcel';
 import { FaFileCsv } from 'react-icons/fa';
 import StaticByUserHm from 'src/container/hm-manager/StaticByUserHm';
+import FixDataTool from 'src/container/hm-manager/FixDataTool';
 export enum TypeScreen {
     public = 'public',
     admin = 'admin',
@@ -51,6 +52,13 @@ export const routers: RouteComponent[] = [
         component: ExportExcel,
         label: 'Export Data',
         link: '/export-data',
+        typeAuthen: TypeScreen.toolHm,
+        icon: <FaFileCsv />,
+    },
+    {
+        component: FixDataTool,
+        label: 'Export Data',
+        link: '/fix-data-tool',
         typeAuthen: TypeScreen.toolHm,
         icon: <FaFileCsv />,
     },

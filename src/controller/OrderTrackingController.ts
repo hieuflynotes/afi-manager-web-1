@@ -13,6 +13,7 @@ import { BaseController } from './BaseController';
 
 export class OrderTrackingController extends BaseController<OrderTracking> implements IOrderTrackingController {
     statisticByUserHm(params: ListFilter<StatisticByUserHm>): Promise<Paging<StatisticByUserHm>> {
+        params.searchFields = ['username'];
         params = { ...params, sort: this.convertSort(params.sort) };
         params = {
             ...params,
@@ -64,7 +65,7 @@ export class OrderTrackingController extends BaseController<OrderTracking> imple
         });
     }
     public listForProgress(params: ListFilter<OrderTracking>): Promise<Paging<OrderTracking>> {
-        params.sort = ['totalPrice','email'];
+        params.sort = ['totalPrice', 'email'];
         params = { ...params, sort: this.convertSort(params.sort) };
         params = {
             ...params,

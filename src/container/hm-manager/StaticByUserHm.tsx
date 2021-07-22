@@ -90,7 +90,12 @@ export default function StaticByUserHm() {
                     <TableCrud<StatisticByUserHm>
                         column={column}
                         data={crud.pagingList}
-                        onQuery={crud.setQuery}
+                        onQuery={(query) => {
+                            crud.setQuery({
+                                ...crud.query,
+                                ...query,
+                            });
+                        }}
                         pageSize={[50, 100, 200, 500]}
                         isShowHighlightText={true}
                         query={crud.query}

@@ -1,21 +1,24 @@
-import { makeStyles } from "@material-ui/core/styles";
-import color from "../constants/Color";
+import { makeStyles } from '@material-ui/core/styles';
+import color from '../constants/Color';
 
 export const useGlobalStyles = makeStyles((theme) => ({
     container: {
         marginTop: `${theme.spacing(15)}px !important`,
         marginBottom: `${theme.spacing(12)}px !important`,
-        display: "flex",
-        justifyContent: "center",
+        display: 'flex',
+        justifyContent: 'center',
+        flex: 1,
+    },
+    flex1: {
         flex: 1,
     },
     section: {
         marginTop: `${theme.spacing(5)}px !important`,
-        width: "100%",
+        width: '100%',
     },
     sectionLanding: {
         marginTop: `${theme.spacing(10)}px !important`,
-        width: "100%",
+        width: '100%',
     },
     title: {
         marginTop: `${theme.spacing(3)}px !important`,
@@ -28,69 +31,69 @@ export const useGlobalStyles = makeStyles((theme) => ({
         marginTop: `${theme.spacing(6)}px !important`,
     },
     highlightSearchText: {
-        background: "yellow",
+        background: 'yellow',
     },
     content: {
-        minHeight: "100vh",
+        minHeight: '100vh',
         paddingLeft: `${theme.spacing(4)}px !important`,
         paddingRight: `${theme.spacing(4)}px !important`,
     },
     borderLeft: {
-        borderLeft: "1px solid",
+        borderLeft: '1px solid',
         borderColor: theme.palette.grey[100],
     },
     borderRight: {
-        borderRight: "1px solid",
+        borderRight: '1px solid',
         borderColor: theme.palette.grey[100],
     },
     borderTop: {
-        borderTop: "1px solid",
+        borderTop: '1px solid',
         borderColor: theme.palette.grey[100],
     },
     borderBottom: {
-        borderBottom: "1px solid",
+        borderBottom: '1px solid',
         borderColor: theme.palette.grey[100],
     },
     btnRefresh: {
-        position: "absolute",
+        position: 'absolute',
         top: theme.spacing(-1),
         right: theme.spacing(-2),
     },
     contentItem: {
         padding: `${theme.spacing(3)}px !important`,
         border: theme.spacing(1),
-        borderWidth: "1px",
+        borderWidth: '1px',
         borderColor: theme.palette.grey[300],
-        borderStyle: "solid",
-        borderRadius: "10px",
+        borderStyle: 'solid',
+        borderRadius: '10px',
         // boxSizing: "borderBox"
     },
     flexLeft: {
-        display: "flex",
-        alignItems: "center",
+        display: 'flex',
+        alignItems: 'center',
     },
     alignItemCenter: {
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     justifySpaceBetween: {
-        display: "flex",
-        justifyContent: "space-between",
+        display: 'flex',
+        justifyContent: 'space-between',
     },
     justifyEnd: {
-        justifyContent: "flex-end",
+        justifyContent: 'flex-end',
     },
     grid2: {
-        display: "grid",
-        gridTemplateColumns: "1fr 1fr",
+        display: 'grid',
+        gridTemplateColumns: '1fr 1fr',
         gridGap: theme.spacing(2),
     },
     buttonAlert: {
-        color: "#fff",
+        color: '#fff',
         backgroundColor: theme.palette.error.main,
         borderColor: theme.palette.error.main,
-        "&:hover": {
+        '&:hover': {
             backgroundColor: theme.palette.error.dark,
             borderColor: theme.palette.error.dark,
         },
@@ -101,34 +104,30 @@ export const useGlobalStyles = makeStyles((theme) => ({
         // "&:hover": {
         //     color: theme.palette.error.dark,
         // }
-        "&:hover": {
-            color: "white",
+        '&:hover': {
+            color: 'white',
             backgroundColor: theme.palette.error.main,
             borderColor: theme.palette.error.main,
-            border: "1px solid",
+            border: '1px solid',
         },
     },
     buttonPrimaryLink: {
-        ...(theme.overrides?.MuiButton &&
-            theme.overrides?.MuiButton.root &&
-            theme.overrides?.MuiButton.root),
+        ...(theme.overrides?.MuiButton && theme.overrides?.MuiButton.root && theme.overrides?.MuiButton.root),
         color: color.white,
         backgroundColor: theme.palette.primary.main,
-        "&:hover": {
-            textDecoration: "none",
+        '&:hover': {
+            textDecoration: 'none',
             color: color.white,
             borderColor: theme.palette.primary.dark,
             backgroundColor: theme.palette.primary.dark,
         },
     },
     buttonSecondaryLink: {
-        ...(theme.overrides?.MuiButton &&
-            theme.overrides?.MuiButton.root &&
-            theme.overrides?.MuiButton.root),
+        ...(theme.overrides?.MuiButton && theme.overrides?.MuiButton.root && theme.overrides?.MuiButton.root),
         color: color.white,
         backgroundColor: theme.palette.secondary.main,
-        "&:hover": {
-            textDecoration: "none",
+        '&:hover': {
+            textDecoration: 'none',
             color: color.white,
             borderColor: theme.palette.secondary.dark,
             backgroundColor: theme.palette.secondary.dark,
@@ -357,19 +356,19 @@ export const useGlobalStyles = makeStyles((theme) => ({
         paddingLeft: `${theme.spacing(5)}px !important`,
     },
     selectSmall: {
-        "& .MuiOutlinedInput-input": {
-            fontSize: "0.85rem",
-            lineHeight: "1.5rem",
-            padding: "0.75rem 1rem",
-            paddingRight: "32px",
-            minWidth: "150px",
+        '& .MuiOutlinedInput-input': {
+            fontSize: '0.85rem',
+            lineHeight: '1.5rem',
+            padding: '0.75rem 1rem',
+            paddingRight: '32px',
+            minWidth: '150px',
         },
     },
     breakLongText: {
-        overflow: "hidden",
-        textOverflow: "ellipsis",
-        wordBreak: "break-word",
-        display: "-webkit-box",
-        WebkitBoxOrient: "vertical",
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        wordBreak: 'break-word',
+        display: '-webkit-box',
+        WebkitBoxOrient: 'vertical',
     },
 }));
