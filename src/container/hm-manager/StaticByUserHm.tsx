@@ -13,6 +13,7 @@ export default function StaticByUserHm() {
         {
             id: 'createdAt',
             label: 'Created At',
+            isSort: true,
         },
         {
             id: 'username',
