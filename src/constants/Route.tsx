@@ -11,6 +11,9 @@ import ExportExcel from 'src/container/hm-manager/ExportExcel';
 import { FaFileCsv } from 'react-icons/fa';
 import StaticByUserHm from 'src/container/hm-manager/StaticByUserHm';
 import FixDataTool from 'src/container/hm-manager/FixDataTool';
+import SyncData from 'src/container/hm-manager/SyncData';
+import { FiXOctagon } from 'react-icons/fi';
+import { TiArrowSyncOutline } from 'react-icons/ti';
 export enum TypeScreen {
     public = 'public',
     admin = 'admin',
@@ -57,11 +60,19 @@ export const routers: RouteComponent[] = [
     },
     {
         component: FixDataTool,
-        label: 'Export Data',
+        label: 'Fix data',
         link: '/fix-data-tool',
         typeAuthen: TypeScreen.toolHm,
-        icon: <FaFileCsv />,
+        icon: <FiXOctagon />,
     },
+    // {
+    //     component: SyncData,
+    //     label: 'Sync data',
+    //     link: '/sync-data',
+    //     typeAuthen: TypeScreen.toolHm,
+    //     icon: <TiArrowSyncOutline />,
+    // },
+
     {
         component: StaticByUserHm,
         label: 'Statistic user',

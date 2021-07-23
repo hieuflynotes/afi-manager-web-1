@@ -1,6 +1,7 @@
 import { Button, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Typography } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
 import { ListFilter } from 'luong-base-model/lib';
+import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { StatisticByUserHm } from 'src/afi-manager-base-model/controllers/IOrderTrackingController';
 import TableCrud, { ColumnTable } from 'src/component/common/TableCrud';
@@ -9,6 +10,10 @@ import { useCrudHook } from 'src/hook/useCrudHook';
 import theme from 'src/theme/MuiTheme';
 export default function StaticByUserHm() {
     const [column, setColumn] = useState<ColumnTable<StatisticByUserHm>[]>([
+        {
+            id: 'createdAt',
+            label: 'Created At',
+        },
         {
             id: 'username',
             label: 'Username',
@@ -104,6 +109,7 @@ export default function StaticByUserHm() {
                                 ...item,
                                 totalPrice: Number(item.totalPrice).toFixed(2),
                                 totalPriceError: Number(item.totalPriceError).toFixed(2),
+                                createdAt: moment(item.createdAt).format('DD/MM/YY hh:mm'),
                             };
                         }}
                     ></TableCrud>

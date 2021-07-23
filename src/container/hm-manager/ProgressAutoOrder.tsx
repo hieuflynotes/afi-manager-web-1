@@ -9,7 +9,7 @@ import { Pagination } from '@material-ui/lab';
 import { useParams } from 'react-router-dom';
 import { hMController, orderTrackingController } from 'src/controller';
 import theme from 'src/theme/MuiTheme';
-import { OrderTracking } from 'src/afi-manager-base-model/model/OrderTracking';
+import { DataFirebaseHm, OrderTracking } from 'src/afi-manager-base-model/model/OrderTracking';
 import ProgressHmItemList from 'src/component/AutoOrderHm/ProgressHmItemList';
 import PopupAddOrderId from 'src/component/AutoOrderHm/PopupEditProgressAutoOrder';
 import { ListFilter } from 'luong-base-model/lib';
@@ -56,7 +56,9 @@ function ProgressAutoOrder(props: Props) {
         pin: '',
     });
 
-    const [remainGiftCard, setRemainGiftCard] = useState<string>('');
+    const [state, setState] = useState<{ isListening: boolean }>({
+        isListening: false,
+    });
 
     const crudTrackingHM = useCrudHook<OrderTracking, ListFilter<OrderTracking>>({
         controller: orderTrackingController,
@@ -68,6 +70,11 @@ function ProgressAutoOrder(props: Props) {
             filter: {
                 userHMId: userHmId,
             },
+        },
+        onAfterQuery: () => {
+            if (state.isListening == false) {
+                onListeningNotication();
+            }
         },
     });
     const classes = useStyle();
@@ -82,16 +89,27 @@ function ProgressAutoOrder(props: Props) {
                 includeMetadataChanges: true,
             },
             function (doc) {
+                setState({
+                    ...state,
+                    isListening: true,
+                });
                 if (doc.data()) {
-                    const data: any = doc.data();
-                    dispatch.notification.success(`Cập nhật orderId thành công ${data.orderId} - ${data.email}`);
+                    const dataFromFirbase: DataFirebaseHm | undefined = doc.data();
+                    const checkItem = crudTrackingHM.pagingList.rows?.find((item) => {
+                        return item.orderId == dataFromFirbase?.orderId;
+                    });
+
+                    if (!checkItem) {
+                        dispatch.notification.success(
+                            `Cập nhật orderId thành công ${dataFromFirbase?.orderId} - ${dataFromFirbase?.email}`,
+                        );
+                    }
                     crudTrackingHM.onRefreshList();
                 }
             },
         );
     };
     useEffect(() => {
-        onListeningNotication();
         return () => {};
     }, []);
 
