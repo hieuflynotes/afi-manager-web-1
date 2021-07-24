@@ -7,7 +7,7 @@ import { useGlobalStyles } from '../../theme/GlobalStyle';
 import { useCrudHook } from '../../hook/useCrudHook';
 import { Pagination } from '@material-ui/lab';
 import { useParams } from 'react-router-dom';
-import { hMController, orderTrackingController } from 'src/controller';
+import { hMController, orderTrackingController, userHmController } from 'src/controller';
 import theme from 'src/theme/MuiTheme';
 import { DataFirebaseHm, OrderTracking } from 'src/afi-manager-base-model/model/OrderTracking';
 import ProgressHmItemList from 'src/component/AutoOrderHm/ProgressHmItemList';
@@ -20,6 +20,8 @@ import { dispatch } from '../../rematch/store';
 import { countBoughtProduct, countProduct } from 'src/helper/CalculatorHmPrice';
 import { firebaseConfig } from 'src/constants/FirebaseConfig';
 import _ from 'lodash';
+import { UserHm } from 'src/afi-manager-base-model/model/UserHm';
+import { addAddress } from 'src/constants/IMacros';
 
 type Props = {};
 const useStyle = makeStyles((theme) => ({
@@ -50,10 +52,11 @@ export enum OrderStatus {
 }
 function ProgressAutoOrder(props: Props) {
     const { userHmId } = useParams<{ userHmId: string }>();
+    const [userHm, setUserHm] = useState<UserHm>({} as UserHm)
     const [selectedStatus, setSelectedStatus] = useState<OrderStatus>(OrderStatus.none);
     const [giftCard, setGiftCard] = useState<Giftcard>({
-        serialNumber: '',
-        pin: '',
+        serialNumber: localStorage.getItem('serialNumber') || '',
+        pin: localStorage.getItem('pin')||'',
     });
 
     const [state, setState] = useState<{ isListening: boolean }>({
@@ -110,7 +113,11 @@ function ProgressAutoOrder(props: Props) {
         );
     };
     useEffect(() => {
-        return () => {};
+        userHmController.list({filter:{id: userHmId}}).then(paging => {
+            if(paging && paging.rows && paging.rows.length>0){
+                setUserHm(paging.rows[0])
+            }
+        })
     }, []);
 
     const onChagngeGiftCard = useCallback(
@@ -269,6 +276,29 @@ function ProgressAutoOrder(props: Props) {
                     <Grid container justify="center">
                         <Typography align="center" variant="h4">
                             Chi tiết đơn hàng
+                            <IconButton
+                                onClick={() => {
+                                    navigator.clipboard.writeText(
+                                        addAddress(
+                                            userHm.emailCheckout || 'email',
+                                            userHm.password || '123456a@',
+                                            {
+                                                lineAddress: userHm.address || '',
+                                                flatHouse: userHm.address2 || '',
+                                                town: userHm.town || '',
+                                                postCode: userHm.postcode || '',
+                                                firstName: userHm.firstName || '',
+                                                lastName: userHm.lastName || '',
+                                                phonenumber: userHm.phone || '',
+                                            },
+                                        ),
+                                    );
+                                    dispatch.notification.success('Copy to clipboard successfully!');
+                                }}
+                                size="small"
+                            >
+                                <IoCopyOutline />
+                            </IconButton>
                         </Typography>
                         {renderOrderStatusSummary()}
                         {renderPaymentStatusSummary()}
@@ -302,6 +332,7 @@ function ProgressAutoOrder(props: Props) {
                                     ...giftCard,
                                     serialNumber: e.target.value,
                                 });
+                                localStorage.setItem('serialNumber', e.target.value)
                             }}
                         />
                         <TextField
@@ -315,6 +346,8 @@ function ProgressAutoOrder(props: Props) {
                                     ...giftCard,
                                     pin: e.target.value,
                                 });
+                                localStorage.setItem('pin', e.target.value)
+
                             }}
                         />
                     </div>
