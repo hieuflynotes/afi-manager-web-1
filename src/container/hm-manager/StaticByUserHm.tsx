@@ -8,6 +8,7 @@ import TableCrud, { ColumnTable } from 'src/component/common/TableCrud';
 import { orderTrackingController } from 'src/controller';
 import { useCrudHook } from 'src/hook/useCrudHook';
 import theme from 'src/theme/MuiTheme';
+
 export default function StaticByUserHm() {
     const [column, setColumn] = useState<ColumnTable<StatisticByUserHm>[]>([
         {
