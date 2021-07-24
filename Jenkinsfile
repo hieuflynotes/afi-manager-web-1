@@ -7,7 +7,7 @@ pipeline{
             }
             post{
                 always{
-                    echo "========always========"
+                    echo "========always========="
                 }
                 success{
                     echo "========A executed successfully========"
