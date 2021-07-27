@@ -98,6 +98,10 @@ const columns: Column[] = [
         label: 'Is regieter',
     },
     {
+        id: 'priceBuy',
+        label: 'Price Buy',
+    },
+    {
         id: 'errorDesc',
         label: 'Error',
     },
