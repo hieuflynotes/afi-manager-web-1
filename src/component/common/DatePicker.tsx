@@ -1,14 +1,29 @@
 import { Box, TextField } from '@material-ui/core';
 import 'bootstrap-daterangepicker/daterangepicker.css';
 import moment from 'moment';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import DateRangePicker from 'react-bootstrap-daterangepicker';
 import 'bootstrap';
 // import "../../styles/bootstrap.css";
 
 export default function DatePicker(props: Props) {
     moment.defaultFormat = 'DD/MM/YYYY';
-    const [date, setDate] = useState<string>('Today:   ' + moment().startOf('month').format());
+    const [date, setDate] = useState<string>(
+        `Custom Range: ${moment(props.initStartDate || new Date()).format('DD/MM/YYYY')} - ${moment(
+            props.initEndDate || new Date(),
+        ).format('DD/MM/YYYY')}`,
+    );
+
+    const getDefaultString = () => {};
+
+    useEffect(() => {
+        setDate(
+            `Custom Range: ${moment(props.initStartDate || new Date()).format('DD/MM/YYYY')} - ${moment(
+                props.initEndDate || new Date(),
+            ).format('DD/MM/YYYY')}`,
+        );
+        console.log(props);
+    }, [props.initEndDate, props.initStartDate]);
 
     return (
         <Box>
@@ -37,8 +52,8 @@ export default function DatePicker(props: Props) {
                     });
                 }}
                 initialSettings={{
-                    startDate: moment(),
-                    endDate: moment(),
+                    startDate: moment(props.initStartDate || new Date()),
+                    endDate: moment(props.initEndDate || new Date()),
                     ranges: {
                         Today: [moment(), moment()],
                         Yesterday: [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
@@ -86,6 +101,8 @@ type Props = {
     onChangeDateRange(dateRange: DateRange): void;
     label: string;
     isHiddenAll?: string;
+    initStartDate?: Date;
+    initEndDate?: Date;
 };
 
 export interface DateRange {

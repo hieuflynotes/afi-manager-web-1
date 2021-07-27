@@ -14,6 +14,7 @@ import FixDataTool from 'src/container/hm-manager/FixDataTool';
 import SyncData from 'src/container/hm-manager/SyncData';
 import { FiXOctagon } from 'react-icons/fi';
 import { TiArrowSyncOutline } from 'react-icons/ti';
+import StatisticAleTeam from 'src/container/hm-manager/StatisticAleTeam';
 export enum TypeScreen {
     public = 'public',
     admin = 'admin',
@@ -65,6 +66,14 @@ export const routers: RouteComponent[] = [
         typeAuthen: TypeScreen.toolHm,
         icon: <FiXOctagon />,
     },
+    {
+        component: StatisticAleTeam,
+        label: 'Ale Team',
+        link: '/statistic-ale-team',
+        typeAuthen: TypeScreen.toolHm,
+        icon: <FiXOctagon />,
+    },
+
     // {
     //     component: SyncData,
     //     label: 'Sync data',

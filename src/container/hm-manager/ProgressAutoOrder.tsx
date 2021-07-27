@@ -113,20 +113,6 @@ function ProgressAutoOrder(props: Props) {
         return () => {};
     }, []);
 
-    const onChagngeGiftCard = useCallback(
-        _.debounce((value: Giftcard) => {
-            hMController
-                .checkGifCart({
-                    cardNumber: value.serialNumber,
-                    cardPin: value.pin,
-                })
-                .then((res) => {
-                    console.log(res);
-                });
-        }, 400),
-        [],
-    );
-
     // useEffect(() => {
     //     onChagngeGiftCard(giftCard);
     // }, [giftCard]);
