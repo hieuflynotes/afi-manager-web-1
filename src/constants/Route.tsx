@@ -15,12 +15,16 @@ import SyncData from 'src/container/hm-manager/SyncData';
 import { FiXOctagon } from 'react-icons/fi';
 import { TiArrowSyncOutline } from 'react-icons/ti';
 import StatisticAleTeam from 'src/container/hm-manager/StatisticAleTeam';
+import PermissionContainer from 'src/container/permission/PermissionContainer';
+import RoleContainer from 'src/container/permission/RoleContainer';
+import SetupRoleContainer from 'src/container/permission/SetupRoleContainer';
 export enum TypeScreen {
     public = 'public',
     admin = 'admin',
     authen = 'authen',
     afi = 'afi',
     toolHm = 'toolHm',
+    permssionRole = 'permissionRole',
 }
 
 export const routers: RouteComponent[] = [
@@ -101,6 +105,27 @@ export const routers: RouteComponent[] = [
         label: 'Check Tracking',
         link: '/check-tracking',
         typeAuthen: TypeScreen.admin,
+        icon: <AiFillDashboard />,
+    },
+    {
+        component: PermissionContainer,
+        label: 'Permssion',
+        link: '/permission',
+        typeAuthen: TypeScreen.permssionRole,
+        icon: <AiFillDashboard />,
+    },
+    {
+        component: RoleContainer,
+        label: 'Role',
+        link: '/role',
+        typeAuthen: TypeScreen.permssionRole,
+        icon: <AiFillDashboard />,
+    },
+    {
+        component: SetupRoleContainer,
+        label: 'Role',
+        link: '/role/:id',
+        typeAuthen: TypeScreen.permssionRole,
         icon: <AiFillDashboard />,
     },
 ];

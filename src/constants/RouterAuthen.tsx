@@ -1,11 +1,12 @@
-import React, { useMemo } from "react";
-import { Redirect, Route } from "react-router-dom";
+import React, { useMemo } from 'react';
+import { Redirect, Route } from 'react-router-dom';
 
-import { createBrowserHistory } from "history";
-import AdminScreen from "../container/AdminScreen";
-import { InfoMe } from "../afi-manager-base-model/model/InfoMe";
-import AfiScreen from "src/container/AfiScreen";
-import ToolHmScreen from "src/container/ToolHmScreen";
+import { createBrowserHistory } from 'history';
+import AdminScreen from '../container/AdminScreen';
+import { InfoMe } from '../afi-manager-base-model/model/InfoMe';
+import AfiScreen from 'src/container/AfiScreen';
+import ToolHmScreen from 'src/container/ToolHmScreen';
+import RolePermissionScreen from 'src/container/RolePermissionScreen';
 export const history = createBrowserHistory({});
 
 // Auth route componnet
@@ -23,7 +24,7 @@ export function AdminRoute({ ...props }: iProtectRoute) {
                     ) : (
                         <Redirect
                             to={{
-                                pathname: "/login",
+                                pathname: '/login',
                                 state: { from: location },
                             }}
                         />
@@ -31,7 +32,7 @@ export function AdminRoute({ ...props }: iProtectRoute) {
                 }
             />
         ),
-        [props]
+        [props],
     );
 }
 
@@ -48,7 +49,7 @@ export function AfiRoute({ ...props }: iProtectRoute) {
                 )}
             />
         ),
-        [props]
+        [props],
     );
 }
 
@@ -65,7 +66,24 @@ export function ToolHmRoute({ ...props }: iProtectRoute) {
                 )}
             />
         ),
-        [props]
+        [props],
+    );
+}
+
+export function RolePermssionRoute({ ...props }: iProtectRoute) {
+    return useMemo(
+        () => (
+            <Route
+                path={props.path}
+                render={({ location }) => (
+                    // props.authen?.role == "admin"
+                    <RolePermissionScreen>
+                        <props.component />
+                    </RolePermissionScreen>
+                )}
+            />
+        ),
+        [props],
     );
 }
 
@@ -81,7 +99,7 @@ export function AuthenRoute({ ...props }: iProtectRoute) {
                     ) : (
                         <Redirect
                             to={{
-                                pathname: "/login",
+                                pathname: '/login',
                                 state: { from: location },
                             }}
                         />
@@ -89,17 +107,11 @@ export function AuthenRoute({ ...props }: iProtectRoute) {
                 }
             />
         ),
-        [props]
+        [props],
     );
 }
 export function PublicRoute({ ...props }: iProtectRoute) {
-    return (
-        <Route
-            exact={props.exact}
-            path={props.path}
-            render={({ location }) => <props.component />}
-        />
-    );
+    return <Route exact={props.exact} path={props.path} render={({ location }) => <props.component />} />;
 }
 
 export const goTo = (path: string) => {

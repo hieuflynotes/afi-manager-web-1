@@ -1,0 +1,174 @@
+import React, { useEffect, useState } from 'react';
+import { makeStyles, Grid, Typography, IconButton, FormControlLabel, Checkbox } from '@material-ui/core';
+import { AiOutlineEdit } from 'react-icons/ai';
+import { IoCloseOutline } from 'react-icons/io5';
+import { useHistory, useParams } from 'react-router-dom';
+import Button from 'src/component/common/Button';
+import ListGrid from 'src/component/common/ListGrid';
+import PopUpConfirm from 'src/component/common/PopupConfirm';
+import TextField from 'src/component/common/TextFiled';
+import PopupPermssion from 'src/component/permssion/PopupPermssion';
+import { permssionController, roleController } from 'src/controller';
+import { useCrudHook } from 'src/hook/useCrudHook';
+import { useGlobalStyles } from '../../theme/GlobalStyle';
+import clsx from 'clsx';
+import { Permission, Role } from 'luong-base-model/lib';
+import { validate as validateUuid } from 'uuid';
+
+type Props = {};
+const useStyle = makeStyles((theme) => ({
+    rootPermissionItem: {
+        border: `1px solid ${theme.palette.divider}`,
+        borderRadius: theme.spacing(1),
+        padding: theme.spacing(2),
+    },
+}));
+type State = {
+    permssion: Permission[];
+};
+
+function SetupRoleContainer(props: Props) {
+    const { id } = useParams<{ id: string }>();
+    const history = useHistory();
+    const [role, setRole] = useState<{
+        role: Role;
+        roleSelect: Map<string, Permission>;
+        errorName: string;
+    }>({
+        role: {},
+        roleSelect: new Map(),
+        errorName: '',
+    });
+    const crudPermission = useCrudHook({
+        controller: permssionController,
+        initQuery: {
+            pageSize: 100,
+        },
+    });
+    const classes = useStyle();
+    const globalStyle = useGlobalStyles();
+    const [state, setState] = useState<State>({
+        permssion: [],
+    });
+
+    useEffect(() => {
+        if (validateUuid(id)) {
+            roleController
+                .getById({
+                    id: id,
+                })
+                .then((res) => {
+                    if (res) {
+                        setRole({
+                            ...role,
+                            role: res || {},
+                            roleSelect: new Map<string, Permission>(
+                                res && res.permission?.map((item) => [item.id || '', item]),
+                            ),
+                        });
+                    }
+                });
+        }
+        permssionController.find({}).then((res) => {
+            setState({
+                permssion: res,
+            });
+        });
+    }, []);
+
+    console.log(role);
+
+    const onChangeNameRole = (value: string) => {
+        let error = '';
+        if (!value) {
+            error = 'Is not required';
+        } else {
+            error = '';
+        }
+        setRole({
+            ...role,
+            errorName: error,
+            role: {
+                ...role.role,
+                name: value,
+            },
+        });
+    };
+
+    const handleSave = () => {
+        if (!role.role.name) {
+            setRole({
+                ...role,
+                errorName: 'Is not require',
+            });
+        } else {
+            roleController
+                .save({
+                    ...role.role,
+                    permission: Array.from(role.roleSelect.values()),
+                })
+                .then((res) => {
+                    history.push(`/role/${res.id}`);
+                });
+        }
+    };
+
+    return (
+        <Grid container className={globalStyle.pp2}>
+            <Grid container justify="center" className={globalStyle.pp2}>
+                <Typography variant="h5">Setup Role</Typography>
+            </Grid>
+            <Grid container justify="space-between">
+                <TextField
+                    variant="outlined"
+                    color="primary"
+                    label="Name Role"
+                    value={role.role.name}
+                    error={Boolean(role.errorName)}
+                    helperText={role.errorName}
+                    onChange={(e) => {
+                        onChangeNameRole(e.target.value);
+                    }}
+                    InputLabelProps={{ shrink: true }}
+                />
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => {
+                        handleSave();
+                    }}
+                >
+                    Save
+                </Button>
+            </Grid>
+            <Grid container className={clsx(globalStyle.pp2, globalStyle.pt5)}>
+                <ListGrid minWidthItem="200px" heightItem={'100px'} gridGap={20}>
+                    {state.permssion.map((item) => (
+                        <FormControlLabel
+                            control={
+                                <Checkbox
+                                    checked={Boolean(role.roleSelect.get(item.id || ''))}
+                                    onChange={(e, checked) => {
+                                        const getNowSelect = role.roleSelect;
+                                        if (checked) {
+                                            getNowSelect.set(item.id || '', item);
+                                        } else {
+                                            getNowSelect.delete(item.id || '');
+                                        }
+                                        setRole({
+                                            ...role,
+                                            roleSelect: getNowSelect,
+                                        });
+                                    }}
+                                />
+                            }
+                            label={item.name}
+                        />
+                    ))}
+                </ListGrid>
+            </Grid>
+        </Grid>
+    );
+}
+
+export default React.memo(SetupRoleContainer);

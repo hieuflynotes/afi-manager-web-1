@@ -1,4 +1,4 @@
-import { Grid, makeStyles, Typography } from '@material-ui/core';
+import { Checkbox, FormControlLabel, Grid, makeStyles, Typography } from '@material-ui/core';
 import clsx from 'clsx';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
@@ -34,17 +34,23 @@ const useStyle = makeStyles((theme) => ({
 }));
 
 export default function StatisticAleTeam() {
-    const globalsStyle = useGlobalStyles();
+    const globalStyle = useGlobalStyles();
     const [stateDate, setStateDate] = useState<FilterStatistic>({
         interval: 'day',
         from: moment().startOf('month').toDate(),
         to: moment().endOf('month').toDate(),
     });
-    const [statisticAleTeam, setStatisticAleTeam] =
-        useState<{
-            intervalRegisterTeam?: any[];
-            intervalCheckoutTeam?: any[];
-        }>();
+    const [statisticAleTeam, setStatisticAleTeam] = useState<{
+        intervalRegisterTeam?: IntervalCheckoutHmTeamAle[][];
+        intervalCheckoutTeam?: IntervalCheckoutHmTeamAle[][];
+        nameOfTeamRegister?: string[];
+        nameOfTeamCheckout?: string[];
+        nameOfTeamRegisterSelect?: Map<string, string>;
+        nameOfTeamCheckoutSelect?: Map<string, string>;
+    }>({
+        nameOfTeamCheckoutSelect: new Map(),
+        nameOfTeamRegisterSelect: new Map(),
+    });
     const classes = useStyle();
     const getData = (filter: FilterStatistic) => {
         Promise.all([
@@ -52,48 +58,54 @@ export default function StatisticAleTeam() {
             orderTrackingController.intervalTeamRegister(filter), //
         ]).then((_res) => {
             const nameAllTeamCheckout: string[] = _res[0].map((item) => item[0].nameUser);
-            const mapNameUserCheckout = new Map<string, IntervalCheckoutHmTeamAle>();
-            _res[0].forEach((item) => {
-                item.forEach((user) => {
-                    mapNameUserCheckout.set(`${moment(user.date).format('DD-MM-YYYY')} - ${user.nameUser}`, user);
-                });
-            });
-            const intervalCheckoutTeam: any = [['x', ...nameAllTeamCheckout]].concat(
-                _res[0][0].map((item) => [
-                    moment(item.date).format('DD-MM-YYYY'),
-                    ...(nameAllTeamCheckout.map((user) => {
-                        return (
-                            mapNameUserCheckout.get(`${moment(item.date).format('DD-MM-YYYY')} - ${user}`)?.total || 0
-                        );
-                    }) as any),
-                ]),
-            );
-
             const nameAllTeamRegister: string[] = _res[1].map((item) => item[0].nameUser);
-            const mapNameUserRegister = new Map<string, IntervalCheckoutHmTeamAle>();
-            _res[1].forEach((item) => {
-                item.forEach((user) => {
-                    mapNameUserRegister.set(`${moment(user.date).format('DD-MM-YYYY')} - ${user.nameUser}`, user);
-                });
-            });
-            const intervalCheckoutRegister: any = [['x', ...nameAllTeamRegister]].concat(
-                _res[1][0].map((item) => [
-                    moment(item.date).format('DD-MM-YYYY'),
-                    ...(nameAllTeamRegister.map((user) => {
-                        return (
-                            mapNameUserRegister.get(`${moment(item.date).format('DD-MM-YYYY')} - ${user}`)?.total || 0
-                        );
-                    }) as any),
-                ]),
-            );
+
+            console.log({ res: _res[0] });
 
             setStatisticAleTeam({
                 ...statisticAleTeam,
-                intervalCheckoutTeam: intervalCheckoutTeam,
-                intervalRegisterTeam: intervalCheckoutRegister,
+                intervalCheckoutTeam: _res[0],
+                intervalRegisterTeam: _res[1],
+                nameOfTeamCheckout: nameAllTeamCheckout,
+                nameOfTeamRegister: nameAllTeamRegister,
+                nameOfTeamCheckoutSelect:
+                    statisticAleTeam?.nameOfTeamCheckoutSelect?.size == 0
+                        ? new Map(nameAllTeamCheckout.map((item) => [item, item]))
+                        : statisticAleTeam?.nameOfTeamCheckoutSelect,
+                nameOfTeamRegisterSelect:
+                    statisticAleTeam?.nameOfTeamRegisterSelect?.size == 0
+                        ? new Map(nameAllTeamRegister.map((item) => [item, item]))
+                        : statisticAleTeam?.nameOfTeamRegisterSelect,
             });
         });
     };
+
+    const getIntervalChart = (params: { nameOfTeam: string[]; interval: IntervalCheckoutHmTeamAle[][] }) => {
+        if (params.nameOfTeam.length == 0 || params.interval.length == 0) {
+            return [['x'], [1]];
+        }
+        const nameAllTeamCheckout: string[] = params.nameOfTeam;
+
+        const mapNameUserCheckout = new Map<string, IntervalCheckoutHmTeamAle>();
+
+        params.interval.forEach((item) => {
+            item.forEach((user) => {
+                mapNameUserCheckout.set(`${moment(user.date).format('DD-MM-YYYY')} - ${user.nameUser}`, user);
+            });
+        });
+        const intervalCheckoutTeam: any = [['x', ...nameAllTeamCheckout]].concat(
+            params.interval[0].map((item) => [
+                moment(item.date).format('DD-MM-YYYY'),
+                ...(nameAllTeamCheckout.map((user) => {
+                    return Number(
+                        mapNameUserCheckout.get(`${moment(item.date).format('DD-MM-YYYY')} - ${user}`)?.total || 0,
+                    );
+                }) as any),
+            ]),
+        );
+        return intervalCheckoutTeam;
+    };
+
     useEffect(() => {
         getData(stateDate);
     }, [stateDate]);
@@ -140,14 +152,52 @@ export default function StatisticAleTeam() {
                                 {/* <RecentGriftCard /> */}
                                 <Grid className={classes.frChart}>
                                     <Grid>
-                                        <Typography variant="h5">Team register</Typography>
+                                        <Typography variant="h5">Team Checkout</Typography>
+                                    </Grid>
+                                    <Grid container>
+                                        {statisticAleTeam.nameOfTeamCheckout?.map((item) => (
+                                            <Grid className={clsx(globalStyle.pp0)}>
+                                                <FormControlLabel
+                                                    control={
+                                                        <Checkbox
+                                                            checked={Boolean(
+                                                                statisticAleTeam?.nameOfTeamCheckoutSelect?.get(item),
+                                                            )}
+                                                            onChange={(e, checked) => {
+                                                                const getChecked =
+                                                                    statisticAleTeam?.nameOfTeamCheckoutSelect;
+                                                                if ((getChecked?.size || 0) <= 1 && !checked) {
+                                                                    return;
+                                                                }
+                                                                if (checked) {
+                                                                    getChecked?.set(item, item);
+                                                                } else {
+                                                                    getChecked?.delete(item);
+                                                                }
+                                                                setStatisticAleTeam({
+                                                                    ...statisticAleTeam,
+                                                                    nameOfTeamCheckoutSelect: getChecked,
+                                                                });
+                                                            }}
+                                                        />
+                                                    }
+                                                    label={item}
+                                                />
+                                            </Grid>
+                                        ))}
                                     </Grid>
                                     <ChartGoogle
                                         width={'95%'}
                                         height={'600px'}
                                         chartType="LineChart"
                                         loader={<div>Loading Chart</div>}
-                                        data={statisticAleTeam?.intervalCheckoutTeam}
+                                        data={getIntervalChart({
+                                            interval: statisticAleTeam?.intervalCheckoutTeam || [],
+                                            nameOfTeam:
+                                                Array.from(
+                                                    statisticAleTeam?.nameOfTeamCheckoutSelect?.values() || [],
+                                                ) || [],
+                                        })}
                                         options={{
                                             animation: {
                                                 duration: 500,
@@ -163,14 +213,52 @@ export default function StatisticAleTeam() {
                                 {/* <RecentGriftCard /> */}
                                 <Grid className={classes.frChart}>
                                     <Grid>
-                                        <Typography variant="h5">Team checkout</Typography>
+                                        <Typography variant="h5">Team Regsiter</Typography>
+                                    </Grid>
+                                    <Grid container>
+                                        {statisticAleTeam.nameOfTeamRegister?.map((item) => (
+                                            <Grid className={clsx(globalStyle.pp0)}>
+                                                <FormControlLabel
+                                                    control={
+                                                        <Checkbox
+                                                            checked={Boolean(
+                                                                statisticAleTeam?.nameOfTeamRegisterSelect?.get(item),
+                                                            )}
+                                                            onChange={(e, checked) => {
+                                                                const getChecked =
+                                                                    statisticAleTeam?.nameOfTeamRegisterSelect;
+                                                                if ((getChecked?.size || 0) <= 1 && !checked) {
+                                                                    return;
+                                                                }
+                                                                if (checked) {
+                                                                    getChecked?.set(item, item);
+                                                                } else {
+                                                                    getChecked?.delete(item);
+                                                                }
+                                                                setStatisticAleTeam({
+                                                                    ...statisticAleTeam,
+                                                                    nameOfTeamRegisterSelect: getChecked,
+                                                                });
+                                                            }}
+                                                        />
+                                                    }
+                                                    label={item}
+                                                />
+                                            </Grid>
+                                        ))}
                                     </Grid>
                                     <ChartGoogle
                                         height={'900px'}
                                         width={'95%'}
                                         chartType="LineChart"
                                         loader={<div>Loading Chart</div>}
-                                        data={statisticAleTeam?.intervalRegisterTeam}
+                                        data={getIntervalChart({
+                                            interval: statisticAleTeam?.intervalRegisterTeam || [],
+                                            nameOfTeam:
+                                                Array.from(
+                                                    statisticAleTeam?.nameOfTeamRegisterSelect?.values() || [],
+                                                ) || [],
+                                        })}
                                         options={{
                                             animation: {
                                                 duration: 500,

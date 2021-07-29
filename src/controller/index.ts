@@ -9,6 +9,9 @@ import { UserController } from './UserController';
 import { routersMap, TypeScreen } from 'src/constants/Route';
 import { MetaDataController } from './MetaDataController';
 import { UserHmController } from './UserHmController';
+import PermissionContainer from 'src/container/permission/PermissionContainer';
+import { PermissionController } from './PermissionController';
+import { RoleController } from './RoleController';
 
 export const appClient = axios.create({
     baseURL: config.apiGatewayUrl,
@@ -66,6 +69,9 @@ export const metaDataController = new MetaDataController(config.apiGatewayUrl, '
 export const hMController = new HMController('https://api.parcellab.com/v2', '');
 
 export const userHmController = new UserHmController(config.apiGatewayUrl, 'afi/userHm', appClient);
+
+export const permssionController = new PermissionController(config.apiGatewayUrl, 'permssion', appClient);
+export const roleController = new RoleController(config.apiGatewayUrl, 'role', appClient);
 
 //
 //

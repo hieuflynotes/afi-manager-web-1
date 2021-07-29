@@ -1,33 +1,34 @@
 /* eslint-disable eqeqeq */
-import { Grid } from "@material-ui/core";
-import { SnackbarProvider, useSnackbar } from "notistack";
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Router } from "react-router";
+import { Grid } from '@material-ui/core';
+import { SnackbarProvider, useSnackbar } from 'notistack';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Router } from 'react-router';
 
 import {
     // BrowserRouter as Router,
     Redirect,
     Route,
     Switch,
-} from "react-router-dom";
-import { CSSTransition, TransitionGroup } from "react-transition-group";
-import "./App.css";
-import BackdropLoading from "./component/common/BackdropLoading";
-import { routers, TypeScreen } from "./constants/Route";
+} from 'react-router-dom';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import './App.css';
+import BackdropLoading from './component/common/BackdropLoading';
+import { routers, TypeScreen } from './constants/Route';
 import {
     AdminRoute,
     AfiRoute,
     AuthenRoute,
     history,
     PublicRoute,
+    RolePermssionRoute,
     ToolHmRoute,
-} from "./constants/RouterAuthen";
-import CustomerManager from "./container/CustomerManager";
-import Login from "./container/Login";
-import UiKit from "./container/UiKit";
+} from './constants/RouterAuthen';
+import CustomerManager from './container/CustomerManager';
+import Login from './container/Login';
+import UiKit from './container/UiKit';
 // import "./i18n/config";
-import { Dispatch, RootState } from "./rematch/store";
+import { Dispatch, RootState } from './rematch/store';
 
 function App() {
     const authen = useSelector((state: RootState) => state.authen);
@@ -62,9 +63,7 @@ function App() {
                                                 authen={authen.info}
                                             />
                                         );
-                                    } else if (
-                                        route.typeAuthen === TypeScreen.authen
-                                    ) {
+                                    } else if (route.typeAuthen === TypeScreen.authen) {
                                         return (
                                             <AuthenRoute
                                                 exact
@@ -73,19 +72,9 @@ function App() {
                                                 authen={authen.info}
                                             />
                                         );
-                                    } else if (
-                                        route.typeAuthen === TypeScreen.public
-                                    ) {
-                                        return (
-                                            <Route
-                                                exact
-                                                component={route.component}
-                                                path={route.link}
-                                            />
-                                        );
-                                    } else if (
-                                        route.typeAuthen === TypeScreen.afi
-                                    ) {
+                                    } else if (route.typeAuthen === TypeScreen.public) {
+                                        return <Route exact component={route.component} path={route.link} />;
+                                    } else if (route.typeAuthen === TypeScreen.afi) {
                                         return (
                                             <AfiRoute
                                                 exact
@@ -95,11 +84,19 @@ function App() {
                                             />
                                         );
                                         // ToolHmRoute
-                                    } else if (
-                                        route.typeAuthen === TypeScreen.toolHm
-                                    ) {
+                                    } else if (route.typeAuthen === TypeScreen.toolHm) {
                                         return (
                                             <ToolHmRoute
+                                                exact
+                                                component={route.component}
+                                                path={route.link}
+                                                authen={authen.info}
+                                            />
+                                        );
+                                        // ToolHmRoute
+                                    } else if (route.typeAuthen === TypeScreen.permssionRole) {
+                                        return (
+                                            <RolePermssionRoute
                                                 exact
                                                 component={route.component}
                                                 path={route.link}
@@ -124,7 +121,7 @@ function App() {
                                     render={({ location }) => (
                                         <Redirect
                                             to={{
-                                                pathname: "/tool-change-text",
+                                                pathname: '/tool-change-text',
                                             }}
                                         />
                                     )}
@@ -135,7 +132,7 @@ function App() {
                                     render={({ location }) => (
                                         <Redirect
                                             to={{
-                                                pathname: "/tool-change-text",
+                                                pathname: '/tool-change-text',
                                             }}
                                         />
                                     )}
@@ -145,7 +142,7 @@ function App() {
                                     render={({ location }) => (
                                         <Redirect
                                             to={{
-                                                pathname: "/login",
+                                                pathname: '/login',
                                             }}
                                         />
                                     )}

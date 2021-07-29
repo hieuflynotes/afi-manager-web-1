@@ -9,7 +9,7 @@ import 'bootstrap';
 export default function DatePicker(props: Props) {
     moment.defaultFormat = 'DD/MM/YYYY';
     const [date, setDate] = useState<string>(
-        `Custom Range: ${moment(props.initStartDate || new Date()).format('DD/MM/YYYY')} - ${moment(
+        `${moment(props.initStartDate || new Date()).format('DD/MM/YYYY')} - ${moment(
             props.initEndDate || new Date(),
         ).format('DD/MM/YYYY')}`,
     );
@@ -18,7 +18,7 @@ export default function DatePicker(props: Props) {
 
     useEffect(() => {
         setDate(
-            `Custom Range: ${moment(props.initStartDate || new Date()).format('DD/MM/YYYY')} - ${moment(
+            `${moment(props.initStartDate || new Date()).format('DD/MM/YYYY')} - ${moment(
                 props.initEndDate || new Date(),
             ).format('DD/MM/YYYY')}`,
         );
