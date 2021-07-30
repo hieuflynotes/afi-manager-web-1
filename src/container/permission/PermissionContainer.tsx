@@ -46,6 +46,11 @@ function PermissionContainer(props: Props) {
                 onCancel={crudPermission.onCancelPopup}
                 onEdit={crudPermission.onSave}
             />
+            <PopUpConfirm
+                isDisplay={crudPermission.isShowConfirm}
+                onCancel={crudPermission.onCancelConfirm}
+                onConfirm={() => crudPermission.onDelete(crudPermission.itemSelected)}
+            />
             <Grid container justify="center">
                 <Typography variant="h5">Permssion</Typography>
             </Grid>

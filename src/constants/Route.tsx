@@ -18,6 +18,7 @@ import StatisticAleTeam from 'src/container/hm-manager/StatisticAleTeam';
 import PermissionContainer from 'src/container/permission/PermissionContainer';
 import RoleContainer from 'src/container/permission/RoleContainer';
 import SetupRoleContainer from 'src/container/permission/SetupRoleContainer';
+import UserManager from 'src/container/permission/UserManager';
 export enum TypeScreen {
     public = 'public',
     admin = 'admin',
@@ -125,6 +126,13 @@ export const routers: RouteComponent[] = [
         component: SetupRoleContainer,
         label: 'Role',
         link: '/role/:id',
+        typeAuthen: TypeScreen.permssionRole,
+        icon: <AiFillDashboard />,
+    },
+    {
+        component: UserManager,
+        label: 'User Manager',
+        link: '/user-manager',
         typeAuthen: TypeScreen.permssionRole,
         icon: <AiFillDashboard />,
     },
