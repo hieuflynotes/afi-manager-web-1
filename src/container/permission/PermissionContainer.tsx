@@ -30,6 +30,7 @@ function PermissionContainer(props: Props) {
         controller: permssionController,
         initQuery: {
             pageSize: 100,
+            searchFields: ['name', 'path'],
         },
     });
     const classes = useStyle();
@@ -56,7 +57,13 @@ function PermissionContainer(props: Props) {
             </Grid>
             <Grid container justify="space-between">
                 <Grid className={globalStyle.pp2}>
-                    <TextField variant="outlined" label="search" />
+                    <TextField
+                        variant="outlined"
+                        label="Search"
+                        onChange={(e) => {
+                            crudPermission.onQueryChanged(e.target.value);
+                        }}
+                    />
                 </Grid>
                 <Grid className={globalStyle.pp2}>
                     <Button variant="contained" color="primary" onClick={() => crudPermission.onShowPopup({})}>

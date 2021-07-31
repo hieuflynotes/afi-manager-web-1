@@ -12,7 +12,7 @@ import BaseDialog from '../common/BaseDialog';
 import { useGlobalStyles } from '../../theme/GlobalStyle';
 import { UserHm } from 'src/afi-manager-base-model/model/UserHm';
 
-export enum Method {
+export enum EMethodPermission {
     POST = 'POST',
     GET = 'GET',
     PATH = 'PATH',
@@ -62,7 +62,7 @@ export default function PopupPermssion(props: Props) {
             formik.setValues(
                 _.cloneDeep({
                     ...props.item,
-                    method: props.item.method || Method?.GET,
+                    method: props.item.method || EMethodPermission?.GET,
                 }),
             );
             formik.setTouched(_.mapValues(new UserHm(), () => false));
@@ -111,7 +111,7 @@ export default function PopupPermssion(props: Props) {
                             label="Method"
                             variant="outlined"
                             value={formik.values.method}
-                            data={Object.values(Method || {}) || []}
+                            data={Object.values(EMethodPermission || {}) || []}
                             labelOption={(label) => label}
                             onChange={(value: any) => {
                                 formik.setValues({

@@ -14,7 +14,10 @@ import { useGlobalStyles } from '../../theme/GlobalStyle';
 import clsx from 'clsx';
 import { Permission, Role } from 'luong-base-model/lib';
 import { validate as validateUuid } from 'uuid';
-
+import * as Yup from 'yup';
+import { useFormik } from 'formik';
+import _ from 'lodash';
+import { MetaDataRole } from 'src/afi-manager-base-model/model/MetaDataRolePermision';
 type Props = {};
 const useStyle = makeStyles((theme) => ({
     rootPermissionItem: {
@@ -27,17 +30,52 @@ type State = {
     permssion: Permission[];
 };
 
+const validate = Yup.object({
+    name: Yup.string()
+        .max(100, 'Value must be less than 100 characters')
+        .required("Can't be left blank !!")
+        .trim()
+        .nullable(),
+    redirect: Yup.string().required("Can't be left blank !!").trim().nullable(),
+});
+
 function SetupRoleContainer(props: Props) {
     const { id } = useParams<{ id: string }>();
+
+    const formik = useFormik<Role<MetaDataRole> & { redirect?: string }>({
+        initialValues: {} as Permission,
+        validationSchema: validate,
+        onSubmit: () => {
+            roleController
+                .save({
+                    ...formik.values,
+                    permission: Array.from(role.roleSelect.values()),
+                    metaData: {
+                        ...formik.values.metaData,
+                        redirect: formik.values.redirect,
+                    },
+                })
+                .then((res) => {
+                    history.push(`/role/${res.id}`);
+                });
+        },
+    });
+    const onSubmit = () => {
+        formik.handleSubmit();
+        const touch = {
+            redirect: true,
+            name: true,
+        };
+        formik.setTouched(touch);
+    };
+
     const history = useHistory();
     const [role, setRole] = useState<{
         role: Role;
         roleSelect: Map<string, Permission>;
-        errorName: string;
     }>({
         role: {},
         roleSelect: new Map(),
-        errorName: '',
     });
     const crudPermission = useCrudHook({
         controller: permssionController,
@@ -66,6 +104,10 @@ function SetupRoleContainer(props: Props) {
                                 res && res.permission?.map((item) => [item.id || '', item]),
                             ),
                         });
+                        formik.setValues({
+                            ...res,
+                            redirect: res.metaData?.redirect,
+                        });
                     }
                 });
         }
@@ -76,70 +118,51 @@ function SetupRoleContainer(props: Props) {
         });
     }, []);
 
-    console.log(role);
-
-    const onChangeNameRole = (value: string) => {
-        let error = '';
-        if (!value) {
-            error = 'Is not required';
-        } else {
-            error = '';
-        }
-        setRole({
-            ...role,
-            errorName: error,
-            role: {
-                ...role.role,
-                name: value,
-            },
-        });
-    };
-
-    const handleSave = () => {
-        if (!role.role.name) {
-            setRole({
-                ...role,
-                errorName: 'Is not require',
-            });
-        } else {
-            roleController
-                .save({
-                    ...role.role,
-                    permission: Array.from(role.roleSelect.values()),
-                })
-                .then((res) => {
-                    history.push(`/role/${res.id}`);
-                });
-        }
-    };
-
     return (
         <Grid container className={globalStyle.pp2}>
             <Grid container justify="center" className={globalStyle.pp2}>
                 <Typography variant="h5">Setup Role</Typography>
             </Grid>
-            <Grid container justify="space-between">
-                <TextField
-                    variant="outlined"
-                    color="primary"
-                    label="Name Role"
-                    value={role.role.name}
-                    error={Boolean(role.errorName)}
-                    helperText={role.errorName}
-                    onChange={(e) => {
-                        onChangeNameRole(e.target.value);
-                    }}
-                    InputLabelProps={{ shrink: true }}
-                />
+            <Grid container justify="flex-end" className={globalStyle.pb2}>
                 <Button
                     variant="contained"
                     color="primary"
                     onClick={() => {
-                        handleSave();
+                        onSubmit();
                     }}
                 >
                     Save
                 </Button>
+            </Grid>
+            <Grid container justify="space-between">
+                <Grid xs={5}>
+                    <TextField
+                        variant="outlined"
+                        color="primary"
+                        fullWidth
+                        label="Name Role"
+                        name="name"
+                        value={role.role.name}
+                        error={Boolean(formik.touched.name && formik.errors.name)}
+                        helperText={formik.touched.name && formik.errors.name}
+                        onChange={formik.handleChange}
+                        InputLabelProps={{ shrink: true }}
+                    />
+                </Grid>
+                <Grid xs={5}>
+                    <TextField
+                        variant="outlined"
+                        fullWidth
+                        color="primary"
+                        label="Path redirect"
+                        name="redirect"
+                        value={formik.values.redirect}
+                        error={Boolean(formik.touched.redirect && formik.errors.redirect)}
+                        helperText={formik.touched.redirect && formik.errors.redirect}
+                        onChange={formik.handleChange}
+                        InputLabelProps={{ shrink: true }}
+                    />
+                </Grid>
             </Grid>
             <Grid container className={clsx(globalStyle.pp2, globalStyle.pt5)}>
                 <ListGrid minWidthItem="200px" heightItem={'100px'} gridGap={20}>
@@ -162,7 +185,7 @@ function SetupRoleContainer(props: Props) {
                                     }}
                                 />
                             }
-                            label={item.name}
+                            label={`${item.method} - ${item.name}`}
                         />
                     ))}
                 </ListGrid>

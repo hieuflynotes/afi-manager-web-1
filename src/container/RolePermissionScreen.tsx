@@ -34,7 +34,7 @@ const useStyle = makeStyles((theme) => ({
 type Props = {
     children: React.ReactElement;
 };
-const link = ['/permission', '/role'];
+const link = ['/permission', '/role', '/user-manager'];
 function RolePermissionScreen(props: Props) {
     const classes = useStyle();
     const [route, setRoute] = useState<RouteComponent[]>([]);

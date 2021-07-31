@@ -46,6 +46,10 @@ export default function UserManager() {
             isSort: true,
         },
         {
+            id: 'role',
+            label: 'Role',
+        },
+        {
             id: 'action' as any,
             label: 'Action',
         },
@@ -66,7 +70,7 @@ export default function UserManager() {
                 <IconButton color="primary" onClick={() => crudUserAccount.onShowPopup(item)}>
                     <AiOutlineEdit />
                 </IconButton>
-                <IconButton
+                {/* <IconButton
                     style={{
                         color: theme.palette.error.main,
                     }}
@@ -75,7 +79,7 @@ export default function UserManager() {
                     }}
                 >
                     <IoCloseOutline />
-                </IconButton>
+                </IconButton> */}
             </Grid>
         );
     };
@@ -127,6 +131,7 @@ export default function UserManager() {
                             return {
                                 ...item,
                                 action: actionCpn(item),
+                                role: (item.role && item.role[0] && item.role[0].name) || '',
                             };
                         }}
                     ></TableCrud>

@@ -45,7 +45,7 @@ appClient.interceptors.response.use(
             const getRoute = routersMap.get(linkNow);
             if (getRoute && getRoute?.typeAuthen != TypeScreen.public) {
                 dispatch.notification.error(err.response?.data?.message || 'Login again');
-                window.location.href = '/login';
+                // window.location.href = '/login';
             }
         } else if (err.response?.status === 403) {
         } else {

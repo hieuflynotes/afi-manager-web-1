@@ -3,8 +3,10 @@ import { Button, Grid, TextField } from '@material-ui/core';
 import clsx from 'clsx';
 import { useFormik } from 'formik';
 import _ from 'lodash';
+import { Role } from 'luong-base-model/lib';
 import React, { useEffect, useState } from 'react';
 import { UserAccount } from 'src/afi-manager-base-model/model/User';
+import { roleController } from 'src/controller';
 import { useGlobalStyles } from 'src/theme/GlobalStyle';
 import * as Yup from 'yup';
 import BaseDialog from '../common/BaseDialog';
@@ -17,7 +19,6 @@ type Props = {
     onCancel: () => void;
 };
 const validate = Yup.object({
-    email: Yup.string().email('Không đúng định dạng email').max(100, 'Chữ không được quá 100 kí tự').nullable(),
     fullName: Yup.string()
         .max(100, 'Chữ không được quá 100 kí tự')
         .required('Không được để trống !!')
@@ -30,7 +31,7 @@ const validate = Yup.object({
         .nullable(),
 });
 
-export default function PopupUserAccount(props: Props) {
+function PopupUserAccount(props: Props) {
     const formik = useFormik<UserAccount>({
         initialValues: {} as UserAccount,
         validationSchema: validate,
@@ -41,15 +42,15 @@ export default function PopupUserAccount(props: Props) {
         },
     });
 
+    const [role, setRole] = useState<{ roleMap: Map<string, Role> }>({
+        roleMap: new Map(),
+    });
+
     const onSubmit = () => {
         formik.handleSubmit();
         const touch = {
             ..._.mapValues(new UserAccount(), () => true),
-            userName: true,
-            password: true,
         };
-        console.log(touch);
-
         formik.setTouched(touch);
     };
 
@@ -58,7 +59,6 @@ export default function PopupUserAccount(props: Props) {
     };
     useEffect(() => {
         if (props.isDisplay) {
-            console.log(props.item);
             formik.setValues(
                 _.cloneDeep({
                     ...props.item,
@@ -68,6 +68,15 @@ export default function PopupUserAccount(props: Props) {
             formik.setTouched(_.mapValues(new UserAccount(), () => false));
         }
     }, [props]);
+    useEffect(() => {
+        if (props.isDisplay) {
+            roleController.list({ pageSize: 1000 }).then((res) => {
+                setRole({
+                    roleMap: new Map<string, Role>(res.rows?.map((item) => [item.id || '', item])),
+                });
+            });
+        }
+    }, [props.isDisplay]);
     const globalStyles = useGlobalStyles();
     return (
         <Grid>
@@ -110,10 +119,11 @@ export default function PopupUserAccount(props: Props) {
                             helperText={formik.touched.username && formik.errors.username}
                             variant="outlined"
                             name="username"
+                            disabled={Boolean(props.item.username)}
                             onChange={formik.handleChange}
                             fullWidth
                             className={clsx(globalStyles.mt2, globalStyles.mb2)}
-                            label="Địa chỉ email"
+                            label="Username"
                         ></TextField>
                     </Grid>
                     <Grid>
@@ -143,7 +153,7 @@ export default function PopupUserAccount(props: Props) {
                                         }}
                                     >
                                         {' '}
-                                        reset
+                                        Reset
                                     </Button>
                                 ),
                             }}
@@ -152,24 +162,34 @@ export default function PopupUserAccount(props: Props) {
                     </Grid>
 
                     <Grid>
-                        {/* <SelectBox
+                        <SelectBox
                             className={clsx(globalStyles.mt2, globalStyles.mb4)}
                             variant="outlined"
                             fullWidth
-                            value={formik.values.typeCustomer}
-                            data={Object.keys(ETypeCustomer)}
+                            label="Role"
+                            value={
+                                formik.values &&
+                                formik.values.role &&
+                                formik.values.role[0] &&
+                                role.roleMap.get(formik.values.role[0].id || '')
+                            }
+                            data={Array.from(role.roleMap.values())}
                             onChange={(value: any) => {
-                                formik.setValues({
-                                    ...formik.values,
-                                    typeCustomer: value,
-                                });
+                                if (value) {
+                                    formik.setValues({
+                                        ...formik.values,
+                                        role: [value],
+                                        roleId: [value?.id || ''],
+                                    });
+                                }
                             }}
-                            labelOption={(label) => getStringETypeCustomer(label)}
+                            labelOption={(role: Role) => role.name || ''}
                             valueOption={(value) => value}
-                        /> */}
+                        />
                     </Grid>
                 </Grid>
             </BaseDialog>
         </Grid>
     );
 }
+export default React.memo(PopupUserAccount);

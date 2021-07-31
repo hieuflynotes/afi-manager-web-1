@@ -61,7 +61,6 @@ function CheckTrackingHM(props: Props) {
     });
     const crudTrackingHM = useCrudHook<OrderTracking, ListFilter<OrderTracking>>({
         controller: orderTrackingController,
-        saveController: orderTrackingController.saveNotAuthen,
         initQuery: {
             searchFields: ['orderId', 'trackingId', 'customerName', 'email'],
             pageSize: 100,
@@ -169,7 +168,7 @@ function CheckTrackingHM(props: Props) {
                     </Grid>
                 </Grid>
             </Grid>
-            <ListGrid minWidthItem={"320px"} gridGap={15}>
+            <ListGrid minWidthItem={'320px'} gridGap={15}>
                 {crudTrackingHM.pagingList.rows?.map((item, index) => (
                     <Zoom in={true} timeout={index * 100}>
                         <Grid container justify="center">
