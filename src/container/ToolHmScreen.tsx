@@ -80,7 +80,6 @@ function ToolHmScreen(props: Props) {
                         onActionNavBar={(hidden: boolean) => {
                             setHiddenNavBar(hidden);
                         }}
-                        isHiddenTopBar
                         route={route}
                     />
                 </Grid>

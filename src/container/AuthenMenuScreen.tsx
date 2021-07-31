@@ -13,7 +13,7 @@ import { Dispatch, RootState } from '../rematch/store';
 const useStyle = makeStyles((theme) => ({
     root: {
         minHeight: '100vh',
-        background: theme.palette.background.default,
+        // background: theme.palette.background.default,
     },
     navbar: {
         // width: cssInfo.widthNarBar,
@@ -23,8 +23,8 @@ const useStyle = makeStyles((theme) => ({
         // background: theme.palette.background.default,
     },
     main: {
-        marginLeft: cssInfo.widthNarBar,
-        // paddingTop: 50,
+        // marginLeft: cssInfo.widthNarBar,
+        paddingTop: 70,
         // paddingLeft: 230,
         flex: 1,
         height: '100vh',
@@ -34,8 +34,19 @@ const useStyle = makeStyles((theme) => ({
 type Props = {
     children: React.ReactElement;
 };
-const link = ['/user-hm', '/tool-change-text'];
-function AfiScreen(props: Props) {
+const link = [
+    '/user-hm',
+    '/tool-change-text',
+    '/export-data',
+    '/statistic-ale-team',
+    '/statistic-user-hm',
+    '/check-tracking',
+    '/permission',
+    '/role',
+    '/user-manager',
+    '/setup-menu',
+];
+function AuthenMenuScreen(props: Props) {
     const classes = useStyle();
     const [route, setRoute] = useState<RouteComponent[]>([]);
     const [hiddenNavBar, setHiddenNavBar] = useState<boolean>();
@@ -80,20 +91,12 @@ function AfiScreen(props: Props) {
                         onActionNavBar={(hidden: boolean) => {
                             setHiddenNavBar(hidden);
                         }}
-                        isHiddenTopBar
                         route={route}
                     />
                 </Grid>
-                <Grid
-                    className={classes.main}
-                    style={{
-                        marginLeft: hiddenNavBar ? 0 : cssInfo.widthNarBar,
-                    }}
-                >
-                    {props.children}
-                </Grid>
+                <Grid className={classes.main}>{props.children}</Grid>
             </Grid>
         </Grid>
     );
 }
-export default AfiScreen;
+export default AuthenMenuScreen;

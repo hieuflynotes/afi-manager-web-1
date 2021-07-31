@@ -15,15 +15,7 @@ import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import './App.css';
 import BackdropLoading from './component/common/BackdropLoading';
 import { routers, TypeScreen } from './constants/Route';
-import {
-    AdminRoute,
-    AfiRoute,
-    AuthenRoute,
-    history,
-    PublicRoute,
-    RolePermssionRoute,
-    ToolHmRoute,
-} from './constants/RouterAuthen';
+import { AuthenRoute, history, PublicRoute, AuthenMenu } from './constants/RouterAuthen';
 import CustomerManager from './container/CustomerManager';
 import Login from './container/Login';
 import UiKit from './container/UiKit';
@@ -54,16 +46,16 @@ function App() {
                         <CSSTransition classNames="fade" timeout={300}>
                             <Switch>
                                 {routers.map((route) => {
-                                    if (route.typeAuthen === TypeScreen.admin) {
+                                    if (route.typeAuthen === TypeScreen.authenMenu) {
                                         return (
-                                            <AdminRoute
+                                            <AuthenMenu
                                                 exact
                                                 component={route.component}
                                                 path={route.link}
                                                 authen={authen.info}
                                             />
                                         );
-                                    } else if (route.typeAuthen === TypeScreen.authen) {
+                                    } else if (route.typeAuthen === TypeScreen.authenNotMenu) {
                                         return (
                                             <AuthenRoute
                                                 exact
@@ -74,36 +66,6 @@ function App() {
                                         );
                                     } else if (route.typeAuthen === TypeScreen.public) {
                                         return <Route exact component={route.component} path={route.link} />;
-                                    } else if (route.typeAuthen === TypeScreen.afi) {
-                                        return (
-                                            <AfiRoute
-                                                exact
-                                                component={route.component}
-                                                path={route.link}
-                                                authen={authen.info}
-                                            />
-                                        );
-                                        // ToolHmRoute
-                                    } else if (route.typeAuthen === TypeScreen.toolHm) {
-                                        return (
-                                            <ToolHmRoute
-                                                exact
-                                                component={route.component}
-                                                path={route.link}
-                                                authen={authen.info}
-                                            />
-                                        );
-                                        // ToolHmRoute
-                                    } else if (route.typeAuthen === TypeScreen.permssionRole) {
-                                        return (
-                                            <RolePermssionRoute
-                                                exact
-                                                component={route.component}
-                                                path={route.link}
-                                                authen={authen.info}
-                                            />
-                                        );
-                                        // ToolHmRoute
                                     } else {
                                         return (
                                             <PublicRoute
@@ -115,28 +77,6 @@ function App() {
                                         );
                                     }
                                 })}
-                                <Route
-                                    path="/afi/*"
-                                    exact={false}
-                                    render={({ location }) => (
-                                        <Redirect
-                                            to={{
-                                                pathname: '/tool-change-text',
-                                            }}
-                                        />
-                                    )}
-                                />
-                                <Route
-                                    path="/afi"
-                                    exact={false}
-                                    render={({ location }) => (
-                                        <Redirect
-                                            to={{
-                                                pathname: '/tool-change-text',
-                                            }}
-                                        />
-                                    )}
-                                />
                                 <Route
                                     path="*"
                                     render={({ location }) => (

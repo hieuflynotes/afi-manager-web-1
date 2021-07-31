@@ -8,7 +8,7 @@ import ListGrid from 'src/component/common/ListGrid';
 import PopUpConfirm from 'src/component/common/PopupConfirm';
 import TextField from 'src/component/common/TextFiled';
 import PopupPermssion from 'src/component/permssion/PopupPermssion';
-import { permssionController } from 'src/controller';
+import { permssionController, roleController } from 'src/controller';
 import { useCrudHook } from 'src/hook/useCrudHook';
 import { useGlobalStyles } from '../../theme/GlobalStyle';
 
@@ -24,13 +24,12 @@ const useStyle = makeStyles((theme) => ({
 }));
 type State = {};
 
-function PermissionContainer(props: Props) {
+function RoleContainer(props: Props) {
     const history = useHistory();
-    const crudPermission = useCrudHook({
-        controller: permssionController,
+    const crudRole = useCrudHook({
+        controller: roleController,
         initQuery: {
             pageSize: 100,
-            searchFields: ['name', 'path'],
         },
     });
     const classes = useStyle();
@@ -41,59 +40,45 @@ function PermissionContainer(props: Props) {
 
     return (
         <Grid container className={globalStyle.pp2}>
-            <PopupPermssion
-                isDisplay={crudPermission.isShowPopup}
-                item={crudPermission.itemSelected}
-                onCancel={crudPermission.onCancelPopup}
-                onEdit={crudPermission.onSave}
-            />
             <PopUpConfirm
-                isDisplay={crudPermission.isShowConfirm}
-                onCancel={crudPermission.onCancelConfirm}
-                onConfirm={() => crudPermission.onDelete(crudPermission.itemSelected)}
+                isDisplay={crudRole.isShowConfirm}
+                onCancel={crudRole.onCancelConfirm}
+                onConfirm={() => crudRole.onDelete(crudRole.itemSelected)}
             />
             <Grid container justify="center">
                 <Typography variant="h5">Permssion</Typography>
             </Grid>
             <Grid container justify="space-between">
                 <Grid className={globalStyle.pp2}>
-                    <TextField
-                        variant="outlined"
-                        label="Search"
-                        onChange={(e) => {
-                            crudPermission.onQueryChanged(e.target.value);
-                        }}
-                    />
+                    <TextField variant="outlined" label="Search" />
                 </Grid>
                 <Grid className={globalStyle.pp2}>
-                    <Button variant="contained" color="primary" onClick={() => crudPermission.onShowPopup({})}>
+                    <Button variant="contained" color="primary" onClick={() => history.push(`role/create`)}>
                         New Permssion
                     </Button>
                 </Grid>
             </Grid>
             <Grid container className={globalStyle.pp2}>
                 <ListGrid gridGap={20} minWidthItem="300px">
-                    {crudPermission.pagingList.rows?.map((item) => (
+                    {crudRole.pagingList.rows?.map((item) => (
                         <Grid className={classes.rootPermissionItem}>
-                            <Grid container justify="space-between">
+                            <Grid container justify="space-between" alignItems="center">
                                 <Grid>
-                                    <Typography>{item.method}</Typography>
+                                    <Typography color="primary">{item.name}</Typography>
                                 </Grid>
                                 <Grid>
-                                    <IconButton color="primary" onClick={() => crudPermission.onShowPopup(item)}>
+                                    <IconButton color="primary" onClick={() => history.push(`role/${item.id}`)}>
                                         <AiOutlineEdit />
                                     </IconButton>
                                     <IconButton
                                         onClick={() => {
-                                            crudPermission.onConfirm(item);
+                                            crudRole.onConfirm(item);
                                         }}
                                     >
                                         <IoCloseOutline />
                                     </IconButton>
                                 </Grid>
                             </Grid>
-                            <Typography color="primary">{item.name}</Typography>
-                            <Typography variant="caption">{item.path}</Typography>
                         </Grid>
                     ))}
                 </ListGrid>
@@ -102,4 +87,4 @@ function PermissionContainer(props: Props) {
     );
 }
 
-export default React.memo(PermissionContainer);
+export default React.memo(RoleContainer);

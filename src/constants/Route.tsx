@@ -19,13 +19,11 @@ import PermissionContainer from 'src/container/permission/PermissionContainer';
 import RoleContainer from 'src/container/permission/RoleContainer';
 import SetupRoleContainer from 'src/container/permission/SetupRoleContainer';
 import UserManager from 'src/container/permission/UserManager';
+import SetupMenu from 'src/container/permission/SetupMenu';
 export enum TypeScreen {
     public = 'public',
-    admin = 'admin',
-    authen = 'authen',
-    afi = 'afi',
-    toolHm = 'toolHm',
-    permssionRole = 'permissionRole',
+    authenMenu = 'authenMenu',
+    authenNotMenu = 'authenNotMenu',
 }
 
 export const routers: RouteComponent[] = [
@@ -40,42 +38,42 @@ export const routers: RouteComponent[] = [
         component: ToolAutoChangeTextHM,
         label: 'Tool change text',
         link: '/tool-change-text',
-        typeAuthen: TypeScreen.afi,
+        typeAuthen: TypeScreen.authenMenu,
         icon: <AiFillDashboard />,
     },
     {
         component: UserHmManager,
         label: 'User HM',
         link: '/user-hm',
-        typeAuthen: TypeScreen.afi,
+        typeAuthen: TypeScreen.authenMenu,
         icon: <AiFillDashboard />,
     },
     {
         component: ProgressAutoOrder,
         label: 'Progress',
         link: '/progress-order/:userHmId',
-        typeAuthen: TypeScreen.afi,
+        typeAuthen: TypeScreen.authenMenu,
         icon: <AiFillDashboard />,
     },
     {
         component: ExportExcel,
         label: 'Export Data',
         link: '/export-data',
-        typeAuthen: TypeScreen.toolHm,
+        typeAuthen: TypeScreen.authenMenu,
         icon: <FaFileCsv />,
     },
     {
         component: FixDataTool,
         label: 'Fix data',
         link: '/fix-data-tool',
-        typeAuthen: TypeScreen.toolHm,
+        typeAuthen: TypeScreen.authenMenu,
         icon: <FiXOctagon />,
     },
     {
         component: StatisticAleTeam,
         label: 'Ale Team',
         link: '/statistic-ale-team',
-        typeAuthen: TypeScreen.toolHm,
+        typeAuthen: TypeScreen.authenMenu,
         icon: <FiXOctagon />,
     },
 
@@ -91,7 +89,7 @@ export const routers: RouteComponent[] = [
         component: StaticByUserHm,
         label: 'Statistic user',
         link: '/statistic-user-hm',
-        typeAuthen: TypeScreen.toolHm,
+        typeAuthen: TypeScreen.authenMenu,
         icon: <AiOutlineLineChart />,
     },
     {
@@ -105,35 +103,42 @@ export const routers: RouteComponent[] = [
         component: CheckTrackingHM,
         label: 'Check Tracking',
         link: '/check-tracking',
-        typeAuthen: TypeScreen.admin,
+        typeAuthen: TypeScreen.authenMenu,
         icon: <AiFillDashboard />,
     },
     {
         component: PermissionContainer,
         label: 'Permssion',
         link: '/permission',
-        typeAuthen: TypeScreen.permssionRole,
+        typeAuthen: TypeScreen.authenMenu,
         icon: <AiFillDashboard />,
     },
     {
         component: RoleContainer,
         label: 'Role',
         link: '/role',
-        typeAuthen: TypeScreen.permssionRole,
+        typeAuthen: TypeScreen.authenMenu,
         icon: <AiFillDashboard />,
     },
     {
         component: SetupRoleContainer,
         label: 'Role',
         link: '/role/:id',
-        typeAuthen: TypeScreen.permssionRole,
+        typeAuthen: TypeScreen.authenMenu,
         icon: <AiFillDashboard />,
     },
     {
         component: UserManager,
         label: 'User Manager',
         link: '/user-manager',
-        typeAuthen: TypeScreen.permssionRole,
+        typeAuthen: TypeScreen.authenMenu,
+        icon: <AiFillDashboard />,
+    },
+    {
+        component: SetupMenu,
+        label: 'Setup Menu',
+        link: '/setup-menu',
+        typeAuthen: TypeScreen.authenMenu,
         icon: <AiFillDashboard />,
     },
 ];

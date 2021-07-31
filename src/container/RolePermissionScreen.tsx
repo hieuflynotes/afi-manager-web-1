@@ -34,7 +34,7 @@ const useStyle = makeStyles((theme) => ({
 type Props = {
     children: React.ReactElement;
 };
-const link = ['/permission', '/role', '/user-manager'];
+const link = ['/permission', '/role', '/user-manager', '/setup-menu'];
 function RolePermissionScreen(props: Props) {
     const classes = useStyle();
     const [route, setRoute] = useState<RouteComponent[]>([]);
@@ -80,7 +80,6 @@ function RolePermissionScreen(props: Props) {
                         onActionNavBar={(hidden: boolean) => {
                             setHiddenNavBar(hidden);
                         }}
-                        isHiddenTopBar
                         route={route}
                     />
                 </Grid>
