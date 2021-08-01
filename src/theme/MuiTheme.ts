@@ -75,9 +75,6 @@ const theme = createMuiTheme({
                 fontWeight: 540,
                 textTransform: 'none',
                 padding: '0.5rem 1.5rem',
-                '&:hover': {
-                    letterSpacing: 1,
-                },
                 '&.MuiButton-startIcon': {
                     overflow: 'hidden',
                 },

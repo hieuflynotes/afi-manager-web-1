@@ -6,6 +6,7 @@ import { FiLogOut } from 'react-icons/fi';
 import { RiAccountPinBoxFill } from 'react-icons/ri';
 import { useDispatch, useSelector } from 'react-redux';
 import NavBar, { RouteComponent } from 'src/component/common/NavBar';
+import AccountMenu from 'src/component/permssion/AccountMenu';
 import { localStoryController } from 'src/controller';
 import { cssInfo } from '../constants/Other';
 import { routersMap } from '../constants/Route';
@@ -47,32 +48,13 @@ const link = [
 function AuthenMenuScreen(props: Props) {
     const classes = useStyle();
     const [route, setRoute] = useState<RouteComponent[]>([]);
+    const authen = useSelector((state: RootState) => state.authen);
     const [hiddenNavBar, setHiddenNavBar] = useState<boolean>();
     const dispath = useDispatch<Dispatch>();
     useEffect(() => {
         let menu: RouteComponent[] = [];
-        menu = localStoryController.getMenu();
+        menu = authen?.info?.menu?.menu || [];
 
-        menu.push({
-            label: `Account`,
-            icon: <RiAccountPinBoxFill />,
-            link: '',
-            subMenu: [
-                {
-                    label: 'Logout',
-                    action: () => {
-                        window.location.href = '/login';
-                    },
-                    link: '',
-                    icon: <FiLogOut />,
-                },
-                // {
-                //     label: "Change Password",
-                //     link: "/change-password",
-                //     icon: <FaKey />,
-                // },
-            ],
-        });
         menu = menu
             .map((item) => {
                 return getDefault(item);
@@ -80,7 +62,7 @@ function AuthenMenuScreen(props: Props) {
             .filter((item) => Boolean(item)) as any;
 
         setRoute(menu);
-    }, []);
+    }, [authen]);
 
     const getDefault = (item: RouteComponent): RouteComponent => {
         const defaultLink = routersMap.get(item.link);
@@ -100,6 +82,7 @@ function AuthenMenuScreen(props: Props) {
                         onActionNavBar={(hidden: boolean) => {
                             setHiddenNavBar(hidden);
                         }}
+                        leftComponent={<AccountMenu />}
                         route={route}
                     />
                 </Grid>

@@ -8,7 +8,7 @@ import ListGrid from 'src/component/common/ListGrid';
 import PopUpConfirm from 'src/component/common/PopupConfirm';
 import TextField from 'src/component/common/TextFiled';
 import PopupPermssion from 'src/component/permssion/PopupPermssion';
-import { permssionController, roleController } from 'src/controller';
+import { menuTeamplateController, permssionController, roleController } from 'src/controller';
 import { useCrudHook } from 'src/hook/useCrudHook';
 import { useGlobalStyles } from '../../theme/GlobalStyle';
 import clsx from 'clsx';
@@ -18,6 +18,8 @@ import * as Yup from 'yup';
 import { useFormik } from 'formik';
 import _ from 'lodash';
 import { MetaDataRole } from 'src/afi-manager-base-model/model/MetaDataRolePermision';
+import { MenuTemplate } from 'src/afi-manager-base-model/model/MenuTemplate';
+import SelectBox from 'src/component/common/SelectBox';
 type Props = {};
 const useStyle = makeStyles((theme) => ({
     rootPermissionItem: {
@@ -28,6 +30,7 @@ const useStyle = makeStyles((theme) => ({
 }));
 type State = {
     permssion: Permission[];
+    menu: Map<string, MenuTemplate>;
 };
 
 const validate = Yup.object({
@@ -37,12 +40,13 @@ const validate = Yup.object({
         .trim()
         .nullable(),
     redirect: Yup.string().required("Can't be left blank !!").trim().nullable(),
+    menuTemplateId: Yup.string().required('Please, Select menu for role'),
 });
 
 function SetupRoleContainer(props: Props) {
     const { id } = useParams<{ id: string }>();
 
-    const formik = useFormik<Role<MetaDataRole> & { redirect?: string }>({
+    const formik = useFormik<Role<MetaDataRole> & MetaDataRole>({
         initialValues: {} as Permission,
         validationSchema: validate,
         onSubmit: () => {
@@ -53,6 +57,7 @@ function SetupRoleContainer(props: Props) {
                     metaData: {
                         ...formik.values.metaData,
                         redirect: formik.values.redirect,
+                        menuTemplateId: formik.values.menuTemplateId,
                     },
                 })
                 .then((res) => {
@@ -62,11 +67,11 @@ function SetupRoleContainer(props: Props) {
     });
     const onSubmit = () => {
         formik.handleSubmit();
-        const touch = {
-            redirect: true,
+        formik.setTouched({
             name: true,
-        };
-        formik.setTouched(touch);
+            menuTemplateId: true,
+            redirect: true,
+        });
     };
 
     const history = useHistory();
@@ -87,13 +92,14 @@ function SetupRoleContainer(props: Props) {
     const globalStyle = useGlobalStyles();
     const [state, setState] = useState<State>({
         permssion: [],
+        menu: new Map(),
     });
 
     useEffect(() => {
         if (validateUuid(id)) {
             roleController
                 .getById({
-                    id: id,
+                    id,
                 })
                 .then((res) => {
                     if (res) {
@@ -107,13 +113,16 @@ function SetupRoleContainer(props: Props) {
                         formik.setValues({
                             ...res,
                             redirect: res.metaData?.redirect,
+                            menuTemplateId: res.metaData?.menuTemplateId,
                         });
                     }
                 });
         }
-        permssionController.find({}).then((res) => {
+        Promise.all([permssionController.find({}), menuTeamplateController.find({})]).then((res) => {
             setState({
-                permssion: res,
+                ...state,
+                permssion: res[0],
+                menu: new Map<string, MenuTemplate>(res[1].map((item) => [item.id || '', item])),
             });
         });
     }, []);
@@ -135,33 +144,60 @@ function SetupRoleContainer(props: Props) {
                 </Button>
             </Grid>
             <Grid container justify="space-between">
-                <Grid xs={5}>
-                    <TextField
-                        variant="outlined"
-                        color="primary"
-                        fullWidth
-                        label="Name Role"
-                        name="name"
-                        value={role.role.name}
-                        error={Boolean(formik.touched.name && formik.errors.name)}
-                        helperText={formik.touched.name && formik.errors.name}
-                        onChange={formik.handleChange}
-                        InputLabelProps={{ shrink: true }}
-                    />
+                <Grid xs={4}>
+                    <Grid className={globalStyle.pp1}>
+                        <TextField
+                            variant="outlined"
+                            color="primary"
+                            fullWidth
+                            label="Name Role"
+                            name="name"
+                            value={role.role.name}
+                            error={Boolean(formik.touched.name && formik.errors.name)}
+                            helperText={formik.touched.name && formik.errors.name}
+                            onChange={formik.handleChange}
+                            InputLabelProps={{ shrink: true }}
+                        />
+                    </Grid>
                 </Grid>
-                <Grid xs={5}>
-                    <TextField
-                        variant="outlined"
-                        fullWidth
-                        color="primary"
-                        label="Path redirect"
-                        name="redirect"
-                        value={formik.values.redirect}
-                        error={Boolean(formik.touched.redirect && formik.errors.redirect)}
-                        helperText={formik.touched.redirect && formik.errors.redirect}
-                        onChange={formik.handleChange}
-                        InputLabelProps={{ shrink: true }}
-                    />
+                <Grid xs={4}>
+                    <Grid className={globalStyle.pp1}>
+                        <TextField
+                            variant="outlined"
+                            fullWidth
+                            color="primary"
+                            label="Path redirect"
+                            name="redirect"
+                            value={formik.values.redirect}
+                            error={Boolean(formik.touched.redirect && formik.errors.redirect)}
+                            helperText={formik.touched.redirect && formik.errors.redirect}
+                            onChange={formik.handleChange}
+                            InputLabelProps={{ shrink: true }}
+                        />
+                    </Grid>
+                </Grid>
+                <Grid xs={4}>
+                    <Grid className={globalStyle.pp1}>
+                        <SelectBox
+                            label="Menu"
+                            fullWidth
+                            variant="outlined"
+                            error={Boolean(formik.touched.menuTemplateId && formik.errors.menuTemplateId)}
+                            helperText={(formik.touched.menuTemplateId && formik.errors.menuTemplateId) || ''}
+                            data={(state.menu.values() && Array.from(state.menu.values())) || []}
+                            labelOption={(label) => label.name}
+                            value={state.menu.get(formik.values.menuTemplateId || '')?.id || ''}
+                            valueOption={(option) => option.id}
+                            onChange={(value: any) => {
+                                if (value) {
+                                    formik.setValues({
+                                        ...formik.values,
+                                        menuTemplateId: value,
+                                    });
+                                }
+                            }}
+                        />
+                    </Grid>
                 </Grid>
             </Grid>
             <Grid container className={clsx(globalStyle.pp2, globalStyle.pt5)}>

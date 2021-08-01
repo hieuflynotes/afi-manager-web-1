@@ -20,6 +20,7 @@ import RoleContainer from 'src/container/permission/RoleContainer';
 import SetupRoleContainer from 'src/container/permission/SetupRoleContainer';
 import UserManager from 'src/container/permission/UserManager';
 import SetupMenu from 'src/container/permission/SetupMenu';
+import SetupMenuContainer from 'src/container/permission/SetupMenuContainer';
 export enum TypeScreen {
     public = 'public',
     authenMenu = 'authenMenu',
@@ -121,6 +122,13 @@ export const routers: RouteComponent[] = [
         icon: <AiFillDashboard />,
     },
     {
+        component: SetupMenuContainer,
+        label: 'Role',
+        link: '/setup-menu',
+        typeAuthen: TypeScreen.authenMenu,
+        icon: <AiFillDashboard />,
+    },
+    {
         component: SetupRoleContainer,
         label: 'Role',
         link: '/role/:id',
@@ -137,7 +145,7 @@ export const routers: RouteComponent[] = [
     {
         component: SetupMenu,
         label: 'Setup Menu',
-        link: '/setup-menu',
+        link: '/setup-menu/:id',
         typeAuthen: TypeScreen.authenMenu,
         icon: <AiFillDashboard />,
     },

@@ -1,8 +1,8 @@
-import { Divider, Grid, IconButton, makeStyles, Typography } from '@material-ui/core';
+import { Divider, Grid, IconButton, Input, makeStyles, Typography } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { routers, routersMap } from 'src/constants/Route';
-import { localStoryController, roleController } from 'src/controller';
+import { localStoryController, menuTeamplateController, roleController } from 'src/controller';
 import { useCrudHook } from 'src/hook/useCrudHook';
 import { useGlobalStyles } from '../../theme/GlobalStyle';
 import { GrDrag } from 'react-icons/gr';
@@ -18,13 +18,19 @@ import Column from './Column';
 import { v4 as uuid } from 'uuid';
 import { RouteComponent } from 'src/component/common/NavBar';
 import Button from 'src/component/common/Button';
-import { AiFillApple } from 'react-icons/ai';
+import { AiFillApple, AiFillDashboard } from 'react-icons/ai';
 import { IoCloseOutline } from 'react-icons/io5';
 import theme from 'src/theme/MuiTheme';
 import { handleWithPopupHook } from 'src/hook/HandleWithPopupHook';
 import PopUpConfirm from 'src/component/common/PopupConfirm';
 import PopupEditRouteMenu from 'src/component/permssion/PopupEditRouteMenu';
 import ListGrid from 'src/component/common/ListGrid';
+import TextField from 'src/component/common/TextFiled';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+import { MenuTemplate } from 'src/afi-manager-base-model/model/MenuTemplate';
+import { MenuTemplateItem } from 'src/afi-manager-base-model/model/MenuTemplateItem';
+import { validate as validateUuid } from 'uuid';
 
 type Props = {};
 const useStyle = makeStyles((theme) => ({
@@ -59,8 +65,36 @@ interface IOnDragEnd extends DropResult {
     combine?: (Combine & { draggableId?: string }) | undefined;
 }
 
+const validate = Yup.object({
+    name: Yup.string()
+        .max(100, 'Value must be less than 100 characters')
+        .required("Can't be left blank !!")
+        .trim()
+        .nullable(),
+});
 function SetupMenu(props: Props) {
+    const { id } = useParams<{ id: string }>();
     const history = useHistory();
+    const formik = useFormik<MenuTemplate>({
+        initialValues: {} as MenuTemplate,
+        validationSchema: validate,
+        onSubmit: () => {
+            menuTeamplateController
+                .save({
+                    ...formik.values,
+                    menu: state.menuDrag,
+                })
+                .then((res) => {
+                    history.push(`/setup-menu/${res.id}`);
+                });
+        },
+    });
+    const onSubmit = () => {
+        formik.handleSubmit();
+        formik.setTouched({
+            name: true,
+        });
+    };
 
     const handleWithPopupMenu = handleWithPopupHook<RouteComponent>({
         onConfirm: (menu) => {
@@ -85,16 +119,35 @@ function SetupMenu(props: Props) {
         menuDrag: [],
     });
 
-    const crudRole = useCrudHook({
-        controller: roleController,
-        initQuery: {
-            pageSize: 100,
-        },
-    });
-
     useEffect(() => {
-        setState({ ...state, menuDrag: localStoryController.getMenu() });
+        if (validateUuid(id)) {
+            menuTeamplateController.getById({ id }).then((res) => {
+                if (res) {
+                    let menu = (res?.menu || [])
+                        .map((item) => {
+                            return getDefault(item);
+                        })
+                        .filter((item) => Boolean(item)) as any;
+
+                    setState({ ...state, menuDrag: menu || [] });
+                    formik.setValues({
+                        ...res,
+                    });
+                }
+            });
+        }
     }, []);
+
+    const getDefault = (item: MenuTemplateItem): RouteComponent => {
+        const defaultLink = routersMap.get(item.link || '');
+        return {
+            ...item,
+            icon: defaultLink?.icon || <AiFillDashboard />,
+            link: defaultLink?.link || '',
+            label: item?.label || '',
+            subMenu: item.subMenu?.map((sub) => getDefault(sub)) || [],
+        };
+    };
 
     const classes = useStyle();
     const globalStyle = useGlobalStyles();
@@ -203,33 +256,45 @@ function SetupMenu(props: Props) {
                 onCancel={handleWithPopupMenu.handleClosePopup}
                 onConfirm={() => handleWithPopupMenu.handleConfirm(handleWithPopupMenu.itemSelected)}
             />
-            <Grid container className={globalStyle.pp2} justify="flex-end">
+            <Grid container className={globalStyle.pp2} justify="space-between">
+                <TextField
+                    variant="outlined"
+                    color="primary"
+                    label="Name Menu"
+                    InputLabelProps={{ shrink: true }}
+                    name="name"
+                    value={formik.values.name}
+                    onChange={formik.handleChange}
+                    error={Boolean(formik.touched.name && formik.errors.name)}
+                    helperText={formik.touched.name && formik.errors.name}
+                />
                 <Button
                     variant="contained"
                     color="primary"
                     onClick={() => {
-                        onSaveMenu(state.menuDrag);
+                        onSubmit();
                     }}
                 >
                     Save
                 </Button>
             </Grid>
             <Grid
+                container
+                className={globalStyle.pp2}
                 style={{
-                    width: 300,
-                    borderRight: `1px solid ${theme.palette.divider}`,
+                    borderBottom: `1px solid ${theme.palette.divider}`,
                 }}
             >
                 {routers.map((item) => {
                     return (
-                        <Grid item className={globalStyle.pb1} onClick={() => onAddMenu(item)}>
+                        <Grid item className={globalStyle.pp1} onClick={() => onAddMenu(item)}>
                             <Button variant="outlined">{item.link}</Button>
                         </Grid>
                     );
                 })}
                 <Grid
                     item
-                    className={globalStyle.pb1}
+                    className={globalStyle.pp1}
                     onClick={() => onAddMenu({ icon: <AiFillApple />, label: 'New', id: uuid(), link: '' })}
                 >
                     <Button variant="outlined">Empty not link</Button>
@@ -237,7 +302,7 @@ function SetupMenu(props: Props) {
             </Grid>
             <Grid>
                 <DragDropContext onDragEnd={onDragEnd}>
-                    <Droppable droppableId="board" type="COLUMN" direction="vertical" isCombineEnabled={true}>
+                    <Droppable droppableId="board" type="COLUMN" direction="horizontal" isCombineEnabled={true}>
                         {(provided) => (
                             <Grid ref={provided.innerRef} {...provided.droppableProps} container>
                                 {state.menuDrag.map((item, index: number) => (

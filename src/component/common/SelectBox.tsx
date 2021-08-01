@@ -1,4 +1,4 @@
-import { FormControl, FormControlTypeMap, InputLabel, MenuItem, Select } from '@material-ui/core';
+import { FormControl, FormControlTypeMap, FormHelperText, InputLabel, MenuItem, Select } from '@material-ui/core';
 import { OverrideProps } from '@material-ui/core/OverridableComponent';
 import React from 'react';
 type Props<T = any, D extends React.ElementType = FormControlTypeMap['defaultComponent'], P = {}> = {
@@ -8,6 +8,7 @@ type Props<T = any, D extends React.ElementType = FormControlTypeMap['defaultCom
     labelOption: (items: T) => string;
     valueOption: (items: T) => any;
     onChange: (items: T) => void;
+    helperText?: string;
 } & OverrideProps<FormControlTypeMap<P, D>, D>;
 export default function SelectBox(props: Props) {
     return (
@@ -18,6 +19,7 @@ export default function SelectBox(props: Props) {
                     <MenuItem value={props.valueOption(item)}>{props.labelOption(item)}</MenuItem>
                 ))}
             </Select>
+            <FormHelperText>{props.helperText}</FormHelperText>
         </FormControl>
     );
 }

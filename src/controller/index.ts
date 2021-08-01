@@ -12,6 +12,7 @@ import { UserHmController } from './UserHmController';
 import PermissionContainer from 'src/container/permission/PermissionContainer';
 import { PermissionController } from './PermissionController';
 import { RoleController } from './RoleController';
+import { MenuTemplateController } from './MenuTemplateController';
 
 export const appClient = axios.create({
     baseURL: config.apiGatewayUrl,
@@ -72,6 +73,7 @@ export const userHmController = new UserHmController(config.apiGatewayUrl, 'afi/
 
 export const permssionController = new PermissionController(config.apiGatewayUrl, 'permssion', appClient);
 export const roleController = new RoleController(config.apiGatewayUrl, 'role', appClient);
+export const menuTeamplateController = new MenuTemplateController(config.apiGatewayUrl, 'menuTemplate', appClient);
 
 //
 //
