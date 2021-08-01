@@ -6,6 +6,7 @@ import { FiLogOut } from 'react-icons/fi';
 import { RiAccountPinBoxFill } from 'react-icons/ri';
 import { useDispatch, useSelector } from 'react-redux';
 import NavBar, { RouteComponent } from 'src/component/common/NavBar';
+import { localStoryController } from 'src/controller';
 import { cssInfo } from '../constants/Other';
 import { routersMap } from '../constants/Route';
 import { Dispatch, RootState } from '../rematch/store';
@@ -36,9 +37,6 @@ type Props = {
 };
 const link = [
     '/user-hm',
-    '/tool-change-text',
-    '/export-data',
-    '/statistic-ale-team',
     '/statistic-user-hm',
     '/check-tracking',
     '/permission',
@@ -53,14 +51,8 @@ function AuthenMenuScreen(props: Props) {
     const dispath = useDispatch<Dispatch>();
     useEffect(() => {
         let menu: RouteComponent[] = [];
-        menu = link.map((item) => {
-            const get = routersMap.get(item);
-            return {
-                icon: get?.icon || <></>,
-                label: get?.label || '',
-                link: get?.link || '',
-            };
-        });
+        menu = localStoryController.getMenu();
+
         menu.push({
             label: `Account`,
             icon: <RiAccountPinBoxFill />,
@@ -81,8 +73,25 @@ function AuthenMenuScreen(props: Props) {
                 // },
             ],
         });
+        menu = menu
+            .map((item) => {
+                return getDefault(item);
+            })
+            .filter((item) => Boolean(item)) as any;
+
         setRoute(menu);
     }, []);
+
+    const getDefault = (item: RouteComponent): RouteComponent => {
+        const defaultLink = routersMap.get(item.link);
+        return {
+            ...item,
+            icon: defaultLink?.icon || <AiFillDashboard />,
+            link: defaultLink?.link || '',
+            label: item.label,
+            subMenu: item.subMenu?.map((sub) => getDefault(sub)) || [],
+        };
+    };
     return (
         <Grid>
             <Grid className={classes.root} container direction="column">

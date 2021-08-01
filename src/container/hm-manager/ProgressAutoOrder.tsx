@@ -52,11 +52,11 @@ export enum OrderStatus {
 }
 function ProgressAutoOrder(props: Props) {
     const { userHmId } = useParams<{ userHmId: string }>();
-    const [userHm, setUserHm] = useState<UserHm>({} as UserHm)
+    const [userHm, setUserHm] = useState<UserHm>({} as UserHm);
     const [selectedStatus, setSelectedStatus] = useState<OrderStatus>(OrderStatus.none);
     const [giftCard, setGiftCard] = useState<Giftcard>({
         serialNumber: localStorage.getItem('serialNumber') || '',
-        pin: localStorage.getItem('pin')||'',
+        pin: localStorage.getItem('pin') || '',
     });
 
     const [state, setState] = useState<{ isListening: boolean }>({
@@ -113,11 +113,11 @@ function ProgressAutoOrder(props: Props) {
         );
     };
     useEffect(() => {
-        userHmController.list({filter:{id: userHmId}}).then(paging => {
-            if(paging && paging.rows && paging.rows.length>0){
-                setUserHm(paging.rows[0])
+        userHmController.list({ filter: { id: userHmId } }).then((paging) => {
+            if (paging && paging.rows && paging.rows.length > 0) {
+                setUserHm(paging.rows[0]);
             }
-        })
+        });
     }, []);
 
     // useEffect(() => {
@@ -265,19 +265,15 @@ function ProgressAutoOrder(props: Props) {
                             <IconButton
                                 onClick={() => {
                                     navigator.clipboard.writeText(
-                                        addAddress(
-                                            userHm.emailCheckout || 'email',
-                                            userHm.password || '123456a@',
-                                            {
-                                                lineAddress: userHm.address || '',
-                                                flatHouse: userHm.address2 || '',
-                                                town: userHm.town || '',
-                                                postCode: userHm.postcode || '',
-                                                firstName: userHm.firstName || '',
-                                                lastName: userHm.lastName || '',
-                                                phonenumber: userHm.phone || '',
-                                            },
-                                        ),
+                                        addAddress(userHm.emailCheckout || 'email', userHm.password || '123456a@', {
+                                            lineAddress: userHm.address || '',
+                                            flatHouse: userHm.address2 || '',
+                                            town: userHm.town || '',
+                                            postCode: userHm.postcode || '',
+                                            firstName: userHm.firstName || '',
+                                            lastName: userHm.lastName || '',
+                                            phonenumber: userHm.phone || '',
+                                        }),
                                     );
                                     dispatch.notification.success('Copy to clipboard successfully!');
                                 }}
@@ -318,7 +314,7 @@ function ProgressAutoOrder(props: Props) {
                                     ...giftCard,
                                     serialNumber: e.target.value,
                                 });
-                                localStorage.setItem('serialNumber', e.target.value)
+                                localStorage.setItem('serialNumber', e.target.value);
                             }}
                         />
                         <TextField
@@ -332,8 +328,7 @@ function ProgressAutoOrder(props: Props) {
                                     ...giftCard,
                                     pin: e.target.value,
                                 });
-                                localStorage.setItem('pin', e.target.value)
-
+                                localStorage.setItem('pin', e.target.value);
                             }}
                         />
                     </div>

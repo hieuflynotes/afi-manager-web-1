@@ -1,9 +1,11 @@
+import { RouteComponent } from 'src/component/common/NavBar';
+
 export class LocalStoryController {
     getLocal() {
-        return JSON.parse(localStorage.getItem("setting") || "{}");
+        return JSON.parse(localStorage.getItem('setting') || '{}');
     }
     setLocal(data: any) {
-        return localStorage.setItem("setting", JSON.stringify(data));
+        return localStorage.setItem('setting', JSON.stringify(data));
     }
     getByKey(key: string) {
         const data = this.getLocal();
@@ -17,33 +19,33 @@ export class LocalStoryController {
         });
     }
     setShowNavBar(isShow: boolean) {
-        this.setDataByKey("isHiddenNarBar", isShow);
+        this.setDataByKey('isHiddenNarBar', isShow);
     }
     getShowNarBar(): boolean {
-        return this.getByKey("isHiddenNarBar");
+        return this.getByKey('isHiddenNarBar');
     }
 
     setSettingColumnTable(params: { idTable: string; column: string[] }) {
-        const table = this.getByKey("table") || {};
+        const table = this.getByKey('table') || {};
         const getTable = table[params.idTable] || {};
         if (params.column.length == 0) {
             params.column = getTable?.column || [];
         }
         getTable.column = params.column;
         table[params.idTable] = getTable;
-        this.setDataByKey("table", table);
+        this.setDataByKey('table', table);
     }
     getSettingColumnTable(idTable: string): string[] {
-        const table = this.getByKey("table") || {};
+        const table = this.getByKey('table') || {};
         const getTable = table[idTable] || {};
         return getTable.column;
     }
 
     setStateTool(value: any) {
-        this.setDataByKey("stateToolKey", value);
+        this.setDataByKey('stateToolKey', value);
     }
     getStateTool(): any {
-        const data = this.getByKey("stateToolKey");
+        const data = this.getByKey('stateToolKey');
         if (data) {
             return data;
         }
@@ -51,8 +53,8 @@ export class LocalStoryController {
             variables: [],
             text: [
                 {
-                    title: "text1",
-                    value: "",
+                    title: 'text1',
+                    value: '',
                 },
             ],
             textIndex: 0,
@@ -60,7 +62,7 @@ export class LocalStoryController {
     }
 
     getListUserLogin(): { username: string; password: string }[] {
-        const get = this.getByKey("account");
+        const get = this.getByKey('account');
         return get || [];
     }
     addUserLogin(params: { username: string; password: string }) {
@@ -71,7 +73,7 @@ export class LocalStoryController {
         } else {
             get.push(params);
         }
-        this.setDataByKey("account", get);
+        this.setDataByKey('account', get);
     }
     removeLogin(params: { username: string }) {
         const get = this.getListUserLogin();
@@ -79,6 +81,14 @@ export class LocalStoryController {
         if (index >= 0) {
             get.splice(index, 1);
         }
-        this.setDataByKey("account", get);
+        this.setDataByKey('account', get);
+    }
+
+    addMenu(item: RouteComponent[]) {
+        this.setDataByKey('menu', item);
+    }
+    getMenu(): RouteComponent[] {
+        const get = this.getByKey('menu');
+        return get || [];
     }
 }

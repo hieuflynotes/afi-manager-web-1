@@ -1,23 +1,23 @@
-import React, { useEffect, useState } from "react";
-import clsx from "clsx";
-import { Grid, makeStyles, Typography } from "@material-ui/core";
-import TextField from "../../component/common/TextFiled";
-import Button from "../../component/common/Button";
-import ListGrid from "../../component/common/ListGrid";
-import { useGlobalStyles } from "../../theme/GlobalStyle";
-import { useCrudHook } from "../../hook/useCrudHook";
-import { Pagination } from "@material-ui/lab";
-import PopUpConfirm from "../../component/common/PopupConfirm";
-import { useHistory } from "react-router-dom";
-import { UserHm } from "src/afi-manager-base-model/model/UserHm";
-import { orderTrackingController, userHmController } from "src/controller";
-import UserHmItemList from "src/component/AutoOrderHm/UserHmItemList";
-import PopupInsertUser from "src/component/AutoOrderHm/PopupInsertUser";
-import theme from "src/theme/MuiTheme";
-import { handleWithPopupHook } from "src/hook/HandleWithPopupHook";
-import PopupMergeToUser from "src/component/AutoOrderHm/PopupMergeToUser";
-import { OrderTracking } from "src/afi-manager-base-model/model/OrderTracking";
-import SelectBox from "src/component/common/SelectBox";
+import React, { useEffect, useState } from 'react';
+import clsx from 'clsx';
+import { Grid, makeStyles, Typography } from '@material-ui/core';
+import TextField from '../../component/common/TextFiled';
+import Button from '../../component/common/Button';
+import ListGrid from '../../component/common/ListGrid';
+import { useGlobalStyles } from '../../theme/GlobalStyle';
+import { useCrudHook } from '../../hook/useCrudHook';
+import { Pagination } from '@material-ui/lab';
+import PopUpConfirm from '../../component/common/PopupConfirm';
+import { useHistory } from 'react-router-dom';
+import { UserHm } from 'src/afi-manager-base-model/model/UserHm';
+import { orderTrackingController, userHmController } from 'src/controller';
+import UserHmItemList from 'src/component/AutoOrderHm/UserHmItemList';
+import PopupInsertUser from 'src/component/AutoOrderHm/PopupInsertUser';
+import theme from 'src/theme/MuiTheme';
+import { handleWithPopupHook } from 'src/hook/HandleWithPopupHook';
+import PopupMergeToUser from 'src/component/AutoOrderHm/PopupMergeToUser';
+import { OrderTracking } from 'src/afi-manager-base-model/model/OrderTracking';
+import SelectBox from 'src/component/common/SelectBox';
 
 type Props = {};
 const useStyle = makeStyles((theme) => ({}));
@@ -51,8 +51,8 @@ function UserHmManager(props: Props) {
         <Grid
             container
             style={{
-                minHeight: "100vh",
-                background: "white",
+                minHeight: '100vh',
+                background: 'white',
                 padding: theme.spacing(2),
             }}
         >
@@ -60,9 +60,7 @@ function UserHmManager(props: Props) {
                 <PopUpConfirm
                     isDisplay={crudCompany.isShowConfirm}
                     onCancel={crudCompany.onCancelConfirm}
-                    onConfirm={() =>
-                        crudCompany.onDelete(crudCompany.itemSelected)
-                    }
+                    onConfirm={() => crudCompany.onDelete(crudCompany.itemSelected)}
                 />
 
                 <PopupMergeToUser
@@ -94,13 +92,7 @@ function UserHmManager(props: Props) {
                             variant="outlined"
                         ></TextField> */}
                         <SelectBox
-                            data={[
-                                "Tất cả",
-                                "Đã xong",
-                                "Chưa xong",
-                                "Đã merge",
-                                "Chưa merge",
-                            ]}
+                            data={['Tất cả', 'Đã xong', 'Chưa xong', 'Đã merge', 'Chưa merge']}
                             labelOption={(op) => op}
                             variant="outlined"
                             label="Filter"
@@ -111,22 +103,22 @@ function UserHmManager(props: Props) {
                             valueOption={(value) => value}
                             onChange={(e: any) => {
                                 switch (e) {
-                                    case "Đã xong":
+                                    case 'Đã xong':
                                         crudCompany.setFilter({
                                             isDone: true,
                                         });
                                         break;
-                                    case "Chưa xong":
+                                    case 'Chưa xong':
                                         crudCompany.setFilter({
                                             isDone: [false, null as any],
                                         });
                                         break;
-                                    case "Đã merge":
+                                    case 'Đã merge':
                                         crudCompany.setFilter({
                                             isMerge: true,
                                         });
                                         break;
-                                    case "Chưa merge":
+                                    case 'Chưa merge':
                                         crudCompany.setFilter({
                                             isMerge: [false, null as any],
                                         });
@@ -146,7 +138,7 @@ function UserHmManager(props: Props) {
                             onChange={(e) => {
                                 crudCompany.setQuery({
                                     search: e.target.value.trim(),
-                                    searchFields: ["note", "username"],
+                                    searchFields: ['note', 'username'],
                                 });
                             }}
                         ></TextField>
@@ -164,34 +156,27 @@ function UserHmManager(props: Props) {
                         // justify="center"
                         className={clsx(globalStyle.pt2, globalStyle.pb2)}
                     >
-                        <ListGrid minWidthItem={"300px"} gridGap={20}>
+                        <ListGrid minWidthItem={'300px'} gridGap={20}>
                             {crudCompany.pagingList?.rows?.map((item) => (
                                 <Grid>
                                     <UserHmItemList
                                         item={item}
                                         onMergeUser={(item) => {
-                                            handleWithPopupMerge.handleShowPopup(
-                                                {
-                                                    userHmId: item.id,
-                                                }
-                                            );
+                                            handleWithPopupMerge.handleShowPopup({
+                                                userHmId: item.id,
+                                            });
                                         }}
                                         onDelete={crudCompany.onConfirm}
                                         onEdit={crudCompany.onShowPopup}
                                         onSeeDetail={(item) => {
-                                            history.push(
-                                                `/progress-order/${item.id}`
-                                            );
+                                            history.push(`/progress-order/${item.id}`);
                                         }}
                                     />
                                 </Grid>
                             ))}
                         </ListGrid>
                     </Grid>
-                    <Grid
-                        container
-                        className={clsx(globalStyle.pt2, globalStyle.pb2)}
-                    >
+                    <Grid container className={clsx(globalStyle.pt2, globalStyle.pb2)}>
                         <Pagination
                             count={crudCompany.pagingList.totalPages || 1}
                             page={crudCompany.pagingList.page || 1}

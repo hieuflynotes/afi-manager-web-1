@@ -26,6 +26,7 @@ import { localStoryController } from '../../controller';
 import { useGlobalStyles } from '../../theme/GlobalStyle';
 import theme from '../../theme/MuiTheme';
 export interface RouteComponent {
+    id?: string;
     link: string;
     icon: React.ReactElement;
     label: string;

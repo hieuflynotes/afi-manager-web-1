@@ -43,7 +43,7 @@ function App() {
                 <Grid>
                     <BackdropLoading />
                     <TransitionGroup>
-                        <CSSTransition classNames="fade" timeout={300}>
+                        <CSSTransition classNames="fade" timeout={3000}>
                             <Switch>
                                 {routers.map((route) => {
                                     if (route.typeAuthen === TypeScreen.authenMenu) {

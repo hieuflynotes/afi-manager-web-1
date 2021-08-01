@@ -1,5 +1,5 @@
-import { Slider, withStyles } from "@material-ui/core";
-import React from "react";
+import { Slider, withStyles } from '@material-ui/core';
+import React from 'react';
 
 const MyPrettoSlider = withStyles((theme) => ({
     root: {
@@ -9,17 +9,17 @@ const MyPrettoSlider = withStyles((theme) => ({
     thumb: {
         height: 0,
         width: 0,
-        backgroundColor: "#fff",
+        backgroundColor: '#fff',
         // border: "2px solid currentColor",
         marginTop: -8,
         marginLeft: -12,
-        "&:focus, &:hover, &$active": {
-            boxShadow: "inherit",
+        '&:focus, &:hover, &$active': {
+            boxShadow: 'inherit',
         },
     },
     active: {},
     valueLabel: {
-        left: "calc(-50% + 4px)",
+        left: 'calc(-50% + 4px)',
     },
     track: {
         height: 8,
