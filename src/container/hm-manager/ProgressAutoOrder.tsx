@@ -248,7 +248,7 @@ function ProgressAutoOrder(props: Props) {
             style={{
                 minHeight: '100vh',
                 background: 'white',
-                padding: theme.spacing(2),
+                padding: theme.spacing(1),
             }}
         >
             <PopupAddOrderId
@@ -333,11 +333,7 @@ function ProgressAutoOrder(props: Props) {
                         />
                     </div>
 
-                    <Grid
-                        container
-                        // justify="center"
-                        className={clsx(globalStyle.pt2, globalStyle.pb2)}
-                    >
+                    <Grid container className={clsx(globalStyle.pt2, globalStyle.pb2)}>
                         <ListGrid minWidthItem={'320px'} gridGap={20}>
                             {filterByStatus(crudTrackingHM.pagingList?.rows || []).map((item, index) => (
                                 <Zoom in={true} timeout={index * 50}>

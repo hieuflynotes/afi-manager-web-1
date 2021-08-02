@@ -2,11 +2,7 @@ import React, { useMemo } from 'react';
 import { Redirect, Route } from 'react-router-dom';
 
 import { createBrowserHistory } from 'history';
-import AdminScreen from '../container/AdminScreen';
 import { InfoMe } from '../afi-manager-base-model/model/InfoMe';
-import AfiScreen from 'src/container/AuthenMenuScreen';
-import ToolHmScreen from 'src/container/ToolHmScreen';
-import RolePermissionScreen from 'src/container/RolePermissionScreen';
 import AuthenMenuScreen from 'src/container/AuthenMenuScreen';
 export const history = createBrowserHistory({});
 

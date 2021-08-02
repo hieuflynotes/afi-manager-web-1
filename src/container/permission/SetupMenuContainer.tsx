@@ -14,7 +14,6 @@ import {
     DropResult,
     ResponderProvided,
 } from 'react-beautiful-dnd';
-import Column from './Column';
 import { v4 as uuid } from 'uuid';
 import { RouteComponent } from 'src/component/common/NavBar';
 import Button from 'src/component/common/Button';
@@ -80,7 +79,7 @@ function SetupMenuContainer(props: Props) {
                         <Grid className={classes.rootMenuItem}>
                             <Grid container justify="space-between" alignItems="center">
                                 <Grid>
-                                    <Typography color="primary">{item.name}</Typography>
+                                    <Typography variant="h6">{item.name}</Typography>
                                 </Grid>
                                 <Grid>
                                     <IconButton color="primary" onClick={() => history.push(`/setup-menu/${item.id}`)}>

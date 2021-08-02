@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
 import { Grid, IconButton, makeStyles, Typography } from '@material-ui/core';
-import QuoteList from './InnerQuoteList';
+import QuoteList from '../../container/permission/InnerQuoteList';
 import { RouteComponent } from 'src/component/common/NavBar';
 import { IoCloseOutline } from 'react-icons/io5';
 import { AiOutlineEdit } from 'react-icons/ai';
@@ -24,7 +24,7 @@ const useStyle = makeStyles((theme) => ({
         minHeight: 100,
     },
 }));
-export default function Column<T = any>(props: PropsColum) {
+export default function ColumnMenu<T = any>(props: PropsColum) {
     const classes = useStyle();
     return (
         <Draggable draggableId={props.item.id || ''} index={props.index} disableInteractiveElementBlocking={true}>

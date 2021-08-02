@@ -74,6 +74,7 @@ const useStyles = makeStyles((theme) => ({
         textDecoration: 'none',
         cursor: 'pointer',
         display: 'flex',
+        color: theme.palette.grey[900],
         alignItems: 'center',
         position: 'relative',
         '&:hover > div': {

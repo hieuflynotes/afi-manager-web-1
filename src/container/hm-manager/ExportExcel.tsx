@@ -32,7 +32,7 @@ const useStyle = makeStyles((theme) => ({
         width: '100%',
         height: '100vh',
         background: 'white',
-        padding: theme.spacing(2),
+        paddingTop: theme.spacing(2),
     },
     rootInputPass: {
         width: '100%',

@@ -48,11 +48,11 @@ const theme = createMuiTheme({
         },
         h6: {
             fontSize: '1rem',
-            fontWeight: 500,
+            fontWeight: 750,
         },
         h5: {
             fontSize: '1.25rem',
-            fontWeight: 500,
+            fontWeight: 750,
         },
         h4: {
             fontSize: '1.5rem',
@@ -61,6 +61,15 @@ const theme = createMuiTheme({
     },
     spacing: 8,
     overrides: {
+        MuiPaper: {
+            root: {
+                background: 'red',
+                borderRadius: '0.35rem',
+            },
+            elevation1: {
+                boxShadow: '0 0.15rem 1.75rem 0 rgb(33 40 50 / 15%)',
+            },
+        },
         MuiButton: {
             root: {
                 textTransform: 'none',
@@ -216,15 +225,15 @@ const theme = createMuiTheme({
             },
             h6: {
                 fontSize: '1rem',
-                fontWeight: 500,
+                fontWeight: 600,
             },
             h5: {
                 fontSize: '1.25rem',
-                fontWeight: 500,
+                fontWeight: 600,
             },
             h4: {
                 fontSize: '1.5rem',
-                fontWeight: 500,
+                fontWeight: 600,
             },
             h3: {
                 fontSize: '2rem',

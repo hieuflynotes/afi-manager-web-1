@@ -23,4 +23,15 @@ export class StringUtil {
         let upperCaseFirstChar = string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
         return upperCaseFirstChar;
     };
+
+    static formatterMoney = new Intl.NumberFormat('uk-EN', {
+        style: 'currency',
+        currency: 'GBP',
+        minimumFractionDigits: 0,
+    });
+
+    // formatterPhoneVN = (phone: string): string => {
+    //     var pn = new PhoneNumber(phone || '', 'VN');
+    //     return pn.getNumber('international');
+    // };
 }

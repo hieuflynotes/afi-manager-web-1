@@ -29,46 +29,6 @@ export default function UiKit() {
     const classes = useStyle();
     return (
         <MyGrid>
-            <NavBar
-                // isHiddenTopBar={true}
-                route={[
-                    {
-                        icon: <FiSave />,
-                        label: 'Home',
-                        link: '/home',
-                    },
-                    {
-                        icon: <FiSave />,
-                        label: 'About',
-                        link: '/about',
-                    },
-                    {
-                        icon: <FiSave />,
-                        label: 'Contact',
-                        action: () => {
-                            console.log('abcdđ');
-                        },
-                        link: '/contact',
-                    },
-                    {
-                        icon: <FiSave />,
-                        label: 'Account',
-                        link: '/account',
-                        subMenu: [
-                            {
-                                icon: <FiSave />,
-                                label: 'Login',
-                                link: '/login',
-                            },
-                            {
-                                icon: <FiSave />,
-                                label: 'Logout',
-                                link: '/logout',
-                            },
-                        ],
-                    },
-                ]}
-            />
             <MyGrid className={classes.root}>
                 <Typography variant="h3" align="center">
                     Button

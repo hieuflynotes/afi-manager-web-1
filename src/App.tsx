@@ -16,9 +16,6 @@ import './App.css';
 import BackdropLoading from './component/common/BackdropLoading';
 import { routers, TypeScreen } from './constants/Route';
 import { AuthenRoute, history, PublicRoute, AuthenMenu } from './constants/RouterAuthen';
-import CustomerManager from './container/CustomerManager';
-import Login from './container/Login';
-import UiKit from './container/UiKit';
 // import "./i18n/config";
 import { Dispatch, RootState } from './rematch/store';
 

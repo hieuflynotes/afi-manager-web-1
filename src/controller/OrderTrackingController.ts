@@ -47,6 +47,21 @@ export class OrderTrackingController extends BaseController<OrderTracking> imple
                 return res.data;
             });
     }
+
+    orderHmForWarehouse(params: ListFilter<StatisticByUserHm>): Promise<Paging<StatisticByUserHm>> {
+        params = { ...params, sort: this.convertSort(params.sort) };
+        params = {
+            ...params,
+            searchFields: this.convertSearch(params.searchFields) as any,
+        };
+        return this.client
+            .get(`${this.serviceURL}/${this.basePath}/statistic-order-hm-by-user`, {
+                params: params,
+            })
+            .then((res) => {
+                return res.data;
+            });
+    }
     exportData(params: PropsExportData): Promise<ExportOrderTracking[]> {
         return this.client
             .get(`${this.serviceURL}/${this.basePath}/export-data`, {

@@ -14,7 +14,7 @@ import {
     DropResult,
     ResponderProvided,
 } from 'react-beautiful-dnd';
-import Column from './Column';
+import Column from '../../component/permssion/ColumnMenu';
 import { v4 as uuid } from 'uuid';
 import { RouteComponent } from 'src/component/common/NavBar';
 import Button from 'src/component/common/Button';

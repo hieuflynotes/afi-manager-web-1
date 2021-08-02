@@ -46,7 +46,7 @@ function RoleContainer(props: Props) {
                 onConfirm={() => crudRole.onDelete(crudRole.itemSelected)}
             />
             <Grid container justify="center">
-                <Typography variant="h5">Permssion</Typography>
+                <Typography variant="h5">Role</Typography>
             </Grid>
             <Grid container justify="space-between">
                 <Grid className={globalStyle.pp2}>
@@ -54,7 +54,7 @@ function RoleContainer(props: Props) {
                 </Grid>
                 <Grid className={globalStyle.pp2}>
                     <Button variant="contained" color="primary" onClick={() => history.push(`role/create`)}>
-                        New Permssion
+                        New Role
                     </Button>
                 </Grid>
             </Grid>
@@ -64,7 +64,7 @@ function RoleContainer(props: Props) {
                         <Grid className={classes.rootPermissionItem}>
                             <Grid container justify="space-between" alignItems="center">
                                 <Grid>
-                                    <Typography color="primary">{item.name}</Typography>
+                                    <Typography variant="h6">{item.name}</Typography>
                                 </Grid>
                                 <Grid>
                                     <IconButton color="primary" onClick={() => history.push(`role/${item.id}`)}>

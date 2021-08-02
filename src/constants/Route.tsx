@@ -4,7 +4,7 @@ import Login from 'src/container/Login';
 import { AiFillDashboard, AiOutlineLineChart } from 'react-icons/ai';
 import CheckTrackingHM from 'src/container/CheckTrackingHM';
 import Register from 'src/container/Register';
-import ToolAutoChangeTextHM from 'src/container/ToolAutoChangeTextHM';
+import ToolAutoChangeTextHM from 'src/container/tool/ToolAutoChangeTextHM';
 import UserHmManager from 'src/container/hm-manager/UserHmManager';
 import ProgressAutoOrder from 'src/container/hm-manager/ProgressAutoOrder';
 import ExportExcel from 'src/container/hm-manager/ExportExcel';
@@ -26,6 +26,8 @@ import { GoTextSize } from 'react-icons/go';
 import { MdLocalShipping } from 'react-icons/md';
 import { GiHand } from 'react-icons/gi';
 import { HiUserGroup } from 'react-icons/hi';
+import UiKit from 'src/container/UiKit';
+import OrderHmWarehouse from 'src/container/warehouse/OrderHmWarehouse';
 export enum TypeScreen {
     public = 'public',
     authenMenu = 'authenMenu',
@@ -33,6 +35,13 @@ export enum TypeScreen {
 }
 
 export const routers: RouteComponent[] = [
+    {
+        component: UiKit,
+        label: 'UI Kit',
+        link: '/ui-kit',
+        typeAuthen: TypeScreen.authenMenu,
+        icon: <AiFillDashboard />,
+    },
     {
         component: Login,
         label: 'Login',
@@ -153,6 +162,13 @@ export const routers: RouteComponent[] = [
         link: '/setup-menu/:id',
         typeAuthen: TypeScreen.authenMenu,
         icon: <AiFillDashboard />,
+    },
+    {
+        component: OrderHmWarehouse,
+        label: 'Order HM',
+        link: '/order-hm-warehouse',
+        typeAuthen: TypeScreen.authenMenu,
+        icon: <RiBillLine />,
     },
 ];
 
