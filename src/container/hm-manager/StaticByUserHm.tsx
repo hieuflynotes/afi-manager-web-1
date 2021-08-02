@@ -7,8 +7,9 @@ import { StatisticByUserHm } from 'src/afi-manager-base-model/controllers/IOrder
 import TableCrud, { ColumnTable } from 'src/component/common/TableCrud';
 import { orderTrackingController } from 'src/controller';
 import { useCrudHook } from 'src/hook/useCrudHook';
+import { useGlobalStyles } from 'src/theme/GlobalStyle';
 import theme from 'src/theme/MuiTheme';
-
+import clsx from 'clsx';
 export default function StaticByUserHm() {
     const [column, setColumn] = useState<ColumnTable<StatisticByUserHm>[]>([
         {
@@ -69,6 +70,7 @@ export default function StaticByUserHm() {
             searchFields: ['username'],
         },
     });
+    const globalStyle = useGlobalStyles();
 
     const renderStatus = (): React.ReactElement => {
         return <Grid></Grid>;
@@ -83,15 +85,11 @@ export default function StaticByUserHm() {
             <Grid
                 style={{
                     background: theme.palette.background.paper,
-                    padding: theme.spacing(6),
                 }}
                 container
             >
-                <Grid item xs={12} container justify="space-between">
-                    <Typography variant="h4">Gift Card</Typography>
-                    <Button variant="contained" color="primary" onClick={(e) => crud.onShowPopup({})}>
-                        Thêm mới
-                    </Button>
+                <Grid item xs={12} container justify="space-between" className={clsx(globalStyle.pt2, globalStyle.pb2)}>
+                    <Typography variant="h4">Static Order</Typography>
                 </Grid>
                 <Grid item xs={12}>
                     <TableCrud<StatisticByUserHm>

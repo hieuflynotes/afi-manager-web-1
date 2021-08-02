@@ -239,9 +239,6 @@ function TrackingInfoHMItem(props: Props) {
                                             <Grid>
                                                 <Typography variant="body2">{item.status_text}</Typography>
                                             </Grid>
-                                            <Grid>
-                                                <Typography>{item.status_details}</Typography>
-                                            </Grid>
                                         </Grid>
                                     );
                                 }

@@ -1,10 +1,11 @@
-import { createModel } from "@rematch/core";
-import { appClient, userController } from "src/controller";
-import { RootModel } from ".";
+import { createModel } from '@rematch/core';
+import { Role } from 'luong-base-model/lib';
+import { appClient, userController } from 'src/controller';
+import { RootModel } from '.';
 // import { Customer } from "../model/base-gift-card/model/Customer";
 
 export type AuthenModel = {
-    role: "admin" | "";
+    role?: Role[];
     jwt?: string;
     // info?: Customer;
     info?: any;
@@ -13,8 +14,8 @@ export type AuthenModel = {
 
 export const authen = createModel<RootModel>()({
     state: {
-        role: "admin",
-        jwt: "",
+        role: undefined,
+        jwt: '',
         isGet: false,
     } as AuthenModel,
     reducers: {
@@ -28,38 +29,38 @@ export const authen = createModel<RootModel>()({
         const { authen } = dispatch;
         return {
             async login(payload: AuthenModel): Promise<any> {
-                localStorage.setItem("jwt", payload.jwt || "");
+                localStorage.setItem('jwt', payload.jwt || '');
                 return authen.update({ ...payload, isGet: true });
             },
             async logOut() {
-                appClient.defaults.headers["authorization"] = "";
-                localStorage.setItem("jwt", "");
+                appClient.defaults.headers['authorization'] = '';
+                localStorage.setItem('jwt', '');
                 this.getMe();
                 authen.update({
-                    role: "",
+                    role: undefined,
                     info: {},
                     isGet: true,
-                    jwt: "",
+                    jwt: '',
                 });
             },
             async getMe(): Promise<any> {
-                const jwt = localStorage.getItem("jwt");
-                appClient.defaults.headers["authorization"] = jwt;
+                const jwt = localStorage.getItem('jwt');
+                appClient.defaults.headers['authorization'] = jwt;
                 return userController
                     .getMe()
                     .then((res) => {
                         return authen.update({
                             isGet: true,
-                            role: "admin",
+                            role: res.role,
                             info: res,
                         });
                     })
                     .catch((err) => {
                         authen.update({
-                            role: "",
+                            role: [],
                             info: {},
                             isGet: true,
-                            jwt: "",
+                            jwt: '',
                         });
                     });
             },

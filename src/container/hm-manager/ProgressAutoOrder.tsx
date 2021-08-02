@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import clsx from 'clsx';
-import { Grid, makeStyles, MenuItem, Select, Typography } from '@material-ui/core';
+import { Grid, makeStyles, MenuItem, Select, Typography, Zoom } from '@material-ui/core';
 import TextField from '../../component/common/TextFiled';
 import ListGrid from '../../component/common/ListGrid';
 import { useGlobalStyles } from '../../theme/GlobalStyle';
@@ -52,11 +52,11 @@ export enum OrderStatus {
 }
 function ProgressAutoOrder(props: Props) {
     const { userHmId } = useParams<{ userHmId: string }>();
-    const [userHm, setUserHm] = useState<UserHm>({} as UserHm)
+    const [userHm, setUserHm] = useState<UserHm>({} as UserHm);
     const [selectedStatus, setSelectedStatus] = useState<OrderStatus>(OrderStatus.none);
     const [giftCard, setGiftCard] = useState<Giftcard>({
         serialNumber: localStorage.getItem('serialNumber') || '',
-        pin: localStorage.getItem('pin')||'',
+        pin: localStorage.getItem('pin') || '',
     });
 
     const [state, setState] = useState<{ isListening: boolean }>({
@@ -113,26 +113,12 @@ function ProgressAutoOrder(props: Props) {
         );
     };
     useEffect(() => {
-        userHmController.list({filter:{id: userHmId}}).then(paging => {
-            if(paging && paging.rows && paging.rows.length>0){
-                setUserHm(paging.rows[0])
+        userHmController.list({ filter: { id: userHmId } }).then((paging) => {
+            if (paging && paging.rows && paging.rows.length > 0) {
+                setUserHm(paging.rows[0]);
             }
-        })
+        });
     }, []);
-
-    const onChagngeGiftCard = useCallback(
-        _.debounce((value: Giftcard) => {
-            hMController
-                .checkGifCart({
-                    cardNumber: value.serialNumber,
-                    cardPin: value.pin,
-                })
-                .then((res) => {
-                    console.log(res);
-                });
-        }, 400),
-        [],
-    );
 
     // useEffect(() => {
     //     onChagngeGiftCard(giftCard);
@@ -262,7 +248,7 @@ function ProgressAutoOrder(props: Props) {
             style={{
                 minHeight: '100vh',
                 background: 'white',
-                padding: theme.spacing(2),
+                padding: theme.spacing(1),
             }}
         >
             <PopupAddOrderId
@@ -279,19 +265,15 @@ function ProgressAutoOrder(props: Props) {
                             <IconButton
                                 onClick={() => {
                                     navigator.clipboard.writeText(
-                                        addAddress(
-                                            userHm.emailCheckout || 'email',
-                                            userHm.password || '123456a@',
-                                            {
-                                                lineAddress: userHm.address || '',
-                                                flatHouse: userHm.address2 || '',
-                                                town: userHm.town || '',
-                                                postCode: userHm.postcode || '',
-                                                firstName: userHm.firstName || '',
-                                                lastName: userHm.lastName || '',
-                                                phonenumber: userHm.phone || '',
-                                            },
-                                        ),
+                                        addAddress(userHm.emailCheckout || 'email', userHm.password || '123456a@', {
+                                            lineAddress: userHm.address || '',
+                                            flatHouse: userHm.address2 || '',
+                                            town: userHm.town || '',
+                                            postCode: userHm.postcode || '',
+                                            firstName: userHm.firstName || '',
+                                            lastName: userHm.lastName || '',
+                                            phonenumber: userHm.phone || '',
+                                        }),
                                     );
                                     dispatch.notification.success('Copy to clipboard successfully!');
                                 }}
@@ -332,7 +314,7 @@ function ProgressAutoOrder(props: Props) {
                                     ...giftCard,
                                     serialNumber: e.target.value,
                                 });
-                                localStorage.setItem('serialNumber', e.target.value)
+                                localStorage.setItem('serialNumber', e.target.value);
                             }}
                         />
                         <TextField
@@ -346,26 +328,23 @@ function ProgressAutoOrder(props: Props) {
                                     ...giftCard,
                                     pin: e.target.value,
                                 });
-                                localStorage.setItem('pin', e.target.value)
-
+                                localStorage.setItem('pin', e.target.value);
                             }}
                         />
                     </div>
 
-                    <Grid
-                        container
-                        // justify="center"
-                        className={clsx(globalStyle.pt2, globalStyle.pb2)}
-                    >
+                    <Grid container className={clsx(globalStyle.pt2, globalStyle.pb2)}>
                         <ListGrid minWidthItem={'320px'} gridGap={20}>
-                            {filterByStatus(crudTrackingHM.pagingList?.rows || []).map((item) => (
-                                <Grid>
-                                    <ProgressHmItemList
-                                        giftCard={giftCard}
-                                        item={item}
-                                        updateOrderId={crudTrackingHM.onShowPopup}
-                                    />
-                                </Grid>
+                            {filterByStatus(crudTrackingHM.pagingList?.rows || []).map((item, index) => (
+                                <Zoom in={true} timeout={index * 50}>
+                                    <Grid>
+                                        <ProgressHmItemList
+                                            giftCard={giftCard}
+                                            item={item}
+                                            updateOrderId={crudTrackingHM.onShowPopup}
+                                        />
+                                    </Grid>
+                                </Zoom>
                             ))}
                         </ListGrid>
                     </Grid>

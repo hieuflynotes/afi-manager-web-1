@@ -18,7 +18,7 @@ export const countBoughtProduct = (orders: OrderTracking[]) =>
     orders
         ?.filter((r) => r.orderId != null && r.orderId.length > 0)
         .map((r) => {
-            const countProd = r.productOrder?.map((p) => p.quantity||1).reduce((i, sum) => (sum += i), 0) || 1;
+            const countProd = r.productOrder?.map((p) => p.quantity || 1).reduce((i, sum) => (sum += i), 0) || 1;
             if (r.errorDesc != null && r.errorDesc.length > 0) return countProd - 1;
             return countProd;
         })

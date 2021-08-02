@@ -1,8 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import clsx from 'clsx';
 import {
-    Checkbox,
-    FormControlLabel,
     Grid,
     makeStyles,
     Table,
@@ -13,29 +9,21 @@ import {
     TableRow,
     Typography,
 } from '@material-ui/core';
-import TextField from '../../component/common/TextFiled';
-import Button from '../../component/common/Button';
-import ListGrid from '../../component/common/ListGrid';
-import { useGlobalStyles } from '../../theme/GlobalStyle';
-import { useCrudHook } from '../../hook/useCrudHook';
-import { Pagination } from '@material-ui/lab';
-import PopUpConfirm from '../../component/common/PopupConfirm';
-import { useHistory, useParams } from 'react-router-dom';
-import { UserHm } from 'src/afi-manager-base-model/model/UserHm';
-import { orderTrackingController, userHmController } from 'src/controller';
-import UserHmItemList from 'src/component/AutoOrderHm/UserHmItemList';
-import PopupInsertUser from 'src/component/AutoOrderHm/PopupInsertUser';
-import theme from 'src/theme/MuiTheme';
-import { OrderTracking } from 'src/afi-manager-base-model/model/OrderTracking';
-import ProgressHmItemList from 'src/component/AutoOrderHm/ProgressHmItemList';
-import { ListFilter } from 'luong-base-model/lib';
-import DatePicker from 'src/component/common/DatePicker';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import { CheckBox } from '@material-ui/icons';
-
-import SelectBox from 'src/component/common/SelectBox';
-import { ExportOrderTracking, PropsExportData } from 'src/afi-manager-base-model/controllers/IOrderTrackingController';
+import clsx from 'clsx';
 import { Parser } from 'json2csv';
+import React, { useEffect, useState } from 'react';
+import { useHistory, useParams } from 'react-router-dom';
+import { ExportOrderTracking, PropsExportData } from 'src/afi-manager-base-model/controllers/IOrderTrackingController';
+import { UserHm } from 'src/afi-manager-base-model/model/UserHm';
+import DatePicker from 'src/component/common/DatePicker';
+import SelectBox from 'src/component/common/SelectBox';
+import { orderTrackingController, userHmController } from 'src/controller';
+import theme from 'src/theme/MuiTheme';
+import Button from '../../component/common/Button';
+import TextField from '../../component/common/TextFiled';
+import { useGlobalStyles } from '../../theme/GlobalStyle';
+
 const fileDownload = require('js-file-download');
 
 type Props = {};
@@ -44,7 +32,7 @@ const useStyle = makeStyles((theme) => ({
         width: '100%',
         height: '100vh',
         background: 'white',
-        padding: theme.spacing(2),
+        paddingTop: theme.spacing(2),
     },
     rootInputPass: {
         width: '100%',
@@ -98,6 +86,10 @@ const columns: Column[] = [
         label: 'Is regieter',
     },
     {
+        id: 'priceBuy',
+        label: 'Price Buy',
+    },
+    {
         id: 'errorDesc',
         label: 'Error',
     },
@@ -111,7 +103,7 @@ function ExportExcel(props: Props) {
         password: string;
         isComfirm: boolean;
     }>({
-        isComfirm: false,
+        isComfirm: true,
         password: '',
     });
 

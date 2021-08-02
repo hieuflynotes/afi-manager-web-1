@@ -61,7 +61,6 @@ function CheckTrackingHM(props: Props) {
     });
     const crudTrackingHM = useCrudHook<OrderTracking, ListFilter<OrderTracking>>({
         controller: orderTrackingController,
-        saveController: orderTrackingController.saveNotAuthen,
         initQuery: {
             searchFields: ['orderId', 'trackingId', 'customerName', 'email'],
             pageSize: 100,
@@ -143,7 +142,6 @@ function CheckTrackingHM(props: Props) {
                     <Grid>
                         <Grid container alignItems="center">
                             <Button
-                                className={clsx(globalStyles.ml2, globalStyles.mr2)}
                                 variant="contained"
                                 color="primary"
                                 onClick={() => {
@@ -152,24 +150,11 @@ function CheckTrackingHM(props: Props) {
                             >
                                 Flow many by Emails and Orders
                             </Button>
-                            <SelectBox
-                                variant="outlined"
-                                data={['All', ...Object.values(EStatusOrderTracking)]}
-                                labelOption={(label) => label}
-                                valueOption={(value) => value}
-                                onChange={(value: any) => {
-                                    crudTrackingHM.setFilter({
-                                        status: value == 'All' ? undefined : value,
-                                    });
-                                }}
-                                label={'Status'}
-                                value={crudTrackingHM.query.filter?.status || 'All'}
-                            />
                         </Grid>
                     </Grid>
                 </Grid>
             </Grid>
-            <ListGrid minWidthItem={"320px"} gridGap={15}>
+            <ListGrid minWidthItem={'320px'} gridGap={15}>
                 {crudTrackingHM.pagingList.rows?.map((item, index) => (
                     <Zoom in={true} timeout={index * 100}>
                         <Grid container justify="center">

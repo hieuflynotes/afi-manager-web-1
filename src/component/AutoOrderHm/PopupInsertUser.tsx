@@ -157,6 +157,7 @@ export default function PopupInsertUser(props: Props) {
                             variant="outlined"
                             className={clsx(globalStyles.mt1, globalStyles.mb2)}
                             label="User name"
+                            disabled={formik.values.isDone}
                         ></TextField>
                     </Grid>
                     <Grid>

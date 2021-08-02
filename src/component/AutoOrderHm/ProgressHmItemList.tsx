@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
-import { Button, Grid, makeStyles, Typography } from '@material-ui/core';
+import { Button, Card, Chip, Grid, makeStyles, Paper, Popover, Tooltip, Typography } from '@material-ui/core';
 import { useGlobalStyles } from '../../theme/GlobalStyle';
 import { IoCopyOutline, IoCreateOutline } from 'react-icons/io5';
 import { IconButton } from '@material-ui/core';
@@ -11,6 +11,10 @@ import { checkoutCode } from 'src/constants/IMacros';
 import { dispatch } from '../../rematch/store';
 import { Giftcard } from '../../container/hm-manager/ProgressAutoOrder';
 import { calcBuyPrice } from 'src/helper/CalculatorHmPrice';
+import { cssInfo } from 'src/constants/Other';
+import { GiTwoCoins } from 'react-icons/gi';
+import { RiAccountPinCircleFill } from 'react-icons/ri';
+import { BiKey } from 'react-icons/bi';
 type Props = {
     item: OrderTracking;
     giftCard: Giftcard;
@@ -18,125 +22,239 @@ type Props = {
 };
 const useStyle = makeStyles((theme) => ({
     root: {
+        padding: theme.spacing(2),
+        border: `1px solid ${theme.palette.divider}`,
+        borderRadius: theme.spacing(2),
+    },
+    rootItem: {
         borderRadius: theme.spacing(1),
+        border: `1px solid ${theme.palette.divider}`,
+        padding: theme.spacing(1),
     },
-    lessThan5: {
-        border: `1px solid ${theme.palette.success.main}`,
+    frCoin: {
+        color: cssInfo.colorCoin,
     },
-    greaterThan5: {
-        border: `1px solid ${theme.palette.primary.main}`,
-    },
-    nameUserHm: {
-        borderBottom: `2px solid ${theme.palette.primary.main}`,
-        padding: theme.spacing(2),
-        position: 'relative',
-    },
-    frInfo: {
-        padding: theme.spacing(2),
-    },
-    frIconClose: {
-        position: 'absolute',
-        top: 1,
-        right: theme.spacing(2),
-        fontSize: '1.2rem',
+    frCoinBuy: {
         color: theme.palette.error.main,
     },
-    iconClose: {
-        color: theme.palette.error.main,
+    icon: {
+        fontSize: '1.5rem',
+        paddingRight: theme.spacing(1),
+    },
+    coin: {
+        fontSize: '1.5rem',
+        paddingRight: theme.spacing(1),
+    },
+    popoverRoot: {
+        padding: theme.spacing(1),
     },
 }));
 function ProgressHmItemList(props: Props) {
     const classes = useStyle();
     const globalStyle = useGlobalStyles();
 
-    const getStatus = (item: OrderTracking) => {
+    const [state, setState] = useState<{
+        isOpenMoreInfo: boolean;
+    }>({
+        isOpenMoreInfo: false,
+    });
+
+    const refChipInfo = useRef(null);
+
+    const getChipStatus = (item: OrderTracking): React.ReactElement => {
+        if (item.errorDesc) {
+            return (
+                <Chip
+                    style={{
+                        background: theme.palette.error.light,
+                    }}
+                    color="primary"
+                    label={item.errorDesc}
+                />
+            );
+        }
         if (!item.isRegister) {
-            return 'Khởi tạo';
+            return <Chip label={'Created'} />;
         }
         if (item.isRegister && !item.isOrder) {
-            return 'Đã tạo tài khoản';
+            return <Chip label={'Registed'} />;
         }
         if (item.isOrder && item.orderId) {
-            return 'Đã thanh toán';
+            return (
+                <Chip
+                    style={{
+                        background: theme.palette.success.light,
+                    }}
+                    color="primary"
+                    label={item.orderId}
+                />
+            );
         }
         if (item.isOrder) {
-            return 'Đã thêm vào giỏ hàng';
+            return <Chip label={'Added to cart'} />;
         }
+        return <></>;
     };
+
+    const getStatusText = (item: OrderTracking): string => {
+        if (!item.isRegister) {
+            return 'Created';
+        }
+        if (item.isRegister && !item.isOrder) {
+            return 'Registed';
+        }
+        if (item.isOrder && item.orderId) {
+            return item.orderId || '';
+        }
+        if (item.isOrder) {
+            return 'Added to cart';
+        }
+        return '';
+    };
+
     useEffect(() => {
         return () => {};
     }, []);
 
     return (
-        <Grid
-            container
-            justify="center"
-            className={`${classes.root} ${
-                props.item.totalPrice && props.item.totalPrice > 5 ? classes.greaterThan5 : classes.lessThan5
-            }`}
-        >
-            <Grid container justify="space-between" alignItems="center" className={clsx(classes.nameUserHm)}>
-                <Typography variant="body2">{getStatus(props.item)}</Typography>
+        <Grid className={classes.root}>
+            <Grid container justify="space-between">
+                <Popover
+                    id={props.item.id || ''}
+                    open={state.isOpenMoreInfo}
+                    anchorEl={refChipInfo.current}
+                    onClose={() => {
+                        setState({ ...state, isOpenMoreInfo: false });
+                    }}
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'right',
+                    }}
+                    transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'center',
+                    }}
+                >
+                    <Grid className={classes.popoverRoot}>
+                        <Typography>Register by: {props.item.registerByName}</Typography>
+                        <Typography>Checkout by : {props.item.dataFirebase?.username}</Typography>
+                    </Grid>
+                </Popover>
+                <Grid onClick={() => setState({ ...state, isOpenMoreInfo: true })} ref={refChipInfo}>
+                    {getChipStatus(props.item)}
+                </Grid>
                 <Grid>
-                    <IconButton
-                        onClick={() => {
-                            navigator.clipboard.writeText(
-                                checkoutCode(
-                                    props.item.email || 'email@gmail.com',
-                                    props.item.userHM?.password || '123456a@',
-                                    props.giftCard.serialNumber,
-                                    props.giftCard.pin,
-                                    Number(props.item.totalPrice || '0'),
-                                ),
-                            );
-                            dispatch.notification.success('Copy to clipboard successfully!');
-                        }}
-                        size="small"
-                    >
-                        <IoCopyOutline />
-                    </IconButton>
+                    <Grid>
+                        <IconButton
+                            onClick={() => {
+                                navigator.clipboard.writeText(
+                                    checkoutCode(
+                                        props.item.email || 'email@gmail.com',
+                                        props.item.userHM?.password || '123456a@',
+                                        props.giftCard.serialNumber,
+                                        props.giftCard.pin,
+                                        Number(props.item.totalPrice || '0'),
+                                    ),
+                                );
+                                dispatch.notification.success('Copy to clipboard successfully!');
+                            }}
+                            size="small"
+                        >
+                            <IoCopyOutline />
+                        </IconButton>
 
-                    <IconButton
-                        onClick={() => {
-                            props.updateOrderId(props.item);
-                        }}
-                        size="small"
-                        color="primary"
-                    >
-                        <IoCreateOutline />
-                    </IconButton>
+                        <IconButton
+                            onClick={() => {
+                                props.updateOrderId(props.item);
+                            }}
+                            size="small"
+                            color="primary"
+                        >
+                            <IoCreateOutline />
+                        </IconButton>
+                    </Grid>
                 </Grid>
             </Grid>
-            <Grid container className={clsx(classes.frInfo)}>
-                {props.item.errorDesc && (
+            <Grid className={clsx(globalStyle.mt1, globalStyle.mb1)}>
+                <Grid container alignItems="center">
+                    <Grid className={classes.icon}>
+                        <RiAccountPinCircleFill />
+                    </Grid>
+                    <Grid>
+                        <Typography variant="h6">{props.item.email}</Typography>
+                    </Grid>
+                </Grid>
+                <Grid container alignItems="center">
+                    <Grid className={globalStyle.pr1}>
+                        <BiKey />
+                    </Grid>
+                    <Grid>
+                        <Typography variant="caption">{props.item.userHM?.password}</Typography>
+                    </Grid>
+                </Grid>
+            </Grid>
+            <Grid
+                container
+                className={clsx(globalStyle.pt1, globalStyle.pb1)}
+                style={{
+                    minHeight: 80,
+                }}
+            >
+                {props.item?.productOrder?.map((product) => {
+                    return (
+                        <Grid container>
+                            <Grid container justify="space-between">
+                                <Grid>
+                                    <Grid container alignContent="center">
+                                        <Typography>{product.productId}</Typography>
+                                        <Typography
+                                            variant="caption"
+                                            color="textSecondary"
+                                        >{`(${product.quantity})`}</Typography>
+                                    </Grid>
+                                </Grid>
+                                <Grid>
+                                    <Typography variant="caption">Size:{product.size}</Typography>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    );
+                })}
+            </Grid>
+            <Grid container className={clsx(globalStyle.pt1)}>
+                <Grid xs={6}>
                     <Grid
-                        container
+                        className={clsx(globalStyle.pr1, classes.frCoin)}
                         style={{
-                            color: theme.palette.error.main,
+                            color:
+                                props.item.totalPrice && props.item.totalPrice > 5
+                                    ? undefined
+                                    : theme.palette.success.main,
                         }}
                     >
-                        <TextDesc title={'Lỗi'} desc={props.item.errorDesc || ''} />
+                        <Grid container alignItems="center" className={classes.rootItem} justify="center">
+                            <Grid className={clsx(classes.coin)}>
+                                <GiTwoCoins />
+                            </Grid>
+                            <Grid>
+                                <Typography>{props.item.totalPrice} (Price)</Typography>
+                            </Grid>
+                        </Grid>
                     </Grid>
-                )}
-                <TextDesc title={'Người checkout'} desc={props.item.dataFirebase?.username || ''} />
-                <TextDesc title={'OrderId'} desc={props.item.orderId == '1' ? 'Rỗng' : props.item.orderId || '   '} />
-                <TextDesc title={'Tổng giá'} desc={`${props.item.totalPrice}` || ''} />
-                <TextDesc title={'Phải trả'} desc={`${calcBuyPrice(props.item.totalPrice || 0)}` || ''} />
-                <TextDesc title={'Email'} desc={props.item.email || ''} />
-                <TextDesc title={'Password'} desc={props.item.userHM?.password || ''} />
+                </Grid>
+                <Grid xs={6}>
+                    <Grid className={clsx(globalStyle.pr1, classes.frCoinBuy)}>
+                        <Grid container alignItems="center" className={classes.rootItem} justify="center">
+                            <Grid className={clsx(classes.coin)}>
+                                <GiTwoCoins />
+                            </Grid>
+                            <Grid>
+                                <Typography>{`${calcBuyPrice(props.item.totalPrice || 0)}`} (Price Buy)</Typography>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </Grid>
             </Grid>
-            {props.item.productOrder &&
-                props.item.productOrder.map((item) => (
-                    <Grid container className={clsx(classes.frInfo)}>
-                        <TextDesc title={'Id sản phẩm'} desc={item.productId || ''} />
-                        {(item.quantity || 0) > 1 && (
-                            <TextDesc title={'Số lượng'} desc={item.quantity?.toString() || ''} />
-                        )}
-                        <TextDesc title={'Size'} desc={item.size || ''} />
-                        <TextDesc title={'Giá gốc'} desc={item.price?.toString() || ''} />
-                        <TextDesc title={'Giá mua'} desc={calcBuyPrice(item.price || 0).toString() || ''} />
-                    </Grid>
-                ))}
         </Grid>
     );
 }

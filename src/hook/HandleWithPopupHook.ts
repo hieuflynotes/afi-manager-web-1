@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState } from 'react';
 
 export function handleWithPopupHook<T>(props: Props<T>) {
     // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -25,7 +25,7 @@ export function handleWithPopupHook<T>(props: Props<T>) {
         props.onShowConfirm && props.onShowConfirm();
         setState({
             ...state,
-            isShowPopup: true,
+            isShowConfirm: true,
             itemSelected: item as T,
         });
     }

@@ -3,6 +3,8 @@ import { OrderTracking } from 'src/afi-manager-base-model/model/OrderTracking';
 import { dispatch } from 'src/rematch/store';
 import {
     ExportOrderTracking,
+    FilterStatistic,
+    IntervalCheckoutHmTeamAle,
     IOrderTrackingController,
     PropsCreateManyFlow,
     PropsExportData,
@@ -12,6 +14,24 @@ import { User } from '../afi-manager-base-model/model/User';
 import { BaseController } from './BaseController';
 
 export class OrderTrackingController extends BaseController<OrderTracking> implements IOrderTrackingController {
+    intervalTeamRegister(params: FilterStatistic): Promise<IntervalCheckoutHmTeamAle[][]> {
+        return this.client
+            .get(`${this.serviceURL}/${this.basePath}/interval-team-register`, {
+                params,
+            })
+            .then((res) => {
+                return res.data;
+            });
+    }
+    intervalTeamCheckout(params: FilterStatistic): Promise<IntervalCheckoutHmTeamAle[][]> {
+        return this.client
+            .get(`${this.serviceURL}/${this.basePath}/interval-team-checkout`, {
+                params,
+            })
+            .then((res) => {
+                return res.data;
+            });
+    }
     statisticByUserHm(params: ListFilter<StatisticByUserHm>): Promise<Paging<StatisticByUserHm>> {
         params.searchFields = ['username'];
         params = { ...params, sort: this.convertSort(params.sort) };
@@ -21,6 +41,21 @@ export class OrderTrackingController extends BaseController<OrderTracking> imple
         };
         return this.client
             .get(`${this.serviceURL}/${this.basePath}/staticti-by-user-hm`, {
+                params: params,
+            })
+            .then((res) => {
+                return res.data;
+            });
+    }
+
+    orderHmForWarehouse(params: ListFilter<StatisticByUserHm>): Promise<Paging<StatisticByUserHm>> {
+        params = { ...params, sort: this.convertSort(params.sort) };
+        params = {
+            ...params,
+            searchFields: this.convertSearch(params.searchFields) as any,
+        };
+        return this.client
+            .get(`${this.serviceURL}/${this.basePath}/statistic-order-hm-by-user`, {
                 params: params,
             })
             .then((res) => {

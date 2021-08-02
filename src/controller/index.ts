@@ -9,6 +9,10 @@ import { UserController } from './UserController';
 import { routersMap, TypeScreen } from 'src/constants/Route';
 import { MetaDataController } from './MetaDataController';
 import { UserHmController } from './UserHmController';
+import PermissionContainer from 'src/container/permission/PermissionContainer';
+import { PermissionController } from './PermissionController';
+import { RoleController } from './RoleController';
+import { MenuTemplateController } from './MenuTemplateController';
 
 export const appClient = axios.create({
     baseURL: config.apiGatewayUrl,
@@ -42,7 +46,7 @@ appClient.interceptors.response.use(
             const getRoute = routersMap.get(linkNow);
             if (getRoute && getRoute?.typeAuthen != TypeScreen.public) {
                 dispatch.notification.error(err.response?.data?.message || 'Login again');
-                window.location.href = '/login';
+                // window.location.href = '/login';
             }
         } else if (err.response?.status === 403) {
         } else {
@@ -66,6 +70,10 @@ export const metaDataController = new MetaDataController(config.apiGatewayUrl, '
 export const hMController = new HMController('https://api.parcellab.com/v2', '');
 
 export const userHmController = new UserHmController(config.apiGatewayUrl, 'afi/userHm', appClient);
+
+export const permssionController = new PermissionController(config.apiGatewayUrl, 'permssion', appClient);
+export const roleController = new RoleController(config.apiGatewayUrl, 'role', appClient);
+export const menuTeamplateController = new MenuTemplateController(config.apiGatewayUrl, 'menuTemplate', appClient);
 
 //
 //

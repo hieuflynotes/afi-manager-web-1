@@ -10,13 +10,13 @@ import {
     makeStyles,
     Theme,
     Typography,
-} from "@material-ui/core";
-import { IoCloseOutline } from "react-icons/io5";
-import React from "react";
-import { BiErrorCircle } from "react-icons/bi";
-import theme from "../../theme/MuiTheme";
-import clsx from "clsx";
-import { useGlobalStyles } from "src/theme/GlobalStyle";
+} from '@material-ui/core';
+import { IoCloseOutline } from 'react-icons/io5';
+import React from 'react';
+import { BiErrorCircle } from 'react-icons/bi';
+import theme from '../../theme/MuiTheme';
+import clsx from 'clsx';
+import { useGlobalStyles } from 'src/theme/GlobalStyle';
 
 const useStyles = makeStyles((theme: Theme) => ({
     digActions: {
@@ -34,20 +34,15 @@ function PopUpConfirm(props: Props) {
     const classes = useStyles();
     const globalStyles = useGlobalStyles();
     const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-        if (e.key === "Enter") {
+        if (e.key === 'Enter') {
             props.onConfirm();
         }
-        if (e.key === "Escape") {
+        if (e.key === 'Escape') {
             props.onCancel();
         }
     };
     return (
-        <Dialog
-            open={props.isDisplay}
-            fullWidth={true}
-            maxWidth={"sm"}
-            onKeyDown={handleKeyDown}
-        >
+        <Dialog open={props.isDisplay} fullWidth={true} maxWidth={'sm'} onKeyDown={handleKeyDown}>
             <DialogTitle className={clsx(globalStyles.pp0, globalStyles.mm0)}>
                 <Grid item xs={12}>
                     {/* <Typography variant="h4" color="error" align="center">
@@ -56,9 +51,9 @@ function PopUpConfirm(props: Props) {
                 </Grid>
                 <Box
                     style={{
-                        position: "absolute",
-                        top: "1.5rem",
-                        right: "1.5rem",
+                        position: 'absolute',
+                        top: '1.5rem',
+                        right: '1.5rem',
                     }}
                 >
                     <IconButton
@@ -76,46 +71,33 @@ function PopUpConfirm(props: Props) {
             <DialogContent>
                 <Grid container direction="column">
                     <Grid item xs={12}>
-                        <Grid
-                            container
-                            justify="center"
-                            className={clsx(globalStyles.pp1)}
-                        >
+                        <Grid container justify="center" className={clsx(globalStyles.pp1)}>
                             <BiErrorCircle
                                 style={{
-                                    fontSize: "6rem",
+                                    fontSize: '6rem',
                                     color: theme.palette.error.main,
                                     fontWeight: 200,
                                 }}
                             />
                         </Grid>
-                        <Grid
-                            container
-                            justify="center"
-                            className={clsx(globalStyles.pp1)}
-                        >
+                        <Grid container justify="center" className={clsx(globalStyles.pp1)}>
                             <Typography
                                 className={classes.title}
                                 variant="h4"
                                 align="center"
                                 // color="textPrimary"
                             >
-                                {props.title || "Are you sure ?"}
+                                {props.title || 'Are you sure ?'}
                             </Typography>
                         </Grid>
-                        <Grid
-                            container
-                            className={clsx(globalStyles.pp1)}
-                            justify="center"
-                        >
+                        <Grid container className={clsx(globalStyles.pp1)} justify="center">
                             <Typography
                                 className={classes.title}
                                 variant="subtitle1"
                                 align="center"
                                 // color="textPrimary"
                             >
-                                {props.title ||
-                                    "You will not be able to recover ?"}
+                                {props.title || 'You will not be able to recover ?'}
                             </Typography>
                         </Grid>
                     </Grid>
@@ -124,38 +106,31 @@ function PopUpConfirm(props: Props) {
 
             <DialogActions>
                 <Grid item xs={12} className={classes.digActions}>
-                    <Grid
-                        item
-                        container
-                        xs={12}
-                        direction="row"
-                        justify="space-evenly"
-                        alignItems="center"
-                    >
+                    <Grid item container xs={12} direction="row" justify="space-evenly" alignItems="center">
                         <Button
                             // className={globalStyles.buttonOutline}
                             startIcon={<IoCloseOutline />}
                             variant="outlined"
-                            size="medium"
-                            color={"primary"}
+                            size="small"
+                            color={'primary'}
                             onClick={() => {
                                 props.onCancel();
                             }}
                         >
-                            {"Cancel"}
+                            {'Cancel'}
                         </Button>
 
                         <Button
                             variant="contained"
                             className={globalStyles.buttonAlert}
-                            // size="small"
+                            size="small"
                             startIcon={<IoCloseOutline />}
                             color="primary"
                             onClick={() => {
                                 props.onConfirm();
                             }}
                         >
-                            {props.labelButtonConfirm || "Confirm"}
+                            {props.labelButtonConfirm || 'Confirm'}
                         </Button>
                     </Grid>
                 </Grid>

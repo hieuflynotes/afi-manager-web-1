@@ -14,7 +14,7 @@ export class BaseController<T> implements IBaseController<T> {
         this.client = client;
     }
     getById(params: { id: string }): Promise<T | undefined> {
-        return this.client.get(`${this.serviceURL}/${this.basePath}/${params.id}`).then((res) => {
+        return this.client.get(`${this.serviceURL}/${this.basePath}/getById/${params.id}`).then((res) => {
             return res.data;
         });
     }
