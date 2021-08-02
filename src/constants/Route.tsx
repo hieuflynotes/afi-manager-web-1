@@ -8,12 +8,12 @@ import ToolAutoChangeTextHM from 'src/container/ToolAutoChangeTextHM';
 import UserHmManager from 'src/container/hm-manager/UserHmManager';
 import ProgressAutoOrder from 'src/container/hm-manager/ProgressAutoOrder';
 import ExportExcel from 'src/container/hm-manager/ExportExcel';
-import { FaFileCsv } from 'react-icons/fa';
+import { FaFileCsv, FaUserCheck } from 'react-icons/fa';
 import StaticByUserHm from 'src/container/hm-manager/StaticByUserHm';
 import FixDataTool from 'src/container/hm-manager/FixDataTool';
 import SyncData from 'src/container/hm-manager/SyncData';
 import { FiXOctagon } from 'react-icons/fi';
-import { TiArrowSyncOutline } from 'react-icons/ti';
+import { TiArrowSyncOutline, TiThMenuOutline } from 'react-icons/ti';
 import StatisticAleTeam from 'src/container/hm-manager/StatisticAleTeam';
 import PermissionContainer from 'src/container/permission/PermissionContainer';
 import RoleContainer from 'src/container/permission/RoleContainer';
@@ -21,6 +21,11 @@ import SetupRoleContainer from 'src/container/permission/SetupRoleContainer';
 import UserManager from 'src/container/permission/UserManager';
 import SetupMenu from 'src/container/permission/SetupMenu';
 import SetupMenuContainer from 'src/container/permission/SetupMenuContainer';
+import { RiBillLine } from 'react-icons/ri';
+import { GoTextSize } from 'react-icons/go';
+import { MdLocalShipping } from 'react-icons/md';
+import { GiHand } from 'react-icons/gi';
+import { HiUserGroup } from 'react-icons/hi';
 export enum TypeScreen {
     public = 'public',
     authenMenu = 'authenMenu',
@@ -40,14 +45,14 @@ export const routers: RouteComponent[] = [
         label: 'Tool change text',
         link: '/tool-change-text',
         typeAuthen: TypeScreen.authenMenu,
-        icon: <AiFillDashboard />,
+        icon: <GoTextSize />,
     },
     {
         component: UserHmManager,
         label: 'User HM',
         link: '/user-hm',
         typeAuthen: TypeScreen.authenMenu,
-        icon: <AiFillDashboard />,
+        icon: <RiBillLine />,
     },
     {
         component: ProgressAutoOrder,
@@ -72,10 +77,10 @@ export const routers: RouteComponent[] = [
     },
     {
         component: StatisticAleTeam,
-        label: 'Ale Team',
+        label: 'Statistic Ale Team',
         link: '/statistic-ale-team',
         typeAuthen: TypeScreen.authenMenu,
-        icon: <FiXOctagon />,
+        icon: <AiOutlineLineChart />,
     },
 
     // {
@@ -105,28 +110,28 @@ export const routers: RouteComponent[] = [
         label: 'Check Tracking',
         link: '/check-tracking',
         typeAuthen: TypeScreen.authenMenu,
-        icon: <AiFillDashboard />,
+        icon: <MdLocalShipping />,
     },
     {
         component: PermissionContainer,
         label: 'Permssion',
         link: '/permission',
         typeAuthen: TypeScreen.authenMenu,
-        icon: <AiFillDashboard />,
+        icon: <GiHand />,
     },
     {
         component: RoleContainer,
         label: 'Role',
         link: '/role',
         typeAuthen: TypeScreen.authenMenu,
-        icon: <AiFillDashboard />,
+        icon: <FaUserCheck />,
     },
     {
         component: SetupMenuContainer,
         label: 'Role',
         link: '/setup-menu',
         typeAuthen: TypeScreen.authenMenu,
-        icon: <AiFillDashboard />,
+        icon: <TiThMenuOutline />,
     },
     {
         component: SetupRoleContainer,
@@ -140,7 +145,7 @@ export const routers: RouteComponent[] = [
         label: 'User Manager',
         link: '/user-manager',
         typeAuthen: TypeScreen.authenMenu,
-        icon: <AiFillDashboard />,
+        icon: <HiUserGroup />,
     },
     {
         component: SetupMenu,

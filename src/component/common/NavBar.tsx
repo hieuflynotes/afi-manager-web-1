@@ -13,7 +13,9 @@ import {
     makeStyles,
     Typography,
     Slide,
+    Popover,
 } from '@material-ui/core';
+import transitions from '@material-ui/core/styles/transitions';
 import clsx from 'clsx';
 import React, { useEffect, useRef, useState } from 'react';
 import { CgPlayListRemove } from 'react-icons/cg';
@@ -25,6 +27,8 @@ import { cssInfo } from '../../constants/Other';
 import { localStoryController } from '../../controller';
 import { useGlobalStyles } from '../../theme/GlobalStyle';
 import theme from '../../theme/MuiTheme';
+import Button from './Button';
+import ListGrid from './ListGrid';
 export interface RouteComponent {
     id?: string;
     link: string;
@@ -42,8 +46,7 @@ type Props = {
 };
 const useStyles = makeStyles((theme) => ({
     root: {
-        padding: 10,
-        margin: 10,
+        zIndex: 1000,
     },
     topBar: {
         position: 'fixed',
@@ -69,7 +72,6 @@ const useStyles = makeStyles((theme) => ({
     menuItem: {
         padding: theme.spacing(2),
         textDecoration: 'none',
-        color: theme.palette.text.hint,
         cursor: 'pointer',
         display: 'flex',
         alignItems: 'center',
@@ -84,21 +86,13 @@ const useStyles = makeStyles((theme) => ({
             color: theme.palette.primary.main,
         },
     },
-    menuItemSubMenu: {
-        marginTop: -1,
-        fontWeight: 400,
-        border: `1px solid ${theme.palette.divider}`,
-        '&:hover > div': {
-            display: 'grid',
-        },
-    },
     menuItemNavBar: {
         padding: theme.spacing(1),
         margin: theme.spacing(1),
         paddingLeft: theme.spacing(0),
         textDecoration: 'none',
-        color: theme.palette.text.hint,
         cursor: 'pointer',
+        color: theme.palette.grey[900],
         display: 'flex',
         alignItems: 'center',
         position: 'relative',
@@ -167,13 +161,44 @@ const useStyles = makeStyles((theme) => ({
         transition: '0.3s',
         color: theme.palette.primary.main,
     },
+    popover: {
+        '& > .MuiPopover-paper': {
+            boxShadow: theme.shadows[0],
+            // border: `1px solid ${theme.palette.divider}`,
+        },
+        zIndex: `800 !important` as any,
+        padding: theme.spacing(3),
+    },
+    popoverContentSubmenu: {
+        width: '100vw',
+        padding: theme.spacing(3),
+        position: 'relative',
+        zIndex: 1200,
+    },
+    popoverItemSubmenu: {
+        '&:hover *': {
+            color: theme.palette.primary.main,
+        },
+    },
+    iconSubmenuPopover: {
+        fontSize: '2rem',
+        padding: theme.spacing(1),
+        color: theme.palette.grey[700],
+    },
 }));
 export default function NavBar(props: Props) {
     const [state, setState] = useState<{
         hiddenNavBar: boolean;
+        subMenu: RouteComponent[];
+        idSelectSubMenu: string;
     }>({
         hiddenNavBar: false,
+        subMenu: [],
+        idSelectSubMenu: '',
     });
+
+    const menuElement = useRef(null);
+
     const history = useHistory();
     const classes = useStyles();
     const globalStyle = useGlobalStyles();
@@ -293,7 +318,54 @@ export default function NavBar(props: Props) {
     };
     const Menu = () => {
         return (
-            <Grid justify="center" className={classes.topBar} container>
+            <Grid justify="center" className={classes.topBar} container ref={menuElement}>
+                <Popover
+                    id={'sub-menu'}
+                    open={Boolean(state.subMenu.length)}
+                    anchorEl={menuElement.current}
+                    onClose={() => setState({ ...state, subMenu: [], idSelectSubMenu: '' })}
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'left',
+                    }}
+                    className={classes.popover}
+                >
+                    <Grid container className={classes.popoverContentSubmenu} justify="center">
+                        <Grid lg={10} item>
+                            <Grid>
+                                {state.subMenu.map((item) => (
+                                    <Button
+                                        style={{
+                                            minWidth: 200,
+                                            marginRight: theme.spacing(3),
+                                        }}
+                                        className={clsx(
+                                            (isActive(item) && classes.styleActive) || '',
+                                            classes.popoverItemSubmenu,
+                                        )}
+                                        onClick={() => {
+                                            history.push(item.link);
+                                            setState({ ...state, subMenu: [], idSelectSubMenu: '' });
+                                        }}
+                                    >
+                                        <Grid container alignItems="center" alignContent="center">
+                                            <Grid
+                                                item
+                                                className={classes.iconSubmenuPopover}
+                                                style={{
+                                                    color: isActive(item) ? theme.palette.primary.main : undefined,
+                                                }}
+                                            >
+                                                {item.icon}
+                                            </Grid>
+                                            <Grid item>{item.label}</Grid>
+                                        </Grid>
+                                    </Button>
+                                ))}
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </Popover>
                 <Grid container lg={10} alignContent="center" alignItems="center" justify="space-between">
                     <Grid>
                         <Grid container alignContent="center" alignItems="center">
@@ -308,7 +380,6 @@ export default function NavBar(props: Props) {
                             >
                                 <img style={{ width: 80 }} src="https://dev-giftcard.web.app/image/logo.png" />
                             </Grid>
-                            {/*  */}
                             <Grid style={{ display: 'flex' }}>
                                 {props.route.map((item) => {
                                     if (item && item.subMenu && item.subMenu.length > 0) {
@@ -316,26 +387,40 @@ export default function NavBar(props: Props) {
                                             <Grid
                                                 className={clsx(
                                                     classes.menuItem,
-                                                    isActive(item) && classes.styleActive,
+                                                    (state.idSelectSubMenu == item.id || isActive(item)) &&
+                                                        classes.styleActive,
                                                 )}
                                                 onClick={(e) => {
                                                     e.stopPropagation();
-                                                    Boolean(item.link) && history.push(item.link);
+                                                    if (
+                                                        Boolean(state.subMenu?.length) &&
+                                                        state.idSelectSubMenu == item.id
+                                                    ) {
+                                                        setState({
+                                                            ...state,
+                                                            subMenu: [],
+                                                            idSelectSubMenu: '',
+                                                        });
+                                                        return;
+                                                    }
+                                                    setState({
+                                                        ...state,
+                                                        subMenu: item.subMenu || [],
+                                                        idSelectSubMenu: item.id || '',
+                                                    });
+
+                                                    // Boolean(item.link) && history.push(item.link);
                                                 }}
                                             >
-                                                {item.label}
-                                                <FiChevronDown />
-                                                <Grid className={classes.frSubMenu}>
-                                                    {/* <Slide direction="up"> */}
-                                                    <Grid className={classes.subMenu}>
-                                                        {item.subMenu.map((subMenu) => (
-                                                            <Grid className={classes.menuItemSubMenu}>
-                                                                {menuItemIcon(subMenu)}
-                                                            </Grid>
-                                                        ))}
-                                                    </Grid>
-                                                    {/* </Slide> */}
-                                                </Grid>
+                                                <Typography>{item.label}</Typography>
+                                                <FiChevronDown
+                                                    style={{
+                                                        transform: `rotate(${
+                                                            state.idSelectSubMenu == item.id ? 180 : 0
+                                                        }deg)`,
+                                                        transition: '0.3s',
+                                                    }}
+                                                />
                                             </Grid>
                                         );
                                     }
@@ -356,7 +441,7 @@ export default function NavBar(props: Props) {
                                                 className={classes.menuItem}
                                                 activeClassName={classes.styleActive}
                                             >
-                                                {item.label}
+                                                <Typography>{item.label}</Typography>
                                             </NavLink>
                                         );
                                     }
@@ -421,7 +506,7 @@ export default function NavBar(props: Props) {
         else return { smUp: true };
     };
     return (
-        <Grid container>
+        <Grid container className={classes.root}>
             {!props.isHiddenTopBar ? (
                 <>
                     <Hidden {...checkScreenDownMenu()}>{Menu()}</Hidden>

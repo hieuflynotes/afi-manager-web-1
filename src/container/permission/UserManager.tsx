@@ -111,7 +111,7 @@ export default function UserManager() {
                 <Grid item xs={12} container justify="space-between">
                     <Typography variant="h4">User</Typography>
                     <Button variant="contained" color="primary" onClick={(e) => crudUserAccount.onShowPopup({})}>
-                        Thêm mới
+                        New
                     </Button>
                 </Grid>
                 <Grid item xs={12}>

@@ -63,23 +63,18 @@ function UserHmItemList(props: Props) {
                     title={'Created at'}
                     desc={props.item.createdAt ? moment(props.item.createdAt).format('HH:mm DD:MM:yyyy') : ''}
                 />
-                <TextDesc title={'firstName'} desc={props.item.firstName || ''} />
-                <TextDesc title={'lastName'} desc={props.item.lastName || ''} />
-                <TextDesc title={'address'} desc={props.item.address || ''} />
-                <TextDesc title={'phone'} desc={props.item.phone || ''} />
-                <TextDesc title={'username'} desc={props.item.username || ''} />
-                <TextDesc title={'password'} desc={props.item.password || ''} />
-                <TextDesc title={'postcode'} desc={props.item.postcode || ''} />
-                <TextDesc title={'town'} desc={props.item.town || ''} />
+                <TextDesc title={'First Name'} desc={props.item.firstName || ''} />
+                <TextDesc title={'Last Name'} desc={props.item.lastName || ''} />
+                <TextDesc title={'Address'} desc={props.item.address || ''} />
+                <TextDesc title={'Phone'} desc={props.item.phone || ''} />
+                <TextDesc title={'Password'} desc={props.item.password || ''} />
+                <TextDesc title={'Postcode'} desc={props.item.postcode || ''} />
+                <TextDesc title={'Town'} desc={props.item.town || ''} />
                 <TextDesc title={'Note'} desc={props.item.note || ''} />
             </Grid>
             <Grid container justify="space-between" className={clsx(globalStyle.pp2)}>
                 <Button variant="outlined" color="primary" onClick={() => props.onEdit(props.item)}>
                     Edit
-                </Button>
-
-                <Button variant="outlined" color="primary" onClick={() => props.onMergeUser(props.item)}>
-                    Merge user
                 </Button>
 
                 <Button variant="contained" color="primary" onClick={() => props.onSeeDetail(props.item)}>

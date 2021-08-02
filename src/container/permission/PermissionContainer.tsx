@@ -52,8 +52,8 @@ function PermissionContainer(props: Props) {
                 onCancel={crudPermission.onCancelConfirm}
                 onConfirm={() => crudPermission.onDelete(crudPermission.itemSelected)}
             />
-            <Grid container justify="center">
-                <Typography variant="h5">Permssion</Typography>
+            <Grid container justify="center" className={globalStyle.pp2}>
+                <Typography variant="h3">Permssion</Typography>
             </Grid>
             <Grid container justify="space-between">
                 <Grid className={globalStyle.pp2}>

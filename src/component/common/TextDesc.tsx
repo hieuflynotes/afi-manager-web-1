@@ -23,6 +23,8 @@ function TextDesc(props: Props) {
                 padding: theme.spacing(props.pp || 1),
             }}
             justify="space-between"
+            alignItems="center"
+            alignContent="center"
         >
             <Grid>
                 <Typography

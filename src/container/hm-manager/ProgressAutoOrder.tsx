@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import clsx from 'clsx';
-import { Grid, makeStyles, MenuItem, Select, Typography } from '@material-ui/core';
+import { Grid, makeStyles, MenuItem, Select, Typography, Zoom } from '@material-ui/core';
 import TextField from '../../component/common/TextFiled';
 import ListGrid from '../../component/common/ListGrid';
 import { useGlobalStyles } from '../../theme/GlobalStyle';
@@ -339,14 +339,16 @@ function ProgressAutoOrder(props: Props) {
                         className={clsx(globalStyle.pt2, globalStyle.pb2)}
                     >
                         <ListGrid minWidthItem={'320px'} gridGap={20}>
-                            {filterByStatus(crudTrackingHM.pagingList?.rows || []).map((item) => (
-                                <Grid>
-                                    <ProgressHmItemList
-                                        giftCard={giftCard}
-                                        item={item}
-                                        updateOrderId={crudTrackingHM.onShowPopup}
-                                    />
-                                </Grid>
+                            {filterByStatus(crudTrackingHM.pagingList?.rows || []).map((item, index) => (
+                                <Zoom in={true} timeout={index * 50}>
+                                    <Grid>
+                                        <ProgressHmItemList
+                                            giftCard={giftCard}
+                                            item={item}
+                                            updateOrderId={crudTrackingHM.onShowPopup}
+                                        />
+                                    </Grid>
+                                </Zoom>
                             ))}
                         </ListGrid>
                     </Grid>

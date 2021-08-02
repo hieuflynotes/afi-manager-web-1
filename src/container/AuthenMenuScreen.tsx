@@ -76,17 +76,22 @@ function AuthenMenuScreen(props: Props) {
     };
     return (
         <Grid>
-            <Grid className={classes.root} container direction="column">
+            <Grid className={classes.root} container direction="column" justify="center">
                 <Grid className={classes.navbar}>
                     <NavBar
                         onActionNavBar={(hidden: boolean) => {
                             setHiddenNavBar(hidden);
                         }}
+                        screenShowNavBar="md"
                         leftComponent={<AccountMenu />}
                         route={route}
                     />
                 </Grid>
-                <Grid className={classes.main}>{props.children}</Grid>
+                <Grid container justify="center">
+                    <Grid lg={10} md={12} xs={12} sm={12}>
+                        <Grid className={classes.main}>{props.children}</Grid>
+                    </Grid>
+                </Grid>
             </Grid>
         </Grid>
     );

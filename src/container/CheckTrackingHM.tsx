@@ -142,7 +142,6 @@ function CheckTrackingHM(props: Props) {
                     <Grid>
                         <Grid container alignItems="center">
                             <Button
-                                className={clsx(globalStyles.ml2, globalStyles.mr2)}
                                 variant="contained"
                                 color="primary"
                                 onClick={() => {
@@ -151,19 +150,6 @@ function CheckTrackingHM(props: Props) {
                             >
                                 Flow many by Emails and Orders
                             </Button>
-                            <SelectBox
-                                variant="outlined"
-                                data={['All', ...Object.values(EStatusOrderTracking)]}
-                                labelOption={(label) => label}
-                                valueOption={(value) => value}
-                                onChange={(value: any) => {
-                                    crudTrackingHM.setFilter({
-                                        status: value == 'All' ? undefined : value,
-                                    });
-                                }}
-                                label={'Status'}
-                                value={crudTrackingHM.query.filter?.status || 'All'}
-                            />
                         </Grid>
                     </Grid>
                 </Grid>

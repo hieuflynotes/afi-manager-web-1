@@ -111,7 +111,7 @@ function PopUpConfirm(props: Props) {
                             // className={globalStyles.buttonOutline}
                             startIcon={<IoCloseOutline />}
                             variant="outlined"
-                            size="medium"
+                            size="small"
                             color={'primary'}
                             onClick={() => {
                                 props.onCancel();
@@ -123,7 +123,7 @@ function PopUpConfirm(props: Props) {
                         <Button
                             variant="contained"
                             className={globalStyles.buttonAlert}
-                            // size="small"
+                            size="small"
                             startIcon={<IoCloseOutline />}
                             color="primary"
                             onClick={() => {

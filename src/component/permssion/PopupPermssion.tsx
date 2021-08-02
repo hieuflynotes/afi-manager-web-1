@@ -78,7 +78,7 @@ export default function PopupPermssion(props: Props) {
                 onClickConfirm={() => {
                     onSubmit();
                 }}
-                title="User HM"
+                title="Permission"
             >
                 <Grid container direction="column" justify="space-around">
                     <Grid>
@@ -89,7 +89,7 @@ export default function PopupPermssion(props: Props) {
                             onChange={formik.handleChange}
                             fullWidth
                             variant="outlined"
-                            className={clsx(globalStyles.mt1, globalStyles.mb2)}
+                            className={clsx(globalStyles.mt2, globalStyles.mb2)}
                             label="Name"
                         ></TextField>
                     </Grid>
@@ -101,7 +101,7 @@ export default function PopupPermssion(props: Props) {
                             onChange={formik.handleChange}
                             fullWidth
                             variant="outlined"
-                            className={clsx(globalStyles.mt1, globalStyles.mb2)}
+                            className={clsx(globalStyles.mt2, globalStyles.mb2)}
                             label="Path"
                         ></TextField>
                     </Grid>
@@ -110,6 +110,7 @@ export default function PopupPermssion(props: Props) {
                             fullWidth
                             label="Method"
                             variant="outlined"
+                            className={clsx(globalStyles.mt2, globalStyles.mb2)}
                             value={formik.values.method}
                             data={Object.values(EMethodPermission || {}) || []}
                             labelOption={(label) => label}

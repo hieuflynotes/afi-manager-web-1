@@ -68,25 +68,25 @@ export default function BaseDialog(props: Props) {
                                 <Button
                                     startIcon={<CloseIcon />}
                                     variant="outlined"
-                                    size="large"
+                                    size="small"
                                     color="primary"
                                     fullWidth
                                     onClick={props.onCancel}
                                 >
-                                    Hủy
+                                    Cancel
                                 </Button>
                             </Grid>
                             <Grid item container xs={5} justify={'center'} alignItems={'center'}>
                                 <Button
                                     variant="contained"
-                                    size="large"
+                                    size="small"
                                     fullWidth
                                     startIcon={<SaveIcon />}
                                     type={'submit'}
                                     color="primary"
                                     onClick={props.onClickConfirm}
                                 >
-                                    Lưu
+                                    Save
                                 </Button>
                             </Grid>
                         </Grid>

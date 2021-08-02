@@ -138,7 +138,7 @@ export default function PopupEditProgressAutoOrder(props: Props) {
                 onClickConfirm={() => {
                     onSubmit();
                 }}
-                title="Edit New Flow"
+                title="Add Error"
             >
                 <Grid container direction="column" justify="space-around">
                     <Grid>
@@ -166,7 +166,7 @@ export default function PopupEditProgressAutoOrder(props: Props) {
                             }}
                             variant="outlined"
                             className={clsx(globalStyles.mt1, globalStyles.mb2)}
-                            label="Mô tả lỗi"
+                            label="Error desciption"
                         ></TextField>
                     </Grid>
 

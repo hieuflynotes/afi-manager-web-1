@@ -18,17 +18,12 @@ function InnerQuoteList(props: any) {
         <Draggable key={quote.id} draggableId={quote.id} index={index}>
             {(dragProvided, dragSnapshot) => (
                 <Grid
-                    className={classes.rootItem}
                     ref={dragProvided.innerRef}
                     {...{ isDragging: dragSnapshot.isDragging, isGroupedOver: Boolean(dragSnapshot.combineTargetFor) }}
                     {...dragProvided.draggableProps}
                     {...dragProvided.dragHandleProps}
                 >
-                    <Grid>
-                        <Grid>
-                            <Grid>{`${quote.link} - ${quote.label}`}</Grid>
-                        </Grid>
-                    </Grid>
+                    {props.renderItem(quote)}
                 </Grid>
             )}
         </Draggable>
@@ -48,7 +43,7 @@ export default function QuoteList(props: any) {
                 <div {...dropProvided.droppableProps}>
                     <Grid>
                         <Grid ref={dropProvided.innerRef}>
-                            <InnerQuoteList quotes={props.quotes} />
+                            <InnerQuoteList quotes={props.quotes} renderItem={props.renderItem} />
                             {dropProvided.placeholder}
                         </Grid>
                     </Grid>

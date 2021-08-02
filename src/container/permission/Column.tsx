@@ -11,6 +11,7 @@ type PropsColum = {
     index: number;
     onDelete: (item: RouteComponent) => void;
     onEdit: (item: RouteComponent) => void;
+    renderItem?: (item: RouteComponent) => React.ReactElement;
 };
 const useStyle = makeStyles((theme) => ({
     listDrag: {
@@ -56,6 +57,7 @@ export default function Column<T = any>(props: PropsColum) {
                                 listType="QUOTE"
                                 quotes={props.item.subMenu}
                                 isCombineEnabled={true}
+                                renderItem={props.renderItem}
                             />
                         </Grid>
                     </Grid>

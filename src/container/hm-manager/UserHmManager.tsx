@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import clsx from 'clsx';
-import { Grid, makeStyles, Typography } from '@material-ui/core';
+import { Grid, makeStyles, Typography, Zoom } from '@material-ui/core';
 import TextField from '../../component/common/TextFiled';
 import Button from '../../component/common/Button';
 import ListGrid from '../../component/common/ListGrid';
@@ -77,7 +77,7 @@ function UserHmManager(props: Props) {
                     onEdit={crudCompany.onSave}
                 />
                 <Grid md={10}>
-                    <Grid container justify="center">
+                    <Grid container justify="center" className={globalStyle.pb2}>
                         <Typography align="center" variant="h4">
                             Danh sách đơn hàng
                         </Typography>
@@ -141,14 +141,15 @@ function UserHmManager(props: Props) {
                                     searchFields: ['note', 'username'],
                                 });
                             }}
+                            className={clsx(globalStyle.mt2, globalStyle.mb2)}
                         ></TextField>
                         <Button
-                            className={clsx(globalStyle.mt2, globalStyle.mb2)}
+                            // className={clsx(globalStyle.mt2, globalStyle.mb2)}
                             variant="contained"
                             color="primary"
                             onClick={() => crudCompany.onShowPopup({})}
                         >
-                            Tạo đơn
+                            Create Order
                         </Button>
                     </Grid>
                     <Grid
@@ -157,22 +158,24 @@ function UserHmManager(props: Props) {
                         className={clsx(globalStyle.pt2, globalStyle.pb2)}
                     >
                         <ListGrid minWidthItem={'300px'} gridGap={20}>
-                            {crudCompany.pagingList?.rows?.map((item) => (
-                                <Grid>
-                                    <UserHmItemList
-                                        item={item}
-                                        onMergeUser={(item) => {
-                                            handleWithPopupMerge.handleShowPopup({
-                                                userHmId: item.id,
-                                            });
-                                        }}
-                                        onDelete={crudCompany.onConfirm}
-                                        onEdit={crudCompany.onShowPopup}
-                                        onSeeDetail={(item) => {
-                                            history.push(`/progress-order/${item.id}`);
-                                        }}
-                                    />
-                                </Grid>
+                            {crudCompany.pagingList?.rows?.map((item, index) => (
+                                <Zoom in={true} timeout={index * 100}>
+                                    <Grid>
+                                        <UserHmItemList
+                                            item={item}
+                                            onMergeUser={(item) => {
+                                                handleWithPopupMerge.handleShowPopup({
+                                                    userHmId: item.id,
+                                                });
+                                            }}
+                                            onDelete={crudCompany.onConfirm}
+                                            onEdit={crudCompany.onShowPopup}
+                                            onSeeDetail={(item) => {
+                                                history.push(`/progress-order/${item.id}`);
+                                            }}
+                                        />
+                                    </Grid>
+                                </Zoom>
                             ))}
                         </ListGrid>
                     </Grid>

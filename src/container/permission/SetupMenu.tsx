@@ -18,7 +18,7 @@ import Column from './Column';
 import { v4 as uuid } from 'uuid';
 import { RouteComponent } from 'src/component/common/NavBar';
 import Button from 'src/component/common/Button';
-import { AiFillApple, AiFillDashboard } from 'react-icons/ai';
+import { AiFillApple, AiFillDashboard, AiOutlineEdit } from 'react-icons/ai';
 import { IoCloseOutline } from 'react-icons/io5';
 import theme from 'src/theme/MuiTheme';
 import { handleWithPopupHook } from 'src/hook/HandleWithPopupHook';
@@ -48,7 +48,11 @@ const useStyle = makeStyles((theme) => ({
         position: 'relative',
     },
     itemMenuDrag: {
+        border: `1px solid ${theme.palette.divider}`,
+        borderRadius: theme.spacing(1),
         padding: theme.spacing(2),
+        marginBottom: theme.spacing(1),
+        marginTop: theme.spacing(1),
     },
 }));
 
@@ -111,6 +115,45 @@ function SetupMenu(props: Props) {
                 const getIndexDefault = getMenuState.findIndex((item) => item.id === menu.id);
                 getMenuState[getIndexDefault] = menu;
                 setState({ ...state, menuDrag: getMenuState });
+            }
+        },
+    });
+    const handleWithPopupSubMenu = handleWithPopupHook<RouteComponent>({
+        onConfirm: (menu) => {
+            if (menu) {
+                const getStateMenu = state.menuDrag;
+                let isDelete = false;
+                getStateMenu.forEach((item, indexMenu) => {
+                    item.subMenu = item.subMenu || [];
+                    item.subMenu?.forEach((sub, indexSub) => {
+                        if (sub.id == menu.id) {
+                            getStateMenu[indexMenu].subMenu?.splice(indexSub, 1);
+                            isDelete = true;
+                            return;
+                        }
+                    });
+                    if (isDelete) return;
+                });
+                setState({ ...state, menuDrag: getStateMenu });
+            }
+        },
+        onConfirmByPopup: (menu) => {
+            if (menu) {
+                const getStateMenu = state.menuDrag || [];
+                let isEdit = false;
+                getStateMenu.forEach((item, indexMenu) => {
+                    item.subMenu = item.subMenu || [];
+                    item.subMenu?.forEach((sub, indexSub) => {
+                        if (sub.id == menu.id && getStateMenu[indexMenu] && getStateMenu[indexMenu].subMenu) {
+                            getStateMenu[indexMenu].subMenu = getStateMenu[indexMenu].subMenu || [];
+                            (getStateMenu[indexMenu] as any).subMenu[indexSub] = menu;
+                            isEdit = true;
+                            return;
+                        }
+                    });
+                    if (isEdit) return;
+                });
+                setState({ ...state, menuDrag: getStateMenu });
             }
         },
     });
@@ -256,6 +299,19 @@ function SetupMenu(props: Props) {
                 onCancel={handleWithPopupMenu.handleClosePopup}
                 onConfirm={() => handleWithPopupMenu.handleConfirm(handleWithPopupMenu.itemSelected)}
             />
+
+            <PopupEditRouteMenu
+                isDisplay={handleWithPopupSubMenu.isDisplayPopup}
+                item={handleWithPopupSubMenu.itemSelected}
+                onCancel={handleWithPopupSubMenu.handleClosePopup}
+                onEdit={handleWithPopupSubMenu.handleConfirmByPopup}
+            />
+            <PopUpConfirm
+                isDisplay={handleWithPopupSubMenu.isDisplayConfirm}
+                onCancel={handleWithPopupSubMenu.handleClosePopup}
+                onConfirm={() => handleWithPopupSubMenu.handleConfirm(handleWithPopupSubMenu.itemSelected)}
+            />
+
             <Grid container className={globalStyle.pp2} justify="space-between">
                 <TextField
                     variant="outlined"
@@ -313,6 +369,37 @@ function SetupMenu(props: Props) {
                                             index={index}
                                             onDelete={handleWithPopupMenu.handleShowConfirm}
                                             onEdit={handleWithPopupMenu.handleShowPopup}
+                                            renderItem={(subMenu) => {
+                                                return (
+                                                    <Grid
+                                                        className={classes.itemMenuDrag}
+                                                        container
+                                                        alignItems="center"
+                                                        alignContent="center"
+                                                        justify="space-between"
+                                                    >
+                                                        <Grid>
+                                                            <Grid>{`${subMenu.link} - ${subMenu.label}`}</Grid>
+                                                        </Grid>
+                                                        <Grid>
+                                                            <IconButton
+                                                                onClick={() => {
+                                                                    handleWithPopupSubMenu.handleShowPopup(subMenu);
+                                                                }}
+                                                            >
+                                                                <AiOutlineEdit />
+                                                            </IconButton>
+                                                            <IconButton
+                                                                onClick={() => {
+                                                                    handleWithPopupSubMenu.handleShowConfirm(subMenu);
+                                                                }}
+                                                            >
+                                                                <IoCloseOutline />
+                                                            </IconButton>
+                                                        </Grid>
+                                                    </Grid>
+                                                );
+                                            }}
                                         />
                                     </Grid>
                                 ))}
