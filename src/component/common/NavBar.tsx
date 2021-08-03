@@ -495,13 +495,15 @@ export default function NavBar(props: Props) {
         });
     }, []);
     const checkScreenDownMenu = (): HiddenProps => {
-        if (props.screenShowNavBar === 'sm') return { smDown: true };
+        if (props.screenShowNavBar === 'xs') return { xsDown: true };
+        else if (props.screenShowNavBar === 'sm') return { smDown: true };
         else if (props.screenShowNavBar === 'md') return { mdDown: true };
         else if (props.screenShowNavBar === 'lg') return { lgDown: true };
         else return { xsDown: true };
     };
     const checkScreenDownNarBar = (): HiddenProps => {
-        if (props.screenShowNavBar === 'sm') return { mdUp: true };
+        if (props.screenShowNavBar === 'xs') return { smUp: true };
+        else if (props.screenShowNavBar === 'sm') return { mdUp: true };
         else if (props.screenShowNavBar === 'md') return { lgUp: true };
         else if (props.screenShowNavBar === 'lg') return { xlUp: true };
         else return { smUp: true };
