@@ -5,6 +5,15 @@ import { User, UserAccount } from '../afi-manager-base-model/model/User';
 import { BaseController } from './BaseController';
 
 export class UserController extends BaseController<User> implements IUserController {
+    getByJwt(params: { userId: string }): Promise<InfoMe> {
+        return this.client
+            .get(`${this.serviceURL}/${this.basePath}/get-jwt-for-admin`, {
+                params: params,
+            })
+            .then((res) => {
+                return res.data;
+            });
+    }
     listUserForAdmin(params: ListFilter<UserAccount>): Promise<Paging<UserAccount>> {
         return this.client
             .get(`${this.serviceURL}/${this.basePath}/lis-by-admin`, {

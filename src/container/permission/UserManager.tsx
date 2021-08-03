@@ -14,6 +14,7 @@ import { ListFilter } from 'luong-base-model/lib';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { AiOutlineEdit } from 'react-icons/ai';
+import { IoMdCopy } from 'react-icons/io';
 import { IoCloseOutline } from 'react-icons/io5';
 import { StatisticByUserHm } from 'src/afi-manager-base-model/controllers/IOrderTrackingController';
 import { UserAccount } from 'src/afi-manager-base-model/model/User';
@@ -22,6 +23,7 @@ import TableCrud, { ColumnTable } from 'src/component/common/TableCrud';
 import PopupUserAccount from 'src/component/permssion/PopupUserAccount';
 import { orderTrackingController, userController } from 'src/controller';
 import { useCrudHook } from 'src/hook/useCrudHook';
+import { dispatch } from 'src/rematch/store';
 import theme from 'src/theme/MuiTheme';
 
 export default function UserManager() {
@@ -73,16 +75,29 @@ export default function UserManager() {
                 <IconButton color="primary" onClick={() => crudUserAccount.onShowPopup(item)}>
                     <AiOutlineEdit />
                 </IconButton>
-                {/* <IconButton
-                    style={{    
-                        color: theme.palette.error.main,
-                    }}
+                <IconButton
+                    color="secondary"
                     onClick={() => {
-                        crudUserAccount.onConfirm(item);
+                        userController.getByJwt({ userId: item.id || '' }).then((res) => {
+                            const login = `${window.location.origin}/loginWithCode/${res.jwt
+                                ?.split('.')
+                                .join('aleafi')}`;
+                            navigator.clipboard?.writeText(login || '')?.then(
+                                function () {
+                                    dispatch.notificationPopup.error({
+                                        message: 'Paste the code you just copied into a new incognito page',
+                                        title: 'Jwt copy success',
+                                    });
+                                },
+                                function (err) {
+                                    console.error('Async: Could not copy text: ', err);
+                                },
+                            );
+                        });
                     }}
                 >
-                    <IoCloseOutline />
-                </IconButton> */}
+                    <IoMdCopy />
+                </IconButton>
             </Grid>
         );
     };

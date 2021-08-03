@@ -20,8 +20,10 @@ import clsx from 'clsx';
 import React, { useEffect, useRef, useState } from 'react';
 import { CgPlayListRemove } from 'react-icons/cg';
 import { FiChevronDown } from 'react-icons/fi';
+import { IoLogOutOutline } from 'react-icons/io5';
 import { VscMenu } from 'react-icons/vsc';
 import { NavLink, useHistory, useRouteMatch } from 'react-router-dom';
+import { dispatch } from 'src/rematch/store';
 
 import { cssInfo } from '../../constants/Other';
 import { localStoryController } from '../../controller';
@@ -255,6 +257,9 @@ export default function NavBar(props: Props) {
                     height: state.hiddenNavBar ? 0 : '100vh',
                     borderRadius: state.hiddenNavBar ? 100 : 0,
                 }}
+                direction="column"
+                justify="space-between"
+                container
             >
                 <Grid
                     style={{
@@ -313,6 +318,19 @@ export default function NavBar(props: Props) {
                             }
                         })}
                     </Grid>
+                </Grid>
+                <Grid className={globalStyle.pp2}>
+                    <Button
+                        startIcon={<IoLogOutOutline />}
+                        fullWidth
+                        color={'primary'}
+                        size="small"
+                        onClick={() => {
+                            dispatch.authen.logOut();
+                        }}
+                    >
+                        Logout
+                    </Button>
                 </Grid>
             </Grid>
         );
