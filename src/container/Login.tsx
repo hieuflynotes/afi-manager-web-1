@@ -75,7 +75,7 @@ export default function Login() {
             if (authen.info?.redirect) {
                 history.push(authen.info?.redirect);
             } else {
-                dispatch.notification.error('Permission not confirmed');
+                // dispatch.notification.error('Permission not confirmed');
             }
         }
     }, [authen]);

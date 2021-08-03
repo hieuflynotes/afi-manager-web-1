@@ -13,7 +13,6 @@ type Props = {
     onEdit: (item: UserHm) => void;
     onDelete: (item: UserHm) => void;
     onSeeDetail: (item: UserHm) => void;
-    onMergeUser: (item: UserHm) => void;
 };
 const useStyle = makeStyles((theme) => ({
     root: {

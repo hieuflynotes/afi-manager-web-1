@@ -9,11 +9,12 @@ type Props<T = any, D extends React.ElementType = FormControlTypeMap['defaultCom
     valueOption: (items: T) => any;
     onChange: (items: T) => void;
     helperText?: string;
+    shrink?: boolean;
 } & OverrideProps<FormControlTypeMap<P, D>, D>;
 export default function SelectBox(props: Props) {
     return (
         <FormControl {...props}>
-            <InputLabel>{props.label || 'label'}</InputLabel>
+            <InputLabel shrink={props.shrink}>{props.label || 'label'}</InputLabel>
             <Select value={props.value} onChange={(e) => props.onChange(e.target.value)} label={props.label || 'label'}>
                 {props.data.map((item) => (
                     <MenuItem value={props.valueOption(item)}>{props.labelOption(item)}</MenuItem>

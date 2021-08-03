@@ -50,6 +50,7 @@ const useStyle = makeStyles((theme) => ({
         padding: theme.spacing(2),
         borderRadius: theme.spacing(1),
         boxShadow: 'none',
+        width: '100%',
     },
     iconDelete: {
         color: theme.palette.error.main,
@@ -172,12 +173,13 @@ export default function PopupEditProgressAutoOrder(props: Props) {
 
                     {formik.values.isOrder && (
                         <Grid container>
-                            <Grid>
+                            <Grid container>
                                 <TextField
                                     value={formik.values.orderId}
                                     helperText={formik.touched.orderId && formik.errors.orderId}
                                     name="orderId"
                                     onChange={formik.handleChange}
+                                    disabled={Boolean(formik.values.dataFirebase)}
                                     onBlur={formik.handleBlur}
                                     fullWidth
                                     InputLabelProps={{

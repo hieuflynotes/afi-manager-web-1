@@ -59,18 +59,14 @@ function PopupUserAccount(props: Props) {
     };
     useEffect(() => {
         if (props.isDisplay) {
-            formik.setValues(
-                _.cloneDeep({
-                    ...props.item,
-                    password: props.item?.password || createPassword(),
-                }),
-            );
-            formik.setTouched(_.mapValues(new UserAccount(), () => false));
-        }
-    }, [props]);
-    useEffect(() => {
-        if (props.isDisplay) {
             roleController.list({ pageSize: 1000 }).then((res) => {
+                formik.setValues(
+                    _.cloneDeep({
+                        ...props.item,
+                        password: props.item?.password || createPassword(),
+                    }),
+                );
+                formik.setTouched(_.mapValues(new UserAccount(), () => false));
                 setRole({
                     roleMap: new Map<string, Role>(res.rows?.map((item) => [item.id || '', item])),
                 });
@@ -164,16 +160,18 @@ function PopupUserAccount(props: Props) {
                     <Grid>
                         <SelectBox
                             className={clsx(globalStyles.mt2, globalStyles.mb4)}
+                            shrink={true}
                             variant="outlined"
                             fullWidth
                             label="Role"
                             value={
-                                formik.values &&
-                                formik.values.role &&
-                                formik.values.role[0] &&
-                                role.roleMap.get(formik.values.role[0].id || '')
+                                (formik.values &&
+                                    formik.values.role &&
+                                    formik.values.role[0] &&
+                                    role.roleMap.get(formik.values.role[0].id || '')) ||
+                                (null as any)
                             }
-                            data={Array.from(role.roleMap.values())}
+                            data={Array.from(role.roleMap.values()) || []}
                             onChange={(value: any) => {
                                 if (value) {
                                     formik.setValues({

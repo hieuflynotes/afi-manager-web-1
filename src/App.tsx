@@ -14,6 +14,7 @@ import {
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import './App.css';
 import BackdropLoading from './component/common/BackdropLoading';
+import PopupNotification from './component/common/PopupNotification';
 import { routers, TypeScreen } from './constants/Route';
 import { AuthenRoute, history, PublicRoute, AuthenMenu } from './constants/RouterAuthen';
 // import "./i18n/config";
@@ -39,6 +40,7 @@ function App() {
             {authen.isGet ? (
                 <Grid>
                     <BackdropLoading />
+                    <PopupNotification />
                     <TransitionGroup>
                         <CSSTransition classNames="fade" timeout={3000}>
                             <Switch>

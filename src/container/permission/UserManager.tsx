@@ -34,16 +34,19 @@ export default function UserManager() {
             id: 'fullName',
             label: 'Full Name',
             isSort: true,
+            acceptSearch: true,
         },
         {
             id: 'email',
             label: 'Email',
             isSort: true,
+            acceptSearch: true,
         },
         {
             id: 'phoneNumber',
             label: 'Phone',
             isSort: true,
+            acceptSearch: true,
         },
         {
             id: 'role',
@@ -60,7 +63,7 @@ export default function UserManager() {
         saveController: userController.saveUserForAdmin,
         initQuery: {
             pageSize: 50,
-            searchFields: ['fullName', 'phoneNumber'],
+            searchFields: ['fullName', 'phoneNumber', 'email'],
         },
     });
 
@@ -71,7 +74,7 @@ export default function UserManager() {
                     <AiOutlineEdit />
                 </IconButton>
                 {/* <IconButton
-                    style={{
+                    style={{    
                         color: theme.palette.error.main,
                     }}
                     onClick={() => {

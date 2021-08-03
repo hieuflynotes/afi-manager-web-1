@@ -23,17 +23,7 @@ type Props = {};
 const useStyle = makeStyles((theme) => ({}));
 function UserHmManager(props: Props) {
     const history = useHistory();
-    const handleWithPopupMerge = handleWithPopupHook<{
-        userHmId?: string;
-        userId?: string;
-    }>({
-        onConfirmByPopup: (item) => {
-            orderTrackingController.mergeOrderTrackingToUser({
-                ...item,
-                userHmId: item?.userHmId || (null as any),
-            });
-        },
-    });
+
     const crudCompany = useCrudHook<UserHm>({
         controller: userHmController,
         initQuery: {
@@ -63,13 +53,6 @@ function UserHmManager(props: Props) {
                     onConfirm={() => crudCompany.onDelete(crudCompany.itemSelected)}
                 />
 
-                <PopupMergeToUser
-                    isDisplay={handleWithPopupMerge.isDisplayPopup}
-                    item={handleWithPopupMerge.itemSelected}
-                    onCancel={handleWithPopupMerge.handleClosePopup}
-                    onEdit={handleWithPopupMerge.handleConfirmByPopup}
-                />
-
                 <PopupInsertUser
                     isDisplay={crudCompany.isShowPopup}
                     item={crudCompany.itemSelected}
@@ -92,7 +75,7 @@ function UserHmManager(props: Props) {
                             variant="outlined"
                         ></TextField> */}
                         <SelectBox
-                            data={['Tất cả', 'Đã xong', 'Chưa xong', 'Đã merge', 'Chưa merge']}
+                            data={['Tất cả', 'Đã chạy tool', 'Chưa chạy tool']}
                             labelOption={(op) => op}
                             variant="outlined"
                             label="Filter"
@@ -111,16 +94,6 @@ function UserHmManager(props: Props) {
                                     case 'Chưa xong':
                                         crudCompany.setFilter({
                                             isDone: [false, null as any],
-                                        });
-                                        break;
-                                    case 'Đã merge':
-                                        crudCompany.setFilter({
-                                            isMerge: true,
-                                        });
-                                        break;
-                                    case 'Chưa merge':
-                                        crudCompany.setFilter({
-                                            isMerge: [false, null as any],
                                         });
                                         break;
                                     default:
@@ -163,11 +136,6 @@ function UserHmManager(props: Props) {
                                     <Grid>
                                         <UserHmItemList
                                             item={item}
-                                            onMergeUser={(item) => {
-                                                handleWithPopupMerge.handleShowPopup({
-                                                    userHmId: item.id,
-                                                });
-                                            }}
                                             onDelete={crudCompany.onConfirm}
                                             onEdit={crudCompany.onShowPopup}
                                             onSeeDetail={(item) => {

@@ -14,6 +14,26 @@ import { User } from '../afi-manager-base-model/model/User';
 import { BaseController } from './BaseController';
 
 export class OrderTrackingController extends BaseController<OrderTracking> implements IOrderTrackingController {
+    saveByCustomer(params: OrderTracking): Promise<OrderTracking> {
+        return this.client.post(`${this.serviceURL}/${this.basePath}/save-by-customer`, params).then((res) => {
+            dispatch.notification.success('Lưu thành công');
+            return res.data;
+        });
+    }
+    listByCustomer(params: ListFilter<OrderTracking>): Promise<Paging<OrderTracking>> {
+        params = { ...params, sort: this.convertSort(params.sort) };
+        params = {
+            ...params,
+            searchFields: this.convertSearch(params.searchFields) as any,
+        };
+        return this.client
+            .get(`${this.serviceURL}/${this.basePath}/list-for-customer`, {
+                params: params,
+            })
+            .then((res) => {
+                return res.data;
+            });
+    }
     intervalTeamRegister(params: FilterStatistic): Promise<IntervalCheckoutHmTeamAle[][]> {
         return this.client
             .get(`${this.serviceURL}/${this.basePath}/interval-team-register`, {
@@ -33,7 +53,6 @@ export class OrderTrackingController extends BaseController<OrderTracking> imple
             });
     }
     statisticByUserHm(params: ListFilter<StatisticByUserHm>): Promise<Paging<StatisticByUserHm>> {
-        params.searchFields = ['username'];
         params = { ...params, sort: this.convertSort(params.sort) };
         params = {
             ...params,
@@ -70,12 +89,6 @@ export class OrderTrackingController extends BaseController<OrderTracking> imple
             .then((res) => {
                 return res.data;
             });
-    }
-    saveNotAuthen(t: OrderTracking): Promise<OrderTracking> {
-        return this.client.post(`${this.serviceURL}/${this.basePath}/save-not-authen`, t).then((res) => {
-            dispatch.notification.success('Lưu thành công');
-            return res.data;
-        });
     }
     mergeOrderTrackingToUser(params: { userHmId?: string; userId?: string }): Promise<OrderTracking[]> {
         return this.client.post(`${this.serviceURL}/${this.basePath}/merger-order-to-user`, params).then((res) => {

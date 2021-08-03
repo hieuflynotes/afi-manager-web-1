@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import { Avatar, Grid, makeStyles, Popover, Typography } from '@material-ui/core';
 import { AuthenModel } from '../../rematch/Authen';
 import { useSelector } from 'react-redux';
-import { RootState } from '../../rematch/store';
+import { dispatch, RootState } from '../../rematch/store';
 import { cssInfo } from '../../constants/Other';
 import { MdAccountCircle } from 'react-icons/md';
 import Button from '../common/Button';
@@ -92,7 +92,14 @@ function AccountMenu(props: Props) {
                     </Grid>
                     <Divider></Divider>
                     <Grid container className={globalStyle.pt2}>
-                        <Button className={classes.btnActionOption} fullWidth startIcon={<HiOutlineLogout />}>
+                        <Button
+                            onClick={() => {
+                                dispatch.authen.logOut();
+                            }}
+                            className={classes.btnActionOption}
+                            fullWidth
+                            startIcon={<HiOutlineLogout />}
+                        >
                             Logout
                         </Button>
                     </Grid>
