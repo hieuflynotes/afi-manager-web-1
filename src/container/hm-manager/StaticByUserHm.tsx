@@ -1,4 +1,14 @@
-import { Button, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Typography } from '@material-ui/core';
+import {
+    Button,
+    FormControl,
+    Grid,
+    IconButton,
+    InputLabel,
+    MenuItem,
+    Select,
+    TextField,
+    Typography,
+} from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
 import { ListFilter } from 'luong-base-model/lib';
 import moment from 'moment';
@@ -10,6 +20,10 @@ import { useCrudHook } from 'src/hook/useCrudHook';
 import { useGlobalStyles } from 'src/theme/GlobalStyle';
 import theme from 'src/theme/MuiTheme';
 import clsx from 'clsx';
+import { handleWithPopupHook } from 'src/hook/HandleWithPopupHook';
+import PopupMergeToUser from 'src/component/AutoOrderHm/PopupMergeToUser';
+import { AiOutlineEdit } from 'react-icons/ai';
+import { CgMergeVertical } from 'react-icons/cg';
 export default function StaticByUserHm() {
     const [column, setColumn] = useState<ColumnTable<StatisticByUserHm>[]>([
         {
@@ -20,6 +34,14 @@ export default function StaticByUserHm() {
         {
             id: 'username',
             label: 'Username',
+            acceptSearch: true,
+            isSort: true,
+        },
+        {
+            id: 'emailUser',
+            label: 'Email User',
+            acceptSearch: true,
+            isSort: true,
         },
         {
             id: 'totalOrder',
@@ -60,6 +82,11 @@ export default function StaticByUserHm() {
             id: 'status',
             label: 'Status',
             isSort: true,
+            acceptSearch: true,
+        },
+        {
+            id: 'action' as any,
+            label: 'Action',
         },
     ]);
     const crud = useCrudHook<StatisticByUserHm, ListFilter<StatisticByUserHm>>({
@@ -72,6 +99,41 @@ export default function StaticByUserHm() {
     });
     const globalStyle = useGlobalStyles();
 
+    const handleWithPopupMerge = handleWithPopupHook<{
+        userHmId?: string;
+        userId?: string;
+    }>({
+        onConfirmByPopup: (item) => {
+            orderTrackingController
+                .mergeOrderTrackingToUser({
+                    ...item,
+                    userHmId: item?.userHmId || (null as any),
+                })
+                .then((res) => {
+                    crud.onRefreshList();
+                });
+        },
+    });
+
+    const warningEmailMergeWrong = (item: StatisticByUserHm): React.ReactElement => {
+        let check = true;
+        const splitUserName = item.username?.trim()?.substring(0, item.username?.indexOf('+'));
+        const splitEmailUser = item.emailUser?.trim()?.substring(0, item.emailUser?.indexOf('@'));
+
+        if ((splitUserName == splitEmailUser || item.username == item.emailUser) && Boolean(item.emailUser)) {
+            return <Grid>{item.username}</Grid>;
+        }
+        return (
+            <Grid
+                style={{
+                    color: theme.palette.error.main,
+                }}
+            >
+                {item.username}
+            </Grid>
+        );
+    };
+
     const renderStatus = (): React.ReactElement => {
         return <Grid></Grid>;
     };
@@ -82,6 +144,12 @@ export default function StaticByUserHm() {
                 padding: theme.spacing(1),
             }}
         >
+            <PopupMergeToUser
+                isDisplay={handleWithPopupMerge.isDisplayPopup}
+                item={handleWithPopupMerge.itemSelected}
+                onCancel={handleWithPopupMerge.handleClosePopup}
+                onEdit={handleWithPopupMerge.handleConfirmByPopup}
+            />
             <Grid
                 style={{
                     background: theme.palette.background.paper,
@@ -94,6 +162,7 @@ export default function StaticByUserHm() {
                 <Grid item xs={12}>
                     <TableCrud<StatisticByUserHm>
                         column={column}
+                        id="9e01d63f-4bae-40de-985f-97fafcc9ebdb"
                         data={crud.pagingList}
                         onQuery={(query) => {
                             crud.setQuery({
@@ -110,6 +179,22 @@ export default function StaticByUserHm() {
                                 totalPrice: Number(item.totalPrice).toFixed(2),
                                 totalPriceError: Number(item.totalPriceError).toFixed(2),
                                 createdAt: moment(item.createdAt).format('DD/MM/YY hh:mm'),
+                                username: warningEmailMergeWrong(item),
+                                action: (
+                                    <Grid>
+                                        <IconButton
+                                            color="primary"
+                                            onClick={() => {
+                                                handleWithPopupMerge.handleShowPopup({
+                                                    userHmId: item.userHmId,
+                                                    userId: item.userId,
+                                                });
+                                            }}
+                                        >
+                                            <CgMergeVertical />
+                                        </IconButton>
+                                    </Grid>
+                                ),
                             };
                         }}
                     ></TableCrud>

@@ -17,8 +17,6 @@ import { RiAccountPinCircleFill } from 'react-icons/ri';
 import { BiKey } from 'react-icons/bi';
 type Props = {
     item: OrderTracking;
-    giftCard: Giftcard;
-    updateOrderId: (item: OrderTracking) => void;
 };
 const useStyle = makeStyles((theme) => ({
     root: {
@@ -49,7 +47,7 @@ const useStyle = makeStyles((theme) => ({
         padding: theme.spacing(1),
     },
 }));
-function ProgressHmItemList(props: Props) {
+function OrderHmDetailForWarehouseItemList(props: Props) {
     const classes = useStyle();
     const globalStyle = useGlobalStyles();
 
@@ -112,26 +110,6 @@ function ProgressHmItemList(props: Props) {
         return '';
     };
 
-    const handleCopyToolMarcro = () => {
-        if (props.item.isOrder) {
-            navigator.clipboard.writeText(
-                checkoutCode(
-                    props.item.email || 'email@gmail.com',
-                    props.item.userHM?.password || '123456a@',
-                    props.giftCard.serialNumber,
-                    props.giftCard.pin,
-                    Number(props.item.totalPrice || '0'),
-                ),
-            );
-            dispatch.notification.success('Copy to clipboard successfully!');
-        } else {
-            dispatch.notificationPopup.success({
-                message: 'Cannot copy because this order has not been added to cart',
-                title: 'Please, Be careful',
-            });
-        }
-    };
-
     useEffect(() => {
         return () => {};
     }, []);
@@ -139,52 +117,7 @@ function ProgressHmItemList(props: Props) {
     return (
         <Grid className={classes.root}>
             <Grid container justify="space-between">
-                <Popover
-                    id={props.item.id || ''}
-                    open={state.isOpenMoreInfo}
-                    anchorEl={refChipInfo.current}
-                    onClose={() => {
-                        setState({ ...state, isOpenMoreInfo: false });
-                    }}
-                    anchorOrigin={{
-                        vertical: 'bottom',
-                        horizontal: 'right',
-                    }}
-                    transformOrigin={{
-                        vertical: 'top',
-                        horizontal: 'center',
-                    }}
-                >
-                    <Grid className={classes.popoverRoot}>
-                        <Typography>Register by: {props.item.registerByName}</Typography>
-                        <Typography>Checkout by : {props.item.dataFirebase?.username}</Typography>
-                    </Grid>
-                </Popover>
-                <Grid onClick={() => setState({ ...state, isOpenMoreInfo: true })} ref={refChipInfo}>
-                    {getChipStatus(props.item)}
-                </Grid>
-                <Grid>
-                    <Grid>
-                        <IconButton
-                            onClick={() => {
-                                handleCopyToolMarcro();
-                            }}
-                            size="small"
-                        >
-                            <IoCopyOutline />
-                        </IconButton>
-
-                        <IconButton
-                            onClick={() => {
-                                props.updateOrderId(props.item);
-                            }}
-                            size="small"
-                            color="primary"
-                        >
-                            <IoCreateOutline />
-                        </IconButton>
-                    </Grid>
-                </Grid>
+                <Grid>{getChipStatus(props.item)}</Grid>
             </Grid>
             <Grid className={clsx(globalStyle.mt1, globalStyle.mb1)}>
                 <Grid container alignItems="center">
@@ -233,15 +166,15 @@ function ProgressHmItemList(props: Props) {
                 })}
             </Grid>
             <Grid container className={clsx(globalStyle.pt1)}>
-                <Grid xs={6}>
+                <Grid xs={12}>
                     <Grid
                         className={clsx(globalStyle.pr1, classes.frCoin)}
-                        style={{
-                            color:
-                                props.item.totalPrice && props.item.totalPrice > 5
-                                    ? undefined
-                                    : theme.palette.success.main,
-                        }}
+                        // style={{
+                        //     color:
+                        //         props.item.totalPrice && props.item.totalPrice > 5
+                        //             ? undefined
+                        //             : theme.palette.success.main,
+                        // }}
                     >
                         <Grid container alignItems="center" className={classes.rootItem} justify="center">
                             <Grid className={clsx(classes.coin)}>
@@ -253,7 +186,7 @@ function ProgressHmItemList(props: Props) {
                         </Grid>
                     </Grid>
                 </Grid>
-                <Grid xs={6}>
+                {/* <Grid xs={6}>
                     <Grid className={clsx(globalStyle.pr1, classes.frCoinBuy)}>
                         <Grid container alignItems="center" className={classes.rootItem} justify="center">
                             <Grid className={clsx(classes.coin)}>
@@ -264,10 +197,10 @@ function ProgressHmItemList(props: Props) {
                             </Grid>
                         </Grid>
                     </Grid>
-                </Grid>
+                </Grid> */}
             </Grid>
         </Grid>
     );
 }
 
-export default React.memo(ProgressHmItemList);
+export default React.memo(OrderHmDetailForWarehouseItemList);

@@ -5,8 +5,11 @@ import { useFormik } from 'formik';
 import _ from 'lodash';
 import { Role } from 'luong-base-model/lib';
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { UserAccount } from 'src/afi-manager-base-model/model/User';
 import { roleController } from 'src/controller';
+import { authen } from 'src/rematch/Authen';
+import { RootState } from 'src/rematch/store';
 import { useGlobalStyles } from 'src/theme/GlobalStyle';
 import * as Yup from 'yup';
 import BaseDialog from '../common/BaseDialog';
@@ -42,6 +45,8 @@ function PopupUserAccount(props: Props) {
         },
     });
 
+    const authen = useSelector((state: RootState) => state.authen);
+
     const [role, setRole] = useState<{ roleMap: Map<string, Role> }>({
         roleMap: new Map(),
     });
@@ -59,20 +64,29 @@ function PopupUserAccount(props: Props) {
     };
     useEffect(() => {
         if (props.isDisplay) {
-            formik.setValues(
-                _.cloneDeep({
-                    ...props.item,
-                    password: props.item?.password || createPassword(),
-                }),
-            );
-            formik.setTouched(_.mapValues(new UserAccount(), () => false));
-        }
-    }, [props]);
-    useEffect(() => {
-        if (props.isDisplay) {
             roleController.list({ pageSize: 1000 }).then((res) => {
+                formik.setValues(
+                    _.cloneDeep({
+                        ...props.item,
+                        password: props.item?.password || createPassword(),
+                    }),
+                );
+                formik.setTouched(_.mapValues(new UserAccount(), () => false));
                 setRole({
-                    roleMap: new Map<string, Role>(res.rows?.map((item) => [item.id || '', item])),
+                    roleMap: new Map<string, Role>(
+                        res.rows
+                            ?.filter((item) => {
+                                // eb9fedec-3a2d-4e01-8ef5-2109303dc8a1
+                                if (
+                                    item.id == '08298207-265c-4533-8029-de480a211808' &&
+                                    authen.info?.accountId != 'eb9fedec-3a2d-4e01-8ef5-2109303dc8a1'
+                                ) {
+                                    return false;
+                                }
+                                return true;
+                            })
+                            ?.map((item) => [item.id || '', item]),
+                    ),
                 });
             });
         }
@@ -164,16 +178,19 @@ function PopupUserAccount(props: Props) {
                     <Grid>
                         <SelectBox
                             className={clsx(globalStyles.mt2, globalStyles.mb4)}
+                            shrink={true}
                             variant="outlined"
                             fullWidth
                             label="Role"
+                            disabled={props.item?.id == 'f84cde4d-075d-4efd-b851-514ffefb43b6'}
                             value={
-                                formik.values &&
-                                formik.values.role &&
-                                formik.values.role[0] &&
-                                role.roleMap.get(formik.values.role[0].id || '')
+                                (formik.values &&
+                                    formik.values.role &&
+                                    formik.values.role[0] &&
+                                    role.roleMap.get(formik.values.role[0].id || '')) ||
+                                (null as any)
                             }
-                            data={Array.from(role.roleMap.values())}
+                            data={Array.from(role.roleMap.values()) || []}
                             onChange={(value: any) => {
                                 if (value) {
                                     formik.setValues({

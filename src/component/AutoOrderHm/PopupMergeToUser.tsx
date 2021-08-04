@@ -39,14 +39,13 @@ export default function PopupMergeToUser(props: Props) {
 
     useEffect(() => {
         if (props.isDisplay) {
-            formik.setValues(
-                _.cloneDeep({
-                    ...props.item,
-                }),
-            );
-
             userController.find({}).then((res) => {
                 setUser(new Map(res.map((item) => [item.id || '', item])));
+                formik.setValues(
+                    _.cloneDeep({
+                        ...props.item,
+                    }),
+                );
             });
         }
     }, [props]);
@@ -60,12 +59,13 @@ export default function PopupMergeToUser(props: Props) {
                 onClickConfirm={() => {
                     onSubmit();
                 }}
-                title="User HM"
+                title="Merge to user"
             >
                 <Grid container direction="column" justify="space-around">
                     <Grid>
                         <Autocomplete
                             options={Array.from(user.values())}
+                            value={user.get(props.item?.userId || '') || null}
                             getOptionLabel={(option) => option.email || 'Lỗi email'}
                             onChange={(e, value) => {
                                 formik.setValues({

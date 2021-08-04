@@ -29,7 +29,6 @@ export default function ColumnMenu<T = any>(props: PropsColum) {
     return (
         <Draggable draggableId={props.item.id || ''} index={props.index} disableInteractiveElementBlocking={true}>
             {(provided, snapshot) => {
-                console.log({ provided, snapshot });
                 return (
                     <Grid>
                         <Grid ref={provided.innerRef} {...provided.draggableProps} className={classes.listDrag}>

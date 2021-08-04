@@ -5,6 +5,7 @@ import { FaKey } from 'react-icons/fa';
 import { FiLogOut } from 'react-icons/fi';
 import { RiAccountPinBoxFill } from 'react-icons/ri';
 import { useDispatch, useSelector } from 'react-redux';
+import { MenuTemplate } from 'src/afi-manager-base-model/model/MenuTemplate';
 import NavBar, { RouteComponent } from 'src/component/common/NavBar';
 import AccountMenu from 'src/component/permssion/AccountMenu';
 import { localStoryController } from 'src/controller';
@@ -47,7 +48,13 @@ const link = [
 ];
 function AuthenMenuScreen(props: Props) {
     const classes = useStyle();
-    const [route, setRoute] = useState<RouteComponent[]>([]);
+    const [route, setRoute] = useState<{
+        route: RouteComponent[];
+        menu: MenuTemplate;
+    }>({
+        menu: {},
+        route: [],
+    });
     const authen = useSelector((state: RootState) => state.authen);
     const [hiddenNavBar, setHiddenNavBar] = useState<boolean>();
     const dispath = useDispatch<Dispatch>();
@@ -61,7 +68,10 @@ function AuthenMenuScreen(props: Props) {
             })
             .filter((item) => Boolean(item)) as any;
 
-        setRoute(menu);
+        setRoute({
+            menu: authen.info.menu,
+            route: menu,
+        });
     }, [authen]);
 
     const getDefault = (item: RouteComponent): RouteComponent => {
@@ -82,9 +92,10 @@ function AuthenMenuScreen(props: Props) {
                         onActionNavBar={(hidden: boolean) => {
                             setHiddenNavBar(hidden);
                         }}
-                        screenShowNavBar="md"
+                        isHiddenTopBar={Boolean(route.menu?.isHiddenTop)}
+                        screenShowNavBar={route.menu?.screenShowNavBar || 'md'}
                         leftComponent={<AccountMenu />}
-                        route={route}
+                        route={route.route}
                     />
                 </Grid>
                 <Grid container justify="center">

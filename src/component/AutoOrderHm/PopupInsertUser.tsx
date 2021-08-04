@@ -129,7 +129,7 @@ export default function PopupInsertUser(props: Props) {
                             />
                         </FormGroup>
                     </Grid> */}
-                    <Grid>
+                    {/* <Grid>
                         <FormGroup row>
                             <FormControlLabel
                                 control={
@@ -146,7 +146,7 @@ export default function PopupInsertUser(props: Props) {
                                 label="Đánh dấu đã merge"
                             />
                         </FormGroup>
-                    </Grid>
+                    </Grid> */}
                     <Grid>
                         <TextField
                             value={formik.values.username}

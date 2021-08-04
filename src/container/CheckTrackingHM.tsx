@@ -61,6 +61,8 @@ function CheckTrackingHM(props: Props) {
     });
     const crudTrackingHM = useCrudHook<OrderTracking, ListFilter<OrderTracking>>({
         controller: orderTrackingController,
+        listController: orderTrackingController.listByCustomer,
+        saveController: orderTrackingController.saveByCustomer,
         initQuery: {
             searchFields: ['orderId', 'trackingId', 'customerName', 'email'],
             pageSize: 100,

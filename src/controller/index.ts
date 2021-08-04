@@ -45,10 +45,11 @@ appClient.interceptors.response.use(
             const linkNow = window.location.pathname;
             const getRoute = routersMap.get(linkNow);
             if (getRoute && getRoute?.typeAuthen != TypeScreen.public) {
-                dispatch.notification.error(err.response?.data?.message || 'Login again');
-                // window.location.href = '/login';
+                dispatch.notification.error('Authentication error, please login again');
+                window.location.href = '/login';
             }
         } else if (err.response?.status === 403) {
+            dispatch.notification.error("You don't have copyright on this effect");
         } else {
             dispatch.notification.error(err.response?.data?.message || ' Có lỗi xảy ra');
         }

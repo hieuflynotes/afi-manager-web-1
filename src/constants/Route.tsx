@@ -28,6 +28,8 @@ import { GiHand } from 'react-icons/gi';
 import { HiUserGroup } from 'react-icons/hi';
 import UiKit from 'src/container/UiKit';
 import OrderHmWarehouse from 'src/container/warehouse/OrderHmWarehouse';
+import OrderHmDetailForWarehouse from 'src/container/warehouse/OrderHmDetailForWarehouse';
+import LoginWithCode from 'src/container/LoginWithCode';
 export enum TypeScreen {
     public = 'public',
     authenMenu = 'authenMenu',
@@ -167,6 +169,20 @@ export const routers: RouteComponent[] = [
         component: OrderHmWarehouse,
         label: 'Order HM',
         link: '/order-hm-warehouse',
+        typeAuthen: TypeScreen.authenMenu,
+        icon: <RiBillLine />,
+    },
+    {
+        component: OrderHmDetailForWarehouse,
+        label: 'Order HM',
+        link: '/order-hm-warehouse/:userHmId',
+        typeAuthen: TypeScreen.authenMenu,
+        icon: <RiBillLine />,
+    },
+    {
+        component: LoginWithCode,
+        label: 'Login with code',
+        link: '/loginWithCode/:code',
         typeAuthen: TypeScreen.authenMenu,
         icon: <RiBillLine />,
     },

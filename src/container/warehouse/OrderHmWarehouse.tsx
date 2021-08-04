@@ -14,6 +14,7 @@ import { ListFilter } from 'luong-base-model/lib';
 import { orderTrackingController } from 'src/controller';
 import { useCrudHook } from 'src/hook/useCrudHook';
 import { StringUtil } from 'src/helper/StringUtil';
+import { useHistory } from 'react-router-dom';
 
 type Props = {};
 const useStyle = makeStyles((theme) => ({
@@ -39,6 +40,7 @@ const useStyle = makeStyles((theme) => ({
     },
 }));
 function OrderHmWarehouse(props: Props) {
+    const history = useHistory();
     const classes = useStyle();
     const [state, setState] = useState();
     const globalStyles = useGlobalStyles();
@@ -139,7 +141,9 @@ function OrderHmWarehouse(props: Props) {
                                     <Button
                                         variant="outlined"
                                         color="primary"
-                                        onClick={() => {}}
+                                        onClick={() => {
+                                            history.push(`/order-hm-warehouse/${item.userHmId}`);
+                                        }}
                                         size="small"
                                         fullWidth
                                     >

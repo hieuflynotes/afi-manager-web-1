@@ -1,4 +1,13 @@
-import { Divider, Grid, IconButton, Input, makeStyles, Typography } from '@material-ui/core';
+import {
+    Checkbox,
+    Divider,
+    FormControlLabel,
+    Grid,
+    IconButton,
+    Input,
+    makeStyles,
+    Typography,
+} from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { routers, routersMap } from 'src/constants/Route';
@@ -31,6 +40,7 @@ import * as Yup from 'yup';
 import { MenuTemplate } from 'src/afi-manager-base-model/model/MenuTemplate';
 import { MenuTemplateItem } from 'src/afi-manager-base-model/model/MenuTemplateItem';
 import { validate as validateUuid } from 'uuid';
+import SelectBox from 'src/component/common/SelectBox';
 
 type Props = {};
 const useStyle = makeStyles((theme) => ({
@@ -175,6 +185,7 @@ function SetupMenu(props: Props) {
                     setState({ ...state, menuDrag: menu || [] });
                     formik.setValues({
                         ...res,
+                        screenShowNavBar: res.screenShowNavBar || 'md',
                     });
                 }
             });
@@ -323,6 +334,27 @@ function SetupMenu(props: Props) {
                     onChange={formik.handleChange}
                     error={Boolean(formik.touched.name && formik.errors.name)}
                     helperText={formik.touched.name && formik.errors.name}
+                />
+                {/* <FormControlLabel
+                    label="Is Hidden Menu"
+                    control={
+                        <Checkbox
+                            onChange={(e) => formik.setValues({ ...formik.values, isHiddenTop: e.target.checked })}
+                            checked={formik.values.isHiddenTop || false}
+                            value={formik.values.isHiddenTop || false}
+                        />
+                    }
+                /> */}
+                <SelectBox
+                    minWidth={200}
+                    shrink={true}
+                    data={['md', 'sm', 'lg', 'xs']}
+                    value={formik.values.screenShowNavBar || (null as any)}
+                    variant="outlined"
+                    // label="Screen"
+                    labelOption={(label) => label}
+                    valueOption={(value) => value}
+                    onChange={(value: any) => formik.setValues({ ...formik.values, screenShowNavBar: value })}
                 />
                 <Button
                     variant="contained"

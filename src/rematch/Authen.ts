@@ -30,12 +30,13 @@ export const authen = createModel<RootModel>()({
         return {
             async login(payload: AuthenModel): Promise<any> {
                 localStorage.setItem('jwt', payload.jwt || '');
+                appClient.defaults.headers['authorization'] = payload.jwt;
                 return authen.update({ ...payload, isGet: true });
             },
             async logOut() {
                 appClient.defaults.headers['authorization'] = '';
                 localStorage.setItem('jwt', '');
-                this.getMe();
+                window.location.href = '/login';
                 authen.update({
                     role: undefined,
                     info: {},

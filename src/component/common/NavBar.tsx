@@ -20,8 +20,10 @@ import clsx from 'clsx';
 import React, { useEffect, useRef, useState } from 'react';
 import { CgPlayListRemove } from 'react-icons/cg';
 import { FiChevronDown } from 'react-icons/fi';
+import { IoLogOutOutline } from 'react-icons/io5';
 import { VscMenu } from 'react-icons/vsc';
 import { NavLink, useHistory, useRouteMatch } from 'react-router-dom';
+import { dispatch } from 'src/rematch/store';
 
 import { cssInfo } from '../../constants/Other';
 import { localStoryController } from '../../controller';
@@ -255,6 +257,9 @@ export default function NavBar(props: Props) {
                     height: state.hiddenNavBar ? 0 : '100vh',
                     borderRadius: state.hiddenNavBar ? 100 : 0,
                 }}
+                direction="column"
+                justify="space-between"
+                container
             >
                 <Grid
                     style={{
@@ -313,6 +318,19 @@ export default function NavBar(props: Props) {
                             }
                         })}
                     </Grid>
+                </Grid>
+                <Grid className={globalStyle.pp2}>
+                    <Button
+                        startIcon={<IoLogOutOutline />}
+                        fullWidth
+                        color={'primary'}
+                        size="small"
+                        onClick={() => {
+                            dispatch.authen.logOut();
+                        }}
+                    >
+                        Logout
+                    </Button>
                 </Grid>
             </Grid>
         );
@@ -495,13 +513,15 @@ export default function NavBar(props: Props) {
         });
     }, []);
     const checkScreenDownMenu = (): HiddenProps => {
-        if (props.screenShowNavBar === 'sm') return { smDown: true };
+        if (props.screenShowNavBar === 'xs') return { xsDown: true };
+        else if (props.screenShowNavBar === 'sm') return { smDown: true };
         else if (props.screenShowNavBar === 'md') return { mdDown: true };
         else if (props.screenShowNavBar === 'lg') return { lgDown: true };
         else return { xsDown: true };
     };
     const checkScreenDownNarBar = (): HiddenProps => {
-        if (props.screenShowNavBar === 'sm') return { mdUp: true };
+        if (props.screenShowNavBar === 'xs') return { smUp: true };
+        else if (props.screenShowNavBar === 'sm') return { mdUp: true };
         else if (props.screenShowNavBar === 'md') return { lgUp: true };
         else if (props.screenShowNavBar === 'lg') return { xlUp: true };
         else return { smUp: true };
