@@ -20,9 +20,12 @@ export const calcBuyPriceOrder = (products: ProductOrder[]) => {
         return calcBuyPrice(products[0].price || 0)
     
     if(products.length===2){
-        const maxPriceProduct = ((products[0].price || 0)>(products[1].price||0)?products[0].price : products[1].price) || 0;
-        const minPriceProduct = ((products[0].price || 0)<(products[1].price||0)?products[0].price : products[1].price) || 0;
-        return mathCeilWithRound((maxPriceProduct*0.75 + Math.max(minPriceProduct - 3, 0)),2);
+        const priceP1 = products[0].price || 0;
+        const priceP2 = products[1].price || 0;
+        
+        let result =  mathCeilWithRound(Math.min(priceP1*0.75 + priceP2 - 3, priceP2*0.75 + priceP1 - 3),2);
+        console.log({priceP1, priceP2, result});
+        return result;
     }
     return calcBuyPrice(products.map(p => p.price || 0).reduce((item , sum )=> sum + item,0 ))
 }
