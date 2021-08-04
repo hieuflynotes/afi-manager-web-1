@@ -10,7 +10,7 @@ import theme from 'src/theme/MuiTheme';
 import { checkoutCode } from 'src/constants/IMacros';
 import { dispatch } from '../../rematch/store';
 import { Giftcard } from '../../container/hm-manager/ProgressAutoOrder';
-import { calcBuyPrice } from 'src/helper/CalculatorHmPrice';
+import { calcBuyPrice, calcBuyPriceOrder } from 'src/helper/CalculatorHmPrice';
 import { cssInfo } from 'src/constants/Other';
 import { GiTwoCoins } from 'react-icons/gi';
 import { RiAccountPinCircleFill } from 'react-icons/ri';
@@ -113,7 +113,7 @@ function ProgressHmItemList(props: Props) {
     };
 
     const handleCopyToolMarcro = () => {
-        if (props.item.isOrder) {
+        if (props.item.isOrder || props.item.errorDesc) {
             navigator.clipboard.writeText(
                 checkoutCode(
                     props.item.email || 'email@gmail.com',
@@ -260,7 +260,7 @@ function ProgressHmItemList(props: Props) {
                                 <GiTwoCoins />
                             </Grid>
                             <Grid>
-                                <Typography>{`${calcBuyPrice(props.item.totalPrice || 0)}`} (Price Buy)</Typography>
+                                <Typography>{`${calcBuyPriceOrder(props.item.productOrder || [])}`} (Price Buy)</Typography>
                             </Grid>
                         </Grid>
                     </Grid>

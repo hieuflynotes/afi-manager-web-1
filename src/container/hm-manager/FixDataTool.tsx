@@ -20,7 +20,7 @@ import { OrderTracking } from 'src/afi-manager-base-model/model/OrderTracking';
 import SelectBox from 'src/component/common/SelectBox';
 import { dispatch, RootState } from 'src/rematch/store';
 import TextDesc from 'src/component/common/TextDesc';
-import { calcBuyPrice } from 'src/helper/CalculatorHmPrice';
+import { calcBuyPrice, calcBuyPriceOrder } from 'src/helper/CalculatorHmPrice';
 import FixSwithUpdateOrder from 'src/component/AutoOrderHm/FixSwithUpdateOrder';
 import { useSelector } from 'react-redux';
 
@@ -140,7 +140,7 @@ function FixDataTool(props: Props) {
                             <TextDesc title={'Tổng giá'} desc={`${state.orderTracking.totalPrice}` || ''} />
                             <TextDesc
                                 title={'Phải trả'}
-                                desc={`${calcBuyPrice(state.orderTracking.totalPrice || 0)}` || ''}
+                                desc={`${calcBuyPriceOrder(state.orderTracking.productOrder || [])}` || ''}
                             />
                             <TextDesc title={'Email'} desc={state.orderTracking.email || ''} />
                             {/* <TextDesc title={'Password'} desc={state.orderTracking.userHM?.password || ''} /> */}
