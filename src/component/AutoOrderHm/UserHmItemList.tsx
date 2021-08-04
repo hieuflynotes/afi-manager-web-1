@@ -45,12 +45,12 @@ function UserHmItemList(props: Props) {
                 <Grid>
                     <Grid container>
                         <Grid>
-                            <IconButton>
+                            <IconButton onClick={(e) => props.onDelete(props.item)}>
                                 <IoCloseOutline />
                             </IconButton>
                         </Grid>
                         <Grid>
-                            <IconButton>
+                            <IconButton onClick={(e) => props.onEdit(props.item)}>
                                 <AiOutlineEdit />
                             </IconButton>
                         </Grid>
@@ -97,6 +97,33 @@ function UserHmItemList(props: Props) {
                         </Grid>
                     </Grid>
                 </Grid>
+            </Grid>
+            <Grid container>
+                <Grid xs={6}>
+                    <Grid container>
+                        <Grid>
+                            <TextDescWithIcon desc={`First: ${props.item.firstName}`} icon={<AiOutlineUser />} />
+                        </Grid>
+                    </Grid>
+                </Grid>
+                <Grid xs={6}>
+                    <Grid container>
+                        <Grid>
+                            <TextDescWithIcon desc={`Last: ${props.item.lastName}`} icon={<AiOutlineUser />} />
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </Grid>
+            <Grid container className={globalStyle.pp1}>
+                <Button
+                    variant="outlined"
+                    color="primary"
+                    fullWidth
+                    size="small"
+                    onClick={(e) => props.onSeeDetail(props.item)}
+                >
+                    See detail
+                </Button>
             </Grid>
         </Grid>
     );
