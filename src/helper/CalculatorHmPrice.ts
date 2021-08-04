@@ -1,4 +1,5 @@
 import { OrderTracking, ProductOrder } from 'src/afi-manager-base-model/model/OrderTracking';
+import { mathCeilWithRound } from './NumberUtils';
 
 export const calcBuyPrice = (price: number) =>
     price >= 6
@@ -10,6 +11,9 @@ export const calcBuyPrice = (price: number) =>
         : -1;
 
 export const calcBuyPriceOrder = (products: ProductOrder[]) => {
+    products = products.map(p => Array.from(new Array(p.quantity)).map(i => p))
+    .reduce((arr, sumArr) => sumArr.concat(arr), [])
+    
     if(!products || products.length===0)
         return 0;
     if(products.length===1)
@@ -18,7 +22,7 @@ export const calcBuyPriceOrder = (products: ProductOrder[]) => {
     if(products.length===2){
         const maxPriceProduct = ((products[0].price || 0)>(products[1].price||0)?products[0].price : products[1].price) || 0;
         const minPriceProduct = ((products[0].price || 0)<(products[1].price||0)?products[0].price : products[1].price) || 0;
-        return maxPriceProduct*0.75 + Math.max(minPriceProduct - 3, 0);
+        return mathCeilWithRound((maxPriceProduct*0.75 + Math.max(minPriceProduct - 3, 0)),2);
     }
     return calcBuyPrice(products.map(p => p.price || 0).reduce((item , sum )=> sum + item,0 ))
 }

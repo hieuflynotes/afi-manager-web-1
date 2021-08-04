@@ -15,6 +15,7 @@ import { cssInfo } from 'src/constants/Other';
 import { GiTwoCoins } from 'react-icons/gi';
 import { RiAccountPinCircleFill } from 'react-icons/ri';
 import { BiKey } from 'react-icons/bi';
+import { mathCeilWithRound } from 'src/helper/NumberUtils';
 type Props = {
     item: OrderTracking;
     giftCard: Giftcard;
@@ -248,7 +249,7 @@ function ProgressHmItemList(props: Props) {
                                 <GiTwoCoins />
                             </Grid>
                             <Grid>
-                                <Typography>{props.item.totalPrice} (Price)</Typography>
+                                <Typography>{mathCeilWithRound(props.item.totalPrice || 0,2)} (Price)</Typography>
                             </Grid>
                         </Grid>
                     </Grid>
@@ -260,7 +261,7 @@ function ProgressHmItemList(props: Props) {
                                 <GiTwoCoins />
                             </Grid>
                             <Grid>
-                                <Typography>{`${calcBuyPriceOrder(props.item.productOrder || [])}`} (Price Buy)</Typography>
+                                <Typography>{`${calcBuyPriceOrder(props.item.productOrder || [])}`} (Buy)</Typography>
                             </Grid>
                         </Grid>
                     </Grid>
