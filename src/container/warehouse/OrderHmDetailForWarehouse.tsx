@@ -243,13 +243,13 @@ function OrderHmDetailForWarehouse(props: Props) {
                             Chi tiết đơn hàng
                             <IconButton
                                 onClick={() => {
-                                    downloadCSV(crudTrackingHM.pagingList.rows?.map(r => ({
-                                        email: r.email,
+                                    downloadCSV([{email:'email',status:'status', orderId:"order Id", price:"price", products:"products"}].concat(crudTrackingHM.pagingList.rows?.map(r => ({
+                                        email: r.email || "",
                                         status: r.errorDesc && r.errorDesc.length>0 ? r.errorDesc : "Done",
-                                        orderId: r.orderId,
-                                        price: r.totalPrice,
-                                        products: r.productOrder?.map(p => `${p.productId}: £${p.price}`).join('; ')
-                                    })) || [])
+                                        orderId: r.orderId || "",
+                                        price: String(r.totalPrice||""),
+                                        products: String(r.productOrder?.map(p => `${p.productId}: £${p.price}`).join('; ') || "")
+                                    }))|| []))
                                     dispatch.notification.success('Download successfully!');
                                 }}
                                 size="small"
