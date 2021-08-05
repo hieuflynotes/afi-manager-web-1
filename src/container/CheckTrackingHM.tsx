@@ -118,11 +118,11 @@ function CheckTrackingHM(props: Props) {
                         label="Search"
                         onChange={(e) => crudTrackingHM.onQueryChanged(e.target.value)}
                     ></TextFiled>
-                    <Grid>
+                    {/* <Grid>
                         <Button variant="contained" color="primary" onClick={() => crudTrackingHM.onShowPopup({})}>
                             New Flow
                         </Button>
-                    </Grid>
+                    </Grid> */}
                 </Grid>
                 {/* <Divider className={clsx(globalStyles.mt1, globalStyles.mb1)} /> */}
                 <Grid
@@ -141,7 +141,7 @@ function CheckTrackingHM(props: Props) {
                         }}
                         color="primary"
                     />
-                    <Grid>
+                    {/* <Grid>
                         <Grid container alignItems="center">
                             <Button
                                 variant="contained"
@@ -153,7 +153,7 @@ function CheckTrackingHM(props: Props) {
                                 Flow many by Emails and Orders
                             </Button>
                         </Grid>
-                    </Grid>
+                    </Grid> */}
                 </Grid>
             </Grid>
             <ListGrid minWidthItem={'320px'} gridGap={15}>

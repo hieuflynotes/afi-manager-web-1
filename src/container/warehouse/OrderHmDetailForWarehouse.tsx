@@ -15,7 +15,7 @@ import PopupAddOrderId from 'src/component/AutoOrderHm/PopupEditProgressAutoOrde
 import { ListFilter } from 'luong-base-model/lib';
 import { mathCeilWithRound } from 'src/helper/NumberUtils';
 import { IconButton } from '@material-ui/core';
-import { IoCopyOutline } from 'react-icons/io5';
+import { IoCopyOutline, IoDownload, IoDownloadOutline } from 'react-icons/io5';
 import { dispatch } from '../../rematch/store';
 import { countBoughtProduct, countProduct } from 'src/helper/CalculatorHmPrice';
 import { firebaseConfig } from 'src/constants/FirebaseConfig';
@@ -23,6 +23,7 @@ import _ from 'lodash';
 import { UserHm } from 'src/afi-manager-base-model/model/UserHm';
 import { addAddress } from 'src/constants/IMacros';
 import OrderHmDetailForWarehouseItemList from 'src/component/warehouse/OrderHmDetailForWarehouseItemList';
+import { downloadCSV } from 'src/helper/DownloadUtils';
 
 type Props = {};
 const useStyle = makeStyles((theme) => ({
@@ -242,25 +243,20 @@ function OrderHmDetailForWarehouse(props: Props) {
                             Chi tiết đơn hàng
                             <IconButton
                                 onClick={() => {
-                                    navigator.clipboard.writeText(
-                                        addAddress(userHm.emailCheckout || 'email', userHm.password || '123456a@', {
-                                            lineAddress: userHm.address || '',
-                                            flatHouse: userHm.address2 || '',
-                                            town: userHm.town || '',
-                                            postCode: userHm.postcode || '',
-                                            firstName: userHm.firstName || '',
-                                            lastName: userHm.lastName || '',
-                                            phonenumber: userHm.phone || '',
-                                        }),
-                                    );
-                                    dispatch.notification.success('Copy to clipboard successfully!');
+                                    downloadCSV(crudTrackingHM.pagingList.rows?.map(r => ({
+                                        email: r.email,
+                                        status: r.errorDesc && r.errorDesc.length>0 ? r.errorDesc : "Done",
+                                        orderId: r.orderId,
+                                        price: r.totalPrice,
+                                        products: r.productOrder?.map(p => `${p.productId}: £${p.price}`).join('; ')
+                                    })) || [])
+                                    dispatch.notification.success('Download successfully!');
                                 }}
                                 size="small"
                             >
-                                <IoCopyOutline />
+                                <IoDownloadOutline />
                             </IconButton>
                         </Typography>
-                        {renderOrderStatusSummary()}
                         {renderPaymentStatusSummary()}
                     </Grid>
 
