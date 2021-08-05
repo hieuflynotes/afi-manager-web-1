@@ -7,7 +7,10 @@ import { IconButton } from '@material-ui/core';
 import { UserHm } from 'src/afi-manager-base-model/model/UserHm';
 import TextDesc from '../common/TextDesc';
 import moment from 'moment';
-import { AiOutlineEdit } from 'react-icons/ai';
+import { AiOutlineEdit, AiOutlineMail, AiOutlinePhone, AiOutlineUser } from 'react-icons/ai';
+import TextDescWithIcon from '../common/TextDescWithIcon';
+import { VscHome } from 'react-icons/vsc';
+import { BiKey, BiMap } from 'react-icons/bi';
 
 type Props = {
     item: UserHm;
@@ -32,8 +35,8 @@ function UserHmItemList(props: Props) {
     }, []);
 
     return (
-        <Grid container justify="center" className={clsx(classes.root)}>
-            <Grid container alignItems="center" justify="space-between">
+        <Grid container className={clsx(classes.root)}>
+            <Grid container alignItems="center" justify="space-between" className={globalStyle.pl1}>
                 <Grid>
                     <Typography variant="caption">
                         {moment(props.item.createdAt).format('DD/MM/YYYY : hh:mm')}
@@ -42,20 +45,85 @@ function UserHmItemList(props: Props) {
                 <Grid>
                     <Grid container>
                         <Grid>
-                            <IconButton>
+                            <IconButton onClick={(e) => props.onDelete(props.item)}>
                                 <IoCloseOutline />
                             </IconButton>
                         </Grid>
                         <Grid>
-                            <IconButton>
+                            <IconButton onClick={(e) => props.onEdit(props.item)}>
                                 <AiOutlineEdit />
                             </IconButton>
                         </Grid>
                     </Grid>
                 </Grid>
+            </Grid>
+            <Grid container>
                 <Grid>
-                    <Typography variant="h6">{props.item.username}</Typography>
+                    <TextDescWithIcon desc={props.item.username} variant="h6" icon={<AiOutlineUser />} />
                 </Grid>
+            </Grid>
+            <Grid container>
+                <Grid>
+                    <TextDescWithIcon desc={props.item.password} variant="caption" icon={<BiKey />} />
+                </Grid>
+            </Grid>
+            <Grid container>
+                <Grid>
+                    <TextDescWithIcon desc={props.item.address} icon={<VscHome />} />
+                </Grid>
+            </Grid>
+            <Grid container>
+                <Grid>
+                    <TextDescWithIcon desc={props.item.address2} icon={<VscHome />} />
+                </Grid>
+            </Grid>
+            <Grid container>
+                <Grid>
+                    <TextDescWithIcon desc={props.item.phone} icon={<AiOutlinePhone />} />
+                </Grid>
+            </Grid>
+            <Grid container>
+                <Grid xs={6}>
+                    <Grid container>
+                        <Grid>
+                            <TextDescWithIcon desc={props.item.town} icon={<BiMap />} />
+                        </Grid>
+                    </Grid>
+                </Grid>
+                <Grid xs={6}>
+                    <Grid container>
+                        <Grid>
+                            <TextDescWithIcon desc={props.item.postcode} icon={<BiMap />} />
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </Grid>
+            <Grid container>
+                <Grid xs={6}>
+                    <Grid container>
+                        <Grid>
+                            <TextDescWithIcon desc={`First: ${props.item.firstName}`} icon={<AiOutlineUser />} />
+                        </Grid>
+                    </Grid>
+                </Grid>
+                <Grid xs={6}>
+                    <Grid container>
+                        <Grid>
+                            <TextDescWithIcon desc={`Last: ${props.item.lastName}`} icon={<AiOutlineUser />} />
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </Grid>
+            <Grid container className={globalStyle.pp1}>
+                <Button
+                    variant="outlined"
+                    color="primary"
+                    fullWidth
+                    size="small"
+                    onClick={(e) => props.onSeeDetail(props.item)}
+                >
+                    See detail
+                </Button>
             </Grid>
         </Grid>
     );

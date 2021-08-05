@@ -10,7 +10,6 @@ import theme from 'src/theme/MuiTheme';
 import { checkoutCode } from 'src/constants/IMacros';
 import { dispatch } from '../../rematch/store';
 import { Giftcard } from '../../container/hm-manager/ProgressAutoOrder';
-import { calcBuyPrice } from 'src/helper/CalculatorHmPrice';
 import { cssInfo } from 'src/constants/Other';
 import { GiTwoCoins } from 'react-icons/gi';
 import { RiAccountPinCircleFill } from 'react-icons/ri';

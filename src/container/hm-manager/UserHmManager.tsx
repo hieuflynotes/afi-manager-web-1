@@ -130,9 +130,9 @@ function UserHmManager(props: Props) {
                         // justify="center"
                         className={clsx(globalStyle.pt2, globalStyle.pb2)}
                     >
-                        <ListGrid minWidthItem={'300px'} gridGap={20}>
+                        <ListGrid minWidthItem={'350px'} gridGap={20}>
                             {crudCompany.pagingList?.rows?.map((item, index) => (
-                                <Zoom in={true} timeout={index * 100}>
+                                <Zoom in={true} timeout={300}>
                                     <Grid>
                                         <UserHmItemList
                                             item={item}

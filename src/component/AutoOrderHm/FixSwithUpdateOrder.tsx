@@ -20,7 +20,6 @@ import { OrderTracking } from 'src/afi-manager-base-model/model/OrderTracking';
 import SelectBox from 'src/component/common/SelectBox';
 import { dispatch, RootState } from 'src/rematch/store';
 import TextDesc from 'src/component/common/TextDesc';
-import { calcBuyPrice } from 'src/helper/CalculatorHmPrice';
 import { useSelector } from 'react-redux';
 
 type Props = {
