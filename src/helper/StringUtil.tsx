@@ -30,6 +30,9 @@ export class StringUtil {
         minimumFractionDigits: 0,
     });
 
+    static nullOrEmpty = (text?: string) => {
+        return text == null || text.trim().length === 0;
+    };
     // formatterPhoneVN = (phone: string): string => {
     //     var pn = new PhoneNumber(phone || '', 'VN');
     //     return pn.getNumber('international');

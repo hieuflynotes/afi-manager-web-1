@@ -17,13 +17,14 @@ import { mathCeilWithRound } from 'src/helper/NumberUtils';
 import { IconButton } from '@material-ui/core';
 import { IoCopyOutline, IoDownload, IoDownloadOutline } from 'react-icons/io5';
 import { dispatch } from '../../rematch/store';
-import { countBoughtProduct, countProduct } from 'src/helper/CalculatorHmPrice';
+import { countBoughtProduct, countProduct, totalAmount, totalCompletedAmount } from 'src/helper/CalculatorHmPrice';
 import { firebaseConfig } from 'src/constants/FirebaseConfig';
 import _ from 'lodash';
 import { UserHm } from 'src/afi-manager-base-model/model/UserHm';
 import { addAddress } from 'src/constants/IMacros';
 import OrderHmDetailForWarehouseItemList from 'src/component/warehouse/OrderHmDetailForWarehouseItemList';
 import { downloadCSV } from 'src/helper/DownloadUtils';
+import { downloadOrders } from 'src/helper/DownloadOrder';
 
 type Props = {};
 const useStyle = makeStyles((theme) => ({
@@ -192,24 +193,14 @@ function OrderHmDetailForWarehouse(props: Props) {
         return (
             <Grid container className={classes.statuses} justify="center">
                 <Typography>
-                    Totol Money:{' '}
-                    {mathCeilWithRound(
-                        crudTrackingHM.pagingList?.rows
-                            ?.map((r) => r.totalPrice || 0)
-                            .reduce((price, total) => (total += price), 0) || 0,
-                        2,
-                    )}
+                    Totol amount:{' '}
+                    {totalAmount(crudTrackingHM.pagingList.rows|| [])}
                 </Typography>
 
                 <Typography>
-                    Total money for done:{' '}
-                    {mathCeilWithRound(
-                        crudTrackingHM.pagingList?.rows
-                            ?.filter((i) => i.orderId != null && i.orderId.length > 0)
-                            .map((r) => r.totalPrice || 0)
-                            .reduce((price, total) => (total += price), 0) || 0,
-                        2,
-                    )}
+                    Total completed amount:{' '}
+                    {totalCompletedAmount(crudTrackingHM.pagingList.rows|| [])}
+
                 </Typography>
 
                 <Typography>Total products: {countProduct(crudTrackingHM.pagingList?.rows || [])}</Typography>
@@ -243,13 +234,7 @@ function OrderHmDetailForWarehouse(props: Props) {
                             Chi tiết đơn hàng
                             <IconButton
                                 onClick={() => {
-                                    downloadCSV([{email:'email',status:'status', orderId:"order Id", price:"price", products:"products"}].concat(crudTrackingHM.pagingList.rows?.map(r => ({
-                                        email: r.email || "",
-                                        status: r.errorDesc && r.errorDesc.length>0 ? r.errorDesc : "Done",
-                                        orderId: r.orderId || "",
-                                        price: String(r.totalPrice||""),
-                                        products: String(r.productOrder?.map(p => `${p.productId}: £${p.price}`).join('; ') || "")
-                                    }))|| []))
+                                    downloadOrders(crudTrackingHM.pagingList.rows || [])
                                     dispatch.notification.success('Download successfully!');
                                 }}
                                 size="small"
