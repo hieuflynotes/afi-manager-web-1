@@ -172,7 +172,7 @@ function TrackingInfoHMItem(props: Props) {
                     <Typography variant="body2">
                         #{StringUtil.getHighlightedText(state.infoOrderTracking.orderId, props.searchString)}
                     </Typography>
-                    <Grid>
+                    {/* <Grid>
                         <Grid container>
                             <IconButton
                                 onClick={() => props.onEdit(state.infoOrderTracking)}
@@ -187,7 +187,7 @@ function TrackingInfoHMItem(props: Props) {
                                 <IoCloseOutline />
                             </IconButton>
                         </Grid>
-                    </Grid>
+                    </Grid> */}
                 </Grid>
                 <Divider className={clsx(globalsStyle.mt1, globalsStyle.mb1)} />
                 {state.isError ? (

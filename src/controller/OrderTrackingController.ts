@@ -13,6 +13,15 @@ import {
 import { BaseController } from './BaseController';
 
 export class OrderTrackingController extends BaseController<OrderTracking> implements IOrderTrackingController {
+    orderHmDetailForWarehouse(params: { orderHmId: string }): Promise<Paging<OrderTracking>> {
+        return this.client
+            .get(`${this.serviceURL}/${this.basePath}/order-hm-detail-for-warehouse`, {
+                params,
+            })
+            .then((res) => {
+                return res.data;
+            });
+    }
     splitOrderWithMerge(params: {
         orderTrackingOld: OrderTracking;
         orderTrackingNew: OrderTracking;
