@@ -94,14 +94,6 @@ export const routers: RouteComponent[] = [
         icon: <AiOutlineLineChart />,
     },
 
-    // {
-    //     component: SyncData,
-    //     label: 'Sync data',
-    //     link: '/sync-data',
-    //     typeAuthen: TypeScreen.toolHm,
-    //     icon: <TiArrowSyncOutline />,
-    // },
-
     {
         component: StaticByUserHm,
         label: 'Statistic user',
@@ -109,13 +101,7 @@ export const routers: RouteComponent[] = [
         typeAuthen: TypeScreen.authenMenu,
         icon: <AiOutlineLineChart />,
     },
-    {
-        component: Register,
-        label: 'Register',
-        link: '/register-afi',
-        typeAuthen: TypeScreen.public,
-        icon: <AiFillDashboard />,
-    },
+
     {
         component: CheckTrackingHM,
         label: 'Check Tracking',

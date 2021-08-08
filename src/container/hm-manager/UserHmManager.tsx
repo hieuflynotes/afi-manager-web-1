@@ -86,12 +86,12 @@ function UserHmManager(props: Props) {
                             valueOption={(value) => value}
                             onChange={(e: any) => {
                                 switch (e) {
-                                    case 'Đã xong':
+                                    case 'Đã chạy tool':
                                         crudCompany.setFilter({
                                             isDone: true,
                                         });
                                         break;
-                                    case 'Chưa xong':
+                                    case 'Chưa chạy tool':
                                         crudCompany.setFilter({
                                             isDone: [false, null as any],
                                         });

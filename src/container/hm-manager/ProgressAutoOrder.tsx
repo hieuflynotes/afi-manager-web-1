@@ -9,7 +9,7 @@ import { Pagination } from '@material-ui/lab';
 import { useParams } from 'react-router-dom';
 import { hMController, orderTrackingController, userHmController } from 'src/controller';
 import theme from 'src/theme/MuiTheme';
-import { DataFirebaseHm, OrderTracking } from 'src/afi-manager-base-model/model/OrderTracking';
+import { DataFirebaseHm, OrderTracking, ProductOrder } from 'src/afi-manager-base-model/model/OrderTracking';
 import ProgressHmItemList from 'src/component/AutoOrderHm/ProgressHmItemList';
 import PopupAddOrderId from 'src/component/AutoOrderHm/PopupEditProgressAutoOrder';
 import { ListFilter } from 'luong-base-model/lib';
@@ -22,6 +22,8 @@ import { firebaseConfig } from 'src/constants/FirebaseConfig';
 import _ from 'lodash';
 import { UserHm } from 'src/afi-manager-base-model/model/UserHm';
 import { addAddress } from 'src/constants/IMacros';
+import PopupSplitOrder from 'src/component/AutoOrderHm/PopupSplitOrder';
+import { handleWithPopupHook } from 'src/hook/HandleWithPopupHook';
 
 type Props = {};
 const useStyle = makeStyles((theme) => ({
@@ -62,6 +64,8 @@ function ProgressAutoOrder(props: Props) {
     const [state, setState] = useState<{ isListening: boolean }>({
         isListening: false,
     });
+
+    const handleWithPopupSplit = handleWithPopupHook<OrderTracking>({});
 
     const crudTrackingHM = useCrudHook<OrderTracking, ListFilter<OrderTracking>>({
         controller: orderTrackingController,
@@ -242,6 +246,28 @@ function ProgressAutoOrder(props: Props) {
         );
     };
 
+    const handleClickSplitOrder = (item: OrderTracking) => {
+        handleWithPopupSplit.handleShowPopup(item);
+    };
+
+    const onSplitWithMerge = (params: {
+        orderTrackingOld: OrderTracking;
+        orderTrackingNew: OrderTracking;
+        productOrder: ProductOrder;
+    }) => {
+        orderTrackingController.splitOrderWithMerge(params).then((res) => {
+            crudTrackingHM.onRefreshList();
+            handleWithPopupSplit.handleClosePopup();
+        });
+    };
+
+    const onSplitOrderWithNew = (params: { orderTrackingOld: OrderTracking; productOrder: ProductOrder }) => {
+        orderTrackingController.splitOrderWithNew(params).then((res) => {
+            crudTrackingHM.onRefreshList();
+            handleWithPopupSplit.handleClosePopup();
+        });
+    };
+
     return (crudTrackingHM.pagingList?.rows?.length || 0) > 0 ? (
         <Grid
             container
@@ -251,6 +277,14 @@ function ProgressAutoOrder(props: Props) {
                 padding: theme.spacing(1),
             }}
         >
+            <PopupSplitOrder
+                isDisplay={handleWithPopupSplit.isDisplayPopup}
+                item={handleWithPopupSplit.itemSelected}
+                onCancel={handleWithPopupSplit.handleClosePopup}
+                orderTrackings={crudTrackingHM.pagingList?.rows || []}
+                onSplitWithMerge={onSplitWithMerge}
+                onSplitWithNew={onSplitOrderWithNew}
+            />
             <PopupAddOrderId
                 isDisplay={crudTrackingHM.isShowPopup}
                 item={crudTrackingHM.itemSelected}
@@ -258,7 +292,7 @@ function ProgressAutoOrder(props: Props) {
                 onEdit={crudTrackingHM.onSave}
             />
             <Grid container justify="center" className={clsx(globalStyle.pp2)}>
-                <Grid md={10}>
+                <Grid>
                     <Grid container justify="center">
                         <Typography align="center" variant="h4">
                             Chi tiết đơn hàng
@@ -334,12 +368,13 @@ function ProgressAutoOrder(props: Props) {
                     </div>
 
                     <Grid container className={clsx(globalStyle.pt2, globalStyle.pb2)}>
-                        <ListGrid minWidthItem={'320px'} gridGap={20}>
+                        <ListGrid minWidthItem={'450px'} gridGap={20}>
                             {filterByStatus(crudTrackingHM.pagingList?.rows || []).map((item, index) => (
                                 <Zoom in={true} timeout={index * 50}>
                                     <Grid>
                                         <ProgressHmItemList
                                             giftCard={giftCard}
+                                            onSplitOrder={handleClickSplitOrder}
                                             item={item}
                                             updateOrderId={crudTrackingHM.onShowPopup}
                                         />

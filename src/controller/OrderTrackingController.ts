@@ -1,5 +1,5 @@
 import { ListFilter, Paging } from 'luong-base-model/lib';
-import { OrderTracking } from 'src/afi-manager-base-model/model/OrderTracking';
+import { OrderTracking, ProductOrder } from 'src/afi-manager-base-model/model/OrderTracking';
 import { dispatch } from 'src/rematch/store';
 import {
     ExportOrderTracking,
@@ -10,10 +10,35 @@ import {
     PropsExportData,
     StatisticByUserHm,
 } from '../afi-manager-base-model/controllers/IOrderTrackingController';
-import { User } from '../afi-manager-base-model/model/User';
 import { BaseController } from './BaseController';
 
 export class OrderTrackingController extends BaseController<OrderTracking> implements IOrderTrackingController {
+    orderHmDetailForWarehouse(params: { orderHmId: string }): Promise<Paging<OrderTracking>> {
+        return this.client
+            .get(`${this.serviceURL}/${this.basePath}/order-hm-detail-for-warehouse`, {
+                params,
+            })
+            .then((res) => {
+                return res.data;
+            });
+    }
+    splitOrderWithMerge(params: {
+        orderTrackingOld: OrderTracking;
+        orderTrackingNew: OrderTracking;
+        productOrder: ProductOrder;
+    }): Promise<{ orderTrackingOld: OrderTracking; productOrder: ProductOrder; orderTrackingNew: OrderTracking }> {
+        return this.client.post(`${this.serviceURL}/${this.basePath}/split-order-with-merge`, params).then((res) => {
+            return res.data;
+        });
+    }
+    splitOrderWithNew(params: {
+        orderTrackingOld: OrderTracking;
+        productOrder: ProductOrder;
+    }): Promise<{ orderTrackingOld: OrderTracking; orderTrackingNew: OrderTracking }> {
+        return this.client.post(`${this.serviceURL}/${this.basePath}/split-order-with-new`, params).then((res) => {
+            return res.data;
+        });
+    }
     saveByCustomer(params: OrderTracking): Promise<OrderTracking> {
         return this.client.post(`${this.serviceURL}/${this.basePath}/save-by-customer`, params).then((res) => {
             dispatch.notification.success('Lưu thành công');

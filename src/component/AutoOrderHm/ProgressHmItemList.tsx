@@ -16,10 +16,12 @@ import { GiTwoCoins } from 'react-icons/gi';
 import { RiAccountPinCircleFill } from 'react-icons/ri';
 import { BiKey } from 'react-icons/bi';
 import { mathCeilWithRound } from 'src/helper/NumberUtils';
+import { AiOutlineSplitCells } from 'react-icons/ai';
 type Props = {
     item: OrderTracking;
     giftCard: Giftcard;
     updateOrderId: (item: OrderTracking) => void;
+    onSplitOrder?: (item: OrderTracking) => void;
 };
 const useStyle = makeStyles((theme) => ({
     root: {
@@ -56,8 +58,10 @@ function ProgressHmItemList(props: Props) {
 
     const [state, setState] = useState<{
         isOpenMoreInfo: boolean;
+        isCanSplit: boolean;
     }>({
         isOpenMoreInfo: false,
+        isCanSplit: false,
     });
 
     const refChipInfo = useRef(null);
@@ -137,6 +141,24 @@ function ProgressHmItemList(props: Props) {
         return () => {};
     }, []);
 
+    const checkIsCanSplit = (item: OrderTracking): boolean => {
+        const orderHm = props.item;
+        let isCanSplit = false;
+        if (orderHm.errorDesc) {
+            if ((orderHm.productOrder?.length || 0) >= 2) {
+                isCanSplit = true;
+            }
+            if (
+                orderHm.productOrder &&
+                orderHm.productOrder.length > 0 &&
+                (orderHm.productOrder[0].quantity || 0) >= 2
+            ) {
+                isCanSplit = true;
+            }
+        }
+        return isCanSplit;
+    };
+
     return (
         <Grid className={classes.root}>
             <Grid container justify="space-between">
@@ -175,6 +197,17 @@ function ProgressHmItemList(props: Props) {
                             <IoCopyOutline />
                         </IconButton>
 
+                        {checkIsCanSplit(props.item) && (
+                            <IconButton
+                                onClick={() => {
+                                    props.onSplitOrder && props.onSplitOrder(props.item);
+                                }}
+                                size="small"
+                            >
+                                <AiOutlineSplitCells />
+                            </IconButton>
+                        )}
+
                         <IconButton
                             onClick={() => {
                                 props.updateOrderId(props.item);
@@ -207,26 +240,55 @@ function ProgressHmItemList(props: Props) {
             </Grid>
             <Grid
                 container
-                className={clsx(globalStyle.pt1, globalStyle.pb1)}
-                style={{
-                    minHeight: 80,
-                }}
+
+                // style={{
+                //     minHeight: 80,
+                // }}
             >
                 {props.item?.productOrder?.map((product) => {
                     return (
-                        <Grid container>
-                            <Grid container justify="space-between">
-                                <Grid>
-                                    <Grid container alignContent="center">
-                                        <Typography>{product.productId}</Typography>
-                                        <Typography
-                                            variant="caption"
-                                            color="textSecondary"
-                                        >{`(${product.quantity})`}</Typography>
-                                    </Grid>
+                        <Grid xs={6}>
+                            <Grid container className={clsx(globalStyle.pt1, globalStyle.pb1)} wrap="nowrap">
+                                <Grid
+                                    container
+                                    alignItems="center"
+                                    style={{
+                                        width: 50,
+                                    }}
+                                >
+                                    <a
+                                        href={`https://www2.hm.com/en_gb/productpage.${product.productId}.html`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        <img
+                                            src={
+                                                product.img ||
+                                                'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTi0T_mmYmCbAvnqj89zuDtPvOta_zEUQjSLg&usqp=CAU'
+                                            }
+                                            alt=""
+                                            style={{
+                                                width: 50,
+                                                // border: '1px solid #dddddd',
+                                            }}
+                                        />
+                                    </a>
                                 </Grid>
-                                <Grid>
-                                    <Typography variant="caption">Size:{product.size}</Typography>
+                                <Grid className={globalStyle.pp1}>
+                                    <Grid container justify="space-between">
+                                        <Grid container>
+                                            <Grid container alignContent="center">
+                                                <Typography>{product.productId}</Typography>
+                                                <Typography
+                                                    variant="caption"
+                                                    color="textSecondary"
+                                                >{`(${product.quantity})`}</Typography>
+                                            </Grid>
+                                        </Grid>
+                                        <Grid container>
+                                            <Typography variant="caption">Size:{product.size}</Typography>
+                                        </Grid>
+                                    </Grid>
                                 </Grid>
                             </Grid>
                         </Grid>
@@ -249,7 +311,7 @@ function ProgressHmItemList(props: Props) {
                                 <GiTwoCoins />
                             </Grid>
                             <Grid>
-                                <Typography>{mathCeilWithRound(props.item.totalPrice || 0,2)} (Price)</Typography>
+                                <Typography>{mathCeilWithRound(props.item.totalPrice || 0, 2)} (Price)</Typography>
                             </Grid>
                         </Grid>
                     </Grid>
@@ -271,4 +333,4 @@ function ProgressHmItemList(props: Props) {
     );
 }
 
-export default React.memo(ProgressHmItemList);
+export default ProgressHmItemList;

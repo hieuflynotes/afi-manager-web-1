@@ -58,27 +58,11 @@ function OrderHmDetailForWarehouse(props: Props) {
     const [userHm, setUserHm] = useState<UserHm>({} as UserHm);
     const [selectedStatus, setSelectedStatus] = useState<OrderStatus>(OrderStatus.none);
 
-    const [state, setState] = useState<{ isListening: boolean }>({
+    const [state, setState] = useState<{ isListening: boolean; orderTracking: OrderTracking[] }>({
         isListening: false,
+        orderTracking: [],
     });
 
-    const crudTrackingHM = useCrudHook<OrderTracking, ListFilter<OrderTracking>>({
-        controller: orderTrackingController,
-        listController: orderTrackingController.listForProgress,
-        initQuery: {
-            searchFields: ['orderId', 'trackingId', 'customerName', 'email'],
-            sort: ['totalPrice', 'email'],
-            pageSize: 1000,
-            filter: {
-                userHMId: userHmId,
-            },
-        },
-        onAfterQuery: () => {
-            if (state.isListening == false) {
-                onListeningNotication();
-            }
-        },
-    });
     const classes = useStyle();
     const globalStyle = useGlobalStyles();
     const onListeningNotication = () => {
@@ -97,7 +81,7 @@ function OrderHmDetailForWarehouse(props: Props) {
                 });
                 if (doc.data()) {
                     const dataFromFirbase: DataFirebaseHm | undefined = doc.data();
-                    const checkItem = crudTrackingHM.pagingList.rows?.find((item) => {
+                    const checkItem = state.orderTracking?.find((item) => {
                         return item.orderId == dataFromFirbase?.orderId;
                     });
 
@@ -106,25 +90,30 @@ function OrderHmDetailForWarehouse(props: Props) {
                         //     `Cập nhật orderId thành công ${dataFromFirbase?.orderId} - ${dataFromFirbase?.email}`,
                         // );
                     }
-                    crudTrackingHM.onRefreshList();
+                    refeshList();
                 }
             },
         );
     };
+
+    const refeshList = () => {
+        orderTrackingController.orderHmDetailForWarehouse({ orderHmId: userHmId }).then((res) => {
+            setState({
+                ...state,
+                orderTracking: res.rows || [],
+            });
+        });
+    };
+
     useEffect(() => {
         const body: any = document.querySelector('#root');
-
+        refeshList();
         body.scrollIntoView(
             {
                 behavior: 'smooth',
             },
             500,
         );
-        userHmController.list({ filter: { id: userHmId } }).then((paging) => {
-            if (paging && paging.rows && paging.rows.length > 0) {
-                setUserHm(paging.rows[0]);
-            }
-        });
     }, []);
 
     // useEffect(() => {
@@ -178,13 +167,11 @@ function OrderHmDetailForWarehouse(props: Props) {
     const renderOrderStatusSummary = () => {
         return (
             <Grid container className={classes.statuses} justify="center">
-                <Typography>Total Order: {crudTrackingHM.pagingList?.rows?.length}</Typography>
-                <Typography>Registed: {crudTrackingHM.pagingList?.rows?.filter((i) => i.isRegister).length}</Typography>
-                <Typography>
-                    Added to cart: {crudTrackingHM.pagingList?.rows?.filter((i) => i.isOrder).length}
-                </Typography>
-                <Typography>Complete: {crudTrackingHM.pagingList?.rows?.filter((i) => i.orderId).length}</Typography>
-                <Typography>Error: {crudTrackingHM.pagingList?.rows?.filter((i) => i.errorDesc).length}</Typography>
+                <Typography>Total Order: {state.orderTracking.length}</Typography>
+                <Typography>Registed: {state.orderTracking.filter((i) => i.isRegister).length}</Typography>
+                <Typography>Added to cart: {state.orderTracking.filter((i) => i.isOrder).length}</Typography>
+                <Typography>Complete: {state.orderTracking.filter((i) => i.orderId).length}</Typography>
+                <Typography>Error: {state.orderTracking.filter((i) => i.errorDesc).length}</Typography>
             </Grid>
         );
     };
@@ -192,27 +179,18 @@ function OrderHmDetailForWarehouse(props: Props) {
     const renderPaymentStatusSummary = () => {
         return (
             <Grid container className={classes.statuses} justify="center">
-                <Typography>
-                    Totol amount:{' '}
-                    {totalAmount(crudTrackingHM.pagingList.rows|| [])}
-                </Typography>
+                <Typography>Totol amount: {totalAmount(state.orderTracking || [])}</Typography>
 
-                <Typography>
-                    Total completed amount:{' '}
-                    {totalCompletedAmount(crudTrackingHM.pagingList.rows|| [])}
+                <Typography>Total completed amount: {totalCompletedAmount(state.orderTracking || [])}</Typography>
 
-                </Typography>
+                <Typography>Total products: {countProduct(state.orderTracking || [])}</Typography>
 
-                <Typography>Total products: {countProduct(crudTrackingHM.pagingList?.rows || [])}</Typography>
-
-                <Typography>
-                    Total products purchased : {countBoughtProduct(crudTrackingHM.pagingList?.rows || [])}
-                </Typography>
+                <Typography>Total products purchased : {countBoughtProduct(state.orderTracking || [])}</Typography>
             </Grid>
         );
     };
 
-    return (crudTrackingHM.pagingList?.rows?.length || 0) > 0 ? (
+    return (state.orderTracking.length || 0) > 0 ? (
         <Grid
             container
             style={{
@@ -221,12 +199,6 @@ function OrderHmDetailForWarehouse(props: Props) {
                 padding: theme.spacing(1),
             }}
         >
-            <PopupAddOrderId
-                isDisplay={crudTrackingHM.isShowPopup}
-                item={crudTrackingHM.itemSelected}
-                onCancel={crudTrackingHM.onCancelPopup}
-                onEdit={crudTrackingHM.onSave}
-            />
             <Grid container justify="center" className={clsx(globalStyle.pp2)}>
                 <Grid md={10}>
                     <Grid container justify="center">
@@ -234,7 +206,7 @@ function OrderHmDetailForWarehouse(props: Props) {
                             Chi tiết đơn hàng
                             <IconButton
                                 onClick={() => {
-                                    downloadOrders(crudTrackingHM.pagingList.rows || [])
+                                    downloadOrders(state.orderTracking || []);
                                     dispatch.notification.success('Download successfully!');
                                 }}
                                 size="small"
@@ -263,7 +235,7 @@ function OrderHmDetailForWarehouse(props: Props) {
 
                     <Grid container className={clsx(globalStyle.pt2, globalStyle.pb2)}>
                         <ListGrid minWidthItem={'320px'} gridGap={20}>
-                            {filterByStatus(crudTrackingHM.pagingList?.rows || []).map((item, index) => (
+                            {filterByStatus(state.orderTracking || []).map((item, index) => (
                                 <Zoom in={true} timeout={index * 50}>
                                     <Grid>
                                         <OrderHmDetailForWarehouseItemList item={item} />
@@ -271,21 +243,6 @@ function OrderHmDetailForWarehouse(props: Props) {
                                 </Zoom>
                             ))}
                         </ListGrid>
-                    </Grid>
-                    <Grid container justify="center" className={clsx(globalStyle.pt2, globalStyle.pb2)}>
-                        <Pagination
-                            count={crudTrackingHM.pagingList.totalPages || 1}
-                            page={crudTrackingHM.pagingList.page || 1}
-                            variant="outlined"
-                            shape="rounded"
-                            onChange={(e, page) => {
-                                crudTrackingHM.setQuery({
-                                    ...crudTrackingHM.query,
-                                    page: page,
-                                });
-                            }}
-                            color="primary"
-                        />
                     </Grid>
                 </Grid>
             </Grid>
