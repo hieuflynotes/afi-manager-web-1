@@ -11,7 +11,11 @@ export const calcBuyPrice = (price: number) =>
         : -1;
 
 export const calcBuyPriceOrder = (products: ProductOrder[]) => {
-    products = products.map(p => Array.from(new Array(p.quantity)).map(i => p))
+    let totalPrice = products.map(p=> p.price || 0).reduce((p, sum) => sum = sum+ p, 0)
+    if(totalPrice<=5)
+        return calcBuyPrice(totalPrice);
+    
+        products = products.map(p => Array.from(new Array(p.quantity)).map(i => p))
     .reduce((arr, sumArr) => sumArr.concat(arr), [])
     
     if(!products || products.length===0)
