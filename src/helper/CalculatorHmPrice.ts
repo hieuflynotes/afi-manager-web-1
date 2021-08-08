@@ -22,7 +22,7 @@ export const getProductStatus = (product: ProductOrder, order: OrderTracking): O
         : StringUtil.nullOrEmpty(order.errorDesc)
         ? OrderStatus.completed
         : (order.productOrder?.length || 0) <= 1
-        ? OrderStatus.error
+        ? OrderStatus.completed
         : order.errorDesc?.includes(`${product.productId}: ${product.size}`)
         ? OrderStatus.error
         : OrderStatus.completed;

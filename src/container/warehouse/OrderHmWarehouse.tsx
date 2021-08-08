@@ -15,6 +15,7 @@ import { orderTrackingController } from 'src/controller';
 import { useCrudHook } from 'src/hook/useCrudHook';
 import { StringUtil } from 'src/helper/StringUtil';
 import { useHistory } from 'react-router-dom';
+import { Pagination } from '@material-ui/lab';
 
 type Props = {};
 const useStyle = makeStyles((theme) => ({
@@ -63,10 +64,26 @@ function OrderHmWarehouse(props: Props) {
             </Grid>
             <Grid container>
                 <Grid>
-                    <TextField variant="outlined" label="Search" />
+                    <TextField variant="outlined" label="Search" onChange={e => crudOrderHm.setQuery({...crudOrderHm.query, search: e.target.value, searchFields:['username']})} />
                 </Grid>
             </Grid>
-            <Grid container className={globalStyles.pt2}>
+            <Grid container className={globalStyles.pt2} >
+            <Grid style={{margin:"16px 0"}}>
+            <Pagination
+                count={crudOrderHm.pagingList.totalPages || 1}
+                page={crudOrderHm.pagingList.page || 1}
+                variant="outlined"
+                shape="rounded"
+                onChange={(e, page) => {
+                    crudOrderHm.setQuery({
+                        ...crudOrderHm.query,
+                        page: page,
+                    });
+                }}
+                color="primary"
+            />
+            </Grid>
+
                 <ListGrid gridGap={10} minWidthItem="350px">
                     {crudOrderHm.pagingList?.rows?.map((item, index) => {
                         return (
