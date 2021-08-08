@@ -93,7 +93,7 @@ function TrackingInfoHMItem(props: Props) {
                         const id = product.productId;
                         if (id) {
                             info = await hMController.getInfoProduct(id);
-                            info ={...info, quantity: product.quantity}
+                            info = { ...info, quantity: product.quantity };
                         }
                     } catch (error) {
                         info = undefined;
@@ -227,7 +227,7 @@ function TrackingInfoHMItem(props: Props) {
                             </Grid>
                         </Grid>
                         <Divider className={clsx(globalsStyle.mt1, globalsStyle.mb1)} />
-                        <Grid container direction="column" style={{padding: "16px 0px"}} justify="space-around">
+                        <Grid container direction="column" style={{ padding: '16px 0px' }} justify="space-around">
                             {state.infoOrderTracking?.infoHM?.body?.map((item, index) => {
                                 if (index == 0) {
                                     return (
@@ -251,7 +251,7 @@ function TrackingInfoHMItem(props: Props) {
                             direction="column"
                             style={{
                                 borderTop: `1px solid ${theme.palette.divider}`,
-                                padding: "16px 0px"
+                                padding: '16px 0px',
                             }}
                             justify="space-around"
                         >
@@ -289,7 +289,7 @@ function TrackingInfoHMItem(props: Props) {
                                     <img
                                         style={{
                                             width: 36,
-                                            marginRight: 16
+                                            marginRight: 16,
                                         }}
                                         src={info._embedded.base_image.images.normal}
                                     />
