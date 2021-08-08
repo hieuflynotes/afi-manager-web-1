@@ -1,5 +1,12 @@
 import { OrderTracking } from 'src/afi-manager-base-model/model/OrderTracking';
-import { countBoughtProduct, countProduct, getProductStatus, OrderStatus, totalAmount, totalCompletedAmount } from './CalculatorHmPrice';
+import {
+    countBoughtProduct,
+    countProduct,
+    getProductStatus,
+    OrderStatus,
+    totalAmount,
+    totalCompletedAmount,
+} from './CalculatorHmPrice';
 import { downloadCSV } from './DownloadUtils';
 
 export interface ExportOrderModel {
@@ -14,19 +21,20 @@ export interface ExportOrderModel {
 export const orderToCSVModel = (orders: OrderTracking[]) => {
     return orders
         .map((o) =>
-            o.productOrder?.map(p => Array.from(new Array(p.quantity||1)).map(_ => ({...p, quantity: 1})))
-            .reduce((p, arr) => arr = arr.concat(p),[])
-            .map((p) => {
-                let status = getProductStatus(p, o);
-                return {
-                    productId: p.productId,
-                    size: p.size,
-                    price: p.price || '',
-                    orderId: o.orderId || '',
-                    status,
-                    error: status === 'Error' && o.errorDesc ? o.errorDesc : '',
-                } as ExportOrderModel;
-            }),
+            o.productOrder
+                ?.map((p) => Array.from(new Array(p.quantity || 1)).map((_) => ({ ...p, quantity: 1 })))
+                .reduce((p, arr) => (arr = arr.concat(p)), [])
+                .map((p) => {
+                    let status = getProductStatus(p, o);
+                    return {
+                        productId: p.productId,
+                        size: p.size,
+                        price: p.price || '',
+                        orderId: o.orderId || '',
+                        status,
+                        error: status === 'Error' && o.errorDesc ? o.errorDesc : '',
+                    } as ExportOrderModel;
+                }),
         )
         .reduce((products, arr) => arr?.concat(products || []), []);
 };
@@ -67,5 +75,5 @@ export const downloadOrders = (orders: OrderTracking[]) => {
 
     csv = csv.concat(orderCSV);
 
-    downloadCSV(csv);
+    downloadCSV(csv, orders && orders.length > 0 && orders[0].userHM ? orders[0].userHM.username : undefined);
 };

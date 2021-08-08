@@ -1,8 +1,10 @@
-export function downloadCSV<T>(arr: T[]) {
+import moment from "moment";
+
+export function downloadCSV<T>(arr: T[], fileName?: string) {
     let csvData = jsonToCSV(arr);
     var link = document.createElement('a');
     link.setAttribute('href', 'data:text/csv;charset=utf-8,%EF%BB%BF' + encodeURI(csvData));
-    link.setAttribute('download', 'cart.csv');
+    link.setAttribute('download', fileName? `${fileName}.csv`:`${moment(new Date()).format('HH:mm yyyy/MM/dd')}.csv`);
     link.click();
 }
 
