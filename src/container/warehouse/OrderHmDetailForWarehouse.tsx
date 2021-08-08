@@ -17,13 +17,14 @@ import { mathCeilWithRound } from 'src/helper/NumberUtils';
 import { IconButton } from '@material-ui/core';
 import { IoCopyOutline, IoDownload, IoDownloadOutline } from 'react-icons/io5';
 import { dispatch } from '../../rematch/store';
-import { countBoughtProduct, countProduct } from 'src/helper/CalculatorHmPrice';
+import { countBoughtProduct, countProduct, totalAmount, totalCompletedAmount } from 'src/helper/CalculatorHmPrice';
 import { firebaseConfig } from 'src/constants/FirebaseConfig';
 import _ from 'lodash';
 import { UserHm } from 'src/afi-manager-base-model/model/UserHm';
 import { addAddress } from 'src/constants/IMacros';
 import OrderHmDetailForWarehouseItemList from 'src/component/warehouse/OrderHmDetailForWarehouseItemList';
 import { downloadCSV } from 'src/helper/DownloadUtils';
+import { downloadOrders } from 'src/helper/DownloadOrder';
 
 type Props = {};
 const useStyle = makeStyles((theme) => ({
@@ -178,26 +179,9 @@ function OrderHmDetailForWarehouse(props: Props) {
     const renderPaymentStatusSummary = () => {
         return (
             <Grid container className={classes.statuses} justify="center">
-                <Typography>
-                    Totol Money:{' '}
-                    {mathCeilWithRound(
-                        state.orderTracking
-                            ?.map((r) => r.totalPrice || 0)
-                            .reduce((price, total) => (total += price), 0) || 0,
-                        2,
-                    )}
-                </Typography>
+                <Typography>Totol amount: {totalAmount(state.orderTracking || [])}</Typography>
 
-                <Typography>
-                    Total money for done:{' '}
-                    {mathCeilWithRound(
-                        state.orderTracking
-                            ?.filter((i) => i.orderId != null && i.orderId.length > 0)
-                            .map((r) => r.totalPrice || 0)
-                            .reduce((price, total) => (total += price), 0) || 0,
-                        2,
-                    )}
-                </Typography>
+                <Typography>Total completed amount: {totalCompletedAmount(state.orderTracking || [])}</Typography>
 
                 <Typography>Total products: {countProduct(state.orderTracking || [])}</Typography>
 
@@ -222,29 +206,7 @@ function OrderHmDetailForWarehouse(props: Props) {
                             Chi tiết đơn hàng
                             <IconButton
                                 onClick={() => {
-                                    downloadCSV(
-                                        [
-                                            {
-                                                email: 'email',
-                                                status: 'status',
-                                                orderId: 'order Id',
-                                                price: 'price',
-                                                products: 'products',
-                                            },
-                                        ].concat(
-                                            state.orderTracking.map((r) => ({
-                                                email: r.email || '',
-                                                status: r.errorDesc && r.errorDesc.length > 0 ? r.errorDesc : 'Done',
-                                                orderId: r.orderId || '',
-                                                price: String(r.totalPrice || ''),
-                                                products: String(
-                                                    r.productOrder
-                                                        ?.map((p) => `${p.productId}: £${p.price}`)
-                                                        .join('; ') || '',
-                                                ),
-                                            })) || [],
-                                        ),
-                                    );
+                                    downloadOrders(state.orderTracking || []);
                                     dispatch.notification.success('Download successfully!');
                                 }}
                                 size="small"

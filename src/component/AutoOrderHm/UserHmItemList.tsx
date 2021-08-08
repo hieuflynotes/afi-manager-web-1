@@ -11,6 +11,7 @@ import { AiOutlineEdit, AiOutlineMail, AiOutlinePhone, AiOutlineUser } from 'rea
 import TextDescWithIcon from '../common/TextDescWithIcon';
 import { VscHome } from 'react-icons/vsc';
 import { BiKey, BiMap } from 'react-icons/bi';
+import { EmailOutlined } from '@material-ui/icons';
 
 type Props = {
     item: UserHm;
@@ -60,6 +61,11 @@ function UserHmItemList(props: Props) {
             <Grid container>
                 <Grid>
                     <TextDescWithIcon desc={props.item.username} variant="h6" icon={<AiOutlineUser />} />
+                </Grid>
+            </Grid>
+            <Grid container>
+                <Grid>
+                    <TextDescWithIcon desc={props.item.emailCheckout} variant="body2" icon={<AiOutlineMail />} />
                 </Grid>
             </Grid>
             <Grid container>

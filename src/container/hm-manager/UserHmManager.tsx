@@ -106,12 +106,12 @@ function UserHmManager(props: Props) {
                             style={{ marginTop: 24 }}
                             fullWidth
                             variant="outlined"
-                            placeholder="Search by username and note"
+                            placeholder="Search by username, email, note"
                             value={crudCompany.query?.search}
                             onChange={(e) => {
                                 crudCompany.setQuery({
                                     search: e.target.value.trim(),
-                                    searchFields: ['note', 'username'],
+                                    searchFields: ['note', 'username','emailCheckout'],
                                 });
                             }}
                             className={clsx(globalStyle.mt2, globalStyle.mb2)}
