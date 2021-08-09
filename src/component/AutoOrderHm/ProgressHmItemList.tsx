@@ -128,11 +128,11 @@ function ProgressHmItemList(props: Props) {
                     Number(props.item.totalPrice || '0'),
                 ),
             );
-            dispatch.notification.success('Copy to clipboard successfully!');
+            dispatch.notification.success('Copy thành công nà  !!!');
         } else {
             dispatch.notificationPopup.success({
-                message: 'Cannot copy because this order has not been added to cart',
-                title: 'Please, Be careful',
+                message: 'Cái này chưa chạy tool xong mà, không copy đươc đâu ',
+                title: 'Gì zạ, cái gì zạ !!',
             });
         }
     };
@@ -179,8 +179,8 @@ function ProgressHmItemList(props: Props) {
                     }}
                 >
                     <Grid className={classes.popoverRoot}>
-                        <Typography>Register by: {props.item.registerByName}</Typography>
-                        <Typography>Checkout by : {props.item.dataFirebase?.username}</Typography>
+                        <Typography>Đăng kí bởi: {props.item.registerByName}</Typography>
+                        <Typography>Checkout bởi : {props.item.dataFirebase?.username}</Typography>
                     </Grid>
                 </Popover>
                 <Grid onClick={() => setState({ ...state, isOpenMoreInfo: true })} ref={refChipInfo}>
@@ -311,7 +311,7 @@ function ProgressHmItemList(props: Props) {
                                 <GiTwoCoins />
                             </Grid>
                             <Grid>
-                                <Typography>{mathCeilWithRound(props.item.totalPrice || 0, 2)} (Price)</Typography>
+                                <Typography>{mathCeilWithRound(props.item.totalPrice || 0, 2)} (Gốc)</Typography>
                             </Grid>
                         </Grid>
                     </Grid>
@@ -323,7 +323,7 @@ function ProgressHmItemList(props: Props) {
                                 <GiTwoCoins />
                             </Grid>
                             <Grid>
-                                <Typography>{`${calcBuyPriceOrder(props.item.productOrder || [])}`} (Buy)</Typography>
+                                <Typography>{`${calcBuyPriceOrder(props.item.productOrder || [])}`} (Mua)</Typography>
                             </Grid>
                         </Grid>
                     </Grid>

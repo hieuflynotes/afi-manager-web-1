@@ -329,7 +329,7 @@ export default function NavBar(props: Props) {
                             dispatch.authen.logOut();
                         }}
                     >
-                        Logout
+                        Đăng xuất ra
                     </Button>
                 </Grid>
             </Grid>

@@ -328,7 +328,7 @@ function ProgressAutoOrder(props: Props) {
                             setSelectedStatus(e.target.value as OrderStatus);
                         }}
                     >
-                        <MenuItem value={OrderStatus.none}>All</MenuItem>
+                        <MenuItem value={OrderStatus.none}>Tất cả</MenuItem>
                         <MenuItem value={OrderStatus.initial}>Khởi tạo</MenuItem>
                         <MenuItem value={OrderStatus.created}>Đã tạo tài khoản</MenuItem>
                         <MenuItem value={OrderStatus.addedToCard}>Đã thêm vào giỏ hàng</MenuItem>

@@ -89,7 +89,7 @@ function PopupNotification() {
                                 align="center"
                                 // color="textPrimary"
                             >
-                                {statePopup.title || 'Are you sure ?'}
+                                {statePopup.title || 'Bạn ăn cơm chưa ?'}
                             </Typography>
                         </Grid>
                         <Grid container className={clsx(globalStyles.pp1)} justify="center">
@@ -99,7 +99,7 @@ function PopupNotification() {
                                 align="center"
                                 // color="textPrimary"
                             >
-                                {statePopup.message || 'You will not be able to recover ?'}
+                                {statePopup.message || 'Lo ăn đi nhá, ăn nhiều rồi mập nhá '}
                             </Typography>
                         </Grid>
                     </Grid>
@@ -121,7 +121,7 @@ function PopupNotification() {
                                     dispatch.notificationPopup.close();
                                 }}
                             >
-                                {'Confirm'}
+                                {'Ok nà'}
                             </Button>
                         </Grid>
                     </Grid>

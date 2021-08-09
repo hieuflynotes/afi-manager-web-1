@@ -85,12 +85,12 @@ export default function UserManager() {
                             navigator.clipboard?.writeText(login || '')?.then(
                                 function () {
                                     dispatch.notificationPopup.error({
-                                        message: 'Paste the code you just copied into a new incognito page',
-                                        title: 'Jwt copy success',
+                                        message: 'Dán cái này vô trang ẩn danh là được á ',
+                                        title: 'Copy mã bị thành công',
                                     });
                                 },
                                 function (err) {
-                                    console.error('Async: Could not copy text: ', err);
+                                    console.error('Lỗi chi đó á: ', err);
                                 },
                             );
                         });

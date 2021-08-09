@@ -128,7 +128,7 @@ function UserHmItemList(props: Props) {
                     size="small"
                     onClick={(e) => props.onSeeDetail(props.item)}
                 >
-                    See detail
+                    Xem chi tiết
                 </Button>
             </Grid>
         </Grid>

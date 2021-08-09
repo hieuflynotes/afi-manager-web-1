@@ -20,8 +20,7 @@ import { useGlobalStyles } from 'src/theme/GlobalStyle';
 
 const useStyles = makeStyles((theme: Theme) => ({
     digActions: {
-        marginTop: theme.spacing(1),
-        marginBottom: theme.spacing(2),
+        padding: theme.spacing(4),
     },
     buttonAlert: {
         paddingRight: theme.spacing(5),
@@ -43,7 +42,7 @@ function PopUpConfirm(props: Props) {
     };
     return (
         <Dialog open={props.isDisplay} fullWidth={true} maxWidth={'sm'} onKeyDown={handleKeyDown}>
-            <DialogTitle className={clsx(globalStyles.pp0, globalStyles.mm0)}>
+            <DialogTitle className={clsx(globalStyles.pp2, globalStyles.mm0)}>
                 <Grid item xs={12}>
                     {/* <Typography variant="h4" color="error" align="center">
 						Cảnh báo
@@ -87,17 +86,17 @@ function PopUpConfirm(props: Props) {
                                 align="center"
                                 // color="textPrimary"
                             >
-                                {props.title || 'Are you sure ?'}
+                                {props.title || 'Bạn chắc chắc hông  zạ?'}
                             </Typography>
                         </Grid>
-                        <Grid container className={clsx(globalStyles.pp1)} justify="center">
+                        <Grid container className={clsx(globalStyles.pt1)} justify="center">
                             <Typography
                                 className={classes.title}
                                 variant="subtitle1"
                                 align="center"
                                 // color="textPrimary"
                             >
-                                {props.title || 'You will not be able to recover ?'}
+                                {props.title || 'Không khôi phục lại được đâu nha '}
                             </Typography>
                         </Grid>
                     </Grid>
@@ -106,32 +105,38 @@ function PopUpConfirm(props: Props) {
 
             <DialogActions>
                 <Grid item xs={12} className={classes.digActions}>
-                    <Grid item container xs={12} direction="row" justify="space-evenly" alignItems="center">
-                        <Button
-                            // className={globalStyles.buttonOutline}
-                            startIcon={<IoCloseOutline />}
-                            variant="outlined"
-                            size="small"
-                            color={'primary'}
-                            onClick={() => {
-                                props.onCancel();
-                            }}
-                        >
-                            {'Cancel'}
-                        </Button>
+                    <Grid item container xs={12} justify="space-between" alignItems="center">
+                        <Grid xs={5}>
+                            <Button
+                                fullWidth
+                                // className={globalStyles.buttonOutline}
+                                // startIcon={<IoCloseOutline />}
+                                variant="outlined"
+                                size="small"
+                                color={'primary'}
+                                onClick={() => {
+                                    props.onCancel();
+                                }}
+                            >
+                                {'À Thôi'}
+                            </Button>
+                        </Grid>
 
-                        <Button
-                            variant="contained"
-                            className={globalStyles.buttonAlert}
-                            size="small"
-                            startIcon={<IoCloseOutline />}
-                            color="primary"
-                            onClick={() => {
-                                props.onConfirm();
-                            }}
-                        >
-                            {props.labelButtonConfirm || 'Confirm'}
-                        </Button>
+                        <Grid xs={5}>
+                            <Button
+                                fullWidth
+                                variant="contained"
+                                className={globalStyles.buttonAlert}
+                                size="small"
+                                // startIcon={<IoCloseOutline />}
+                                color="primary"
+                                onClick={() => {
+                                    props.onConfirm();
+                                }}
+                            >
+                                {props.labelButtonConfirm || 'Chắc'}
+                            </Button>
+                        </Grid>
                     </Grid>
                 </Grid>
             </DialogActions>

@@ -10,6 +10,12 @@ const useStyle = makeStyles((theme) => ({
         zIndex: theme.zIndex.drawer + 100000000,
         color: 'rgb(0,0,0,0.01)',
     },
+    frImage: {
+        borderRadius: '50%',
+        // background: 'white',
+        width: 400,
+        height: 400,
+    },
 }));
 function BackdropLoading(props: Props) {
     const classes = useStyle();
@@ -23,7 +29,10 @@ function BackdropLoading(props: Props) {
     return (
         <Grid>
             <Backdrop open={loading} className={classes.backdrop}>
-                <CircularProgress color="primary" />
+                <Grid className={classes.frImage}>
+                    <img src="/image/loading-fast.gif" className={classes.frImage} />
+                </Grid>
+                {/* <CircularProgress color="primary" /> */}
             </Backdrop>
         </Grid>
     );

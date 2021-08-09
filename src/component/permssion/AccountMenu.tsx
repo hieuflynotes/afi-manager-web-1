@@ -100,7 +100,7 @@ function AccountMenu(props: Props) {
                             fullWidth
                             startIcon={<HiOutlineLogout />}
                         >
-                            Logout
+                            Đăng xuất ra
                         </Button>
                     </Grid>
                 </Grid>

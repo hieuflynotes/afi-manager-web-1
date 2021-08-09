@@ -106,12 +106,12 @@ function UserHmManager(props: Props) {
                             style={{ marginTop: 24 }}
                             fullWidth
                             variant="outlined"
-                            placeholder="Search by username, email, note"
+                            placeholder="Tìm theo by username, email, note"
                             value={crudCompany.query?.search}
                             onChange={(e) => {
                                 crudCompany.setQuery({
                                     search: e.target.value.trim(),
-                                    searchFields: ['note', 'username','emailCheckout'],
+                                    searchFields: ['note', 'username', 'emailCheckout'],
                                 });
                             }}
                             className={clsx(globalStyle.mt2, globalStyle.mb2)}
@@ -122,7 +122,7 @@ function UserHmManager(props: Props) {
                             color="primary"
                             onClick={() => crudCompany.onShowPopup({})}
                         >
-                            Create Order
+                            Tạo Order Hm
                         </Button>
                     </Grid>
                     <Grid

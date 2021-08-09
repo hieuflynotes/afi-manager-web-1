@@ -75,7 +75,7 @@ export default function StaticByUserHm() {
         },
         {
             id: 'totalPriceError',
-            label: 'Price Error ',
+            label: 'Price Error',
             isSort: true,
         },
         {
@@ -157,7 +157,7 @@ export default function StaticByUserHm() {
                 container
             >
                 <Grid item xs={12} container justify="space-between" className={clsx(globalStyle.pt2, globalStyle.pb2)}>
-                    <Typography variant="h4">Static Order</Typography>
+                    <Typography variant="h4">Thống kê order</Typography>
                 </Grid>
                 <Grid item xs={12}>
                     <TableCrud<StatisticByUserHm>

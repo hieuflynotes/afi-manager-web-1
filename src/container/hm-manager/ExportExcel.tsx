@@ -333,7 +333,7 @@ function ExportExcel(props: Props) {
                     </Grid>
                     <Grid className={clsx(globalStyle.pp2)}>
                         <Button variant="contained" color="primary" onClick={() => handleGetData()}>
-                            Get Data
+                            Lấy dữ liệu
                         </Button>
                     </Grid>
                 </Grid>

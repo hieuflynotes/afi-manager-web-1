@@ -49,7 +49,7 @@ appClient.interceptors.response.use(
                 window.location.href = '/login';
             }
         } else if (err.response?.status === 403) {
-            dispatch.notification.error("You don't have copyright on this effect");
+            dispatch.notification.error('Bạn hông có quyền đối hành động này đâu 🙁');
         } else {
             dispatch.notification.error(err.response?.data?.message || ' Có lỗi xảy ra');
         }
