@@ -27,7 +27,7 @@ const validate = Yup.object({
         .required('Không được để trống')
         .trim()
         .matches(
-            new RegExp('(?=[A-Za-z0-9=]+$)^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*)(?=.{8,}).*$'),
+            /(?=[A-Za-z0-9=!"#$%&'()*+,-./:;<=>?@\\\[\]^_`{|}~]+$)^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*)(?=.{8,}).*$/,
             '1 chữ số , 1 chữ in hoa, 1 chữ in thường, 8 kí tự',
         )
         .nullable(),
