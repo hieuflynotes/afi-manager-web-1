@@ -18,51 +18,27 @@ type Props = {
     onCancel: () => void;
 };
 const validate = Yup.object({
-    lastName: Yup.string()
-        .max(100, 'Value must be less than 100 characters')
-        .required("Can't be left blank !!")
-        .trim()
-        .nullable(),
-    address: Yup.string()
-        .max(100, 'Value must be less than 100 characters')
-        .required("Can't be left blank !!")
-        .trim()
-        .nullable(),
-    firstName: Yup.string()
-        .max(100, 'Value must be less than 100 characters')
-        .required("Can't be left blank !!")
-        .trim()
-        .nullable(),
-    emailCheckout: Yup.string()
-        .max(100, 'Value must be less than 100 characters')
-        .required("Can't be left blank !!")
-        .trim()
-        .nullable(),
+    lastName: Yup.string().max(20, 'Không quá 20 kí tự').required('Không được để trống').trim().nullable(),
+    address: Yup.string().max(40, 'Không được quá 40 kí tự').required('Không được để trống').trim().nullable(),
+    firstName: Yup.string().max(20, 'Không quá 20 kí tự').required('Không được để trống').trim().nullable(),
+    emailCheckout: Yup.string().max(100, 'Không được quá 20 kí tự').required('Không được để trống').trim().nullable(),
     password: Yup.string()
-        .max(100, 'Value must be less than 100 characters')
-        .required("Can't be left blank !!")
+        .max(40, 'Không được quá 40 kí tự')
+        .required('Không được để trống')
         .trim()
+        .matches(
+            new RegExp('(?=[A-Za-z0-9=]+$)^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*)(?=.{8,}).*$'),
+            '1 chữ số , 1 chữ in hoa, 1 chữ in thường, 8 kí tự',
+        )
         .nullable(),
     phone: Yup.string()
-        .max(100, 'Value must be less than 100 characters')
-        .required("Can't be left blank !!")
-        .trim()
+        .max(20, 'Không được quá 20 kí tự')
+        .required('Không được để trống')
+        .matches(/^\+44[0-9\s]{7,14}$/, 'Không đúng số điện thoại UK')
         .nullable(),
-    postcode: Yup.string()
-        .max(100, 'Value must be less than 100 characters')
-        .required("Can't be left blank !!")
-        .trim()
-        .nullable(),
-    town: Yup.string()
-        .max(100, 'Value must be less than 100 characters')
-        .required("Can't be left blank !!")
-        .trim()
-        .nullable(),
-    username: Yup.string()
-        .max(100, 'Value must be less than 100 characters')
-        .required("Can't be left blank !!")
-        .trim()
-        .nullable(),
+    postcode: Yup.string().max(40, 'Không được quá 40 kí tự').required('Không được để trống').trim().nullable(),
+    town: Yup.string().max(40, 'Không được quá 40 kí tự').required('Không được để trống').trim().nullable(),
+    username: Yup.string().max(40, 'Không được quá 40 kí tự').required('Không được để trống').trim().nullable(),
 });
 
 export default function PopupInsertUser(props: Props) {
@@ -151,6 +127,7 @@ export default function PopupInsertUser(props: Props) {
                         <TextField
                             value={formik.values.username}
                             helperText={formik.touched.username && formik.errors.username}
+                            error={Boolean(formik.touched.username && formik.errors.username)}
                             name="username"
                             onChange={formik.handleChange}
                             fullWidth
@@ -164,6 +141,7 @@ export default function PopupInsertUser(props: Props) {
                         <TextField
                             value={formik.values.password}
                             helperText={formik.touched.password && formik.errors.password}
+                            error={Boolean(formik.touched.password && formik.errors.password)}
                             name="password"
                             onChange={formik.handleChange}
                             fullWidth
@@ -176,6 +154,7 @@ export default function PopupInsertUser(props: Props) {
                         <TextField
                             value={formik.values.firstName}
                             helperText={formik.touched.firstName && formik.errors.firstName}
+                            error={Boolean(formik.touched.firstName && formik.errors.firstName)}
                             name="firstName"
                             onChange={formik.handleChange}
                             fullWidth
@@ -188,6 +167,7 @@ export default function PopupInsertUser(props: Props) {
                         <TextField
                             value={formik.values.lastName}
                             helperText={formik.touched.lastName && formik.errors.lastName}
+                            error={Boolean(formik.touched.lastName && formik.errors.lastName)}
                             name="lastName"
                             onChange={formik.handleChange}
                             fullWidth
@@ -200,6 +180,7 @@ export default function PopupInsertUser(props: Props) {
                         <TextField
                             value={formik.values.phone}
                             helperText={formik.touched.phone && formik.errors.phone}
+                            error={Boolean(formik.touched.phone && formik.errors.phone)}
                             name="phone"
                             onChange={formik.handleChange}
                             fullWidth
@@ -212,6 +193,7 @@ export default function PopupInsertUser(props: Props) {
                         <TextField
                             value={formik.values.address}
                             helperText={formik.touched.address && formik.errors.address}
+                            error={Boolean(formik.touched.address && formik.errors.address)}
                             name="address"
                             onChange={formik.handleChange}
                             fullWidth
@@ -224,6 +206,7 @@ export default function PopupInsertUser(props: Props) {
                         <TextField
                             value={formik.values.address2}
                             helperText={formik.touched.address2 && formik.errors.address2}
+                            error={Boolean(formik.touched.address2 && formik.errors.address2)}
                             name="address2"
                             onChange={formik.handleChange}
                             fullWidth
@@ -236,6 +219,7 @@ export default function PopupInsertUser(props: Props) {
                         <TextField
                             value={formik.values.town}
                             helperText={formik.touched.town && formik.errors.town}
+                            error={Boolean(formik.touched.town && formik.errors.town)}
                             name="town"
                             onChange={formik.handleChange}
                             fullWidth
@@ -248,6 +232,7 @@ export default function PopupInsertUser(props: Props) {
                         <TextField
                             value={formik.values.postcode}
                             helperText={formik.touched.postcode && formik.errors.postcode}
+                            error={Boolean(formik.touched.postcode && formik.errors.postcode)}
                             name="postcode"
                             onChange={formik.handleChange}
                             fullWidth
@@ -261,9 +246,19 @@ export default function PopupInsertUser(props: Props) {
                         <TextField
                             value={formik.values.emailCheckout}
                             helperText={formik.touched.emailCheckout && formik.errors.emailCheckout}
+                            error={Boolean(formik.touched.emailCheckout && formik.errors.emailCheckout)}
                             disabled={formik.values.isDone}
                             name="emailCheckout"
-                            onChange={formik.handleChange}
+                            onChange={(e) => {
+                                let valueEmailCheckout: string = e.target?.value || '';
+                                const checkLastIndex = valueEmailCheckout.lastIndexOf('@');
+                                if (checkLastIndex >= 0) {
+                                    valueEmailCheckout = valueEmailCheckout.substring(0, checkLastIndex);
+                                }
+
+                                e.target.value = valueEmailCheckout;
+                                formik.handleChange(e);
+                            }}
                             fullWidth
                             variant="outlined"
                             className={clsx(globalStyles.mt1, globalStyles.mb2)}

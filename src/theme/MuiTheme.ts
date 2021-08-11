@@ -253,6 +253,11 @@ const theme = createMuiTheme({
                 height: 'fit-content',
             },
         },
+        MuiFormHelperText: {
+            error: {
+                color: color.error,
+            },
+        },
         MuiOutlinedInput: {
             inputMarginDense: {
                 paddingTop: '1rem',
@@ -268,6 +273,9 @@ const theme = createMuiTheme({
         MuiInputLabel: {
             outlined: {
                 transform: 'translate(14px, 1.25rem) scale(1)',
+            },
+            error: {
+                color: color.error,
             },
         },
         MuiTableBody: {

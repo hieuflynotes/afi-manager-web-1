@@ -32,6 +32,13 @@ const useStyle = makeStyles((theme) => ({
         justify: 'left',
         textAlign: 'left',
     },
+    frAvt: {
+        height: 50,
+        width: 50,
+        overflow: 'hidden',
+        borderRadius: '50%',
+        border: `1px solid ${theme.palette.divider}`,
+    },
 }));
 function AccountMenu(props: Props) {
     const classes = useStyle();
@@ -60,8 +67,19 @@ function AccountMenu(props: Props) {
             <Button onClick={handleClick}>
                 <Grid alignContent="center" alignItems="center" container>
                     <Grid>
-                        <MdAccountCircle className={classes.iconAccount} />
+                        {!authen.info?.avt && <MdAccountCircle className={classes.iconAccount} />}
+                        {authen.info?.avt && (
+                            <Grid className={classes.frAvt}>
+                                <img
+                                    style={{
+                                        width: 50,
+                                    }}
+                                    src={authen.info?.avt}
+                                />
+                            </Grid>
+                        )}
                     </Grid>
+
                     <Grid className={classes.nameAccount}>{authen.info?.fullName}</Grid>
                 </Grid>
             </Button>

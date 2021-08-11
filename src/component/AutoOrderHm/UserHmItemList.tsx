@@ -12,6 +12,7 @@ import TextDescWithIcon from '../common/TextDescWithIcon';
 import { VscHome } from 'react-icons/vsc';
 import { BiKey, BiMap } from 'react-icons/bi';
 import { EmailOutlined } from '@material-ui/icons';
+import { CgKey } from 'react-icons/cg';
 
 type Props = {
     item: UserHm;
@@ -60,17 +61,27 @@ function UserHmItemList(props: Props) {
             </Grid>
             <Grid container>
                 <Grid>
+                    <TextDescWithIcon desc={props.item.id} variant="caption" icon={<CgKey />} />
+                </Grid>
+            </Grid>
+            <Grid container>
+                <Grid>
                     <TextDescWithIcon desc={props.item.username} variant="h6" icon={<AiOutlineUser />} />
                 </Grid>
             </Grid>
             <Grid container>
                 <Grid>
-                    <TextDescWithIcon desc={props.item.emailCheckout} variant="body2" icon={<AiOutlineMail />} />
+                    <TextDescWithIcon desc={props.item.password} variant="caption" icon={<BiKey />} />
                 </Grid>
             </Grid>
             <Grid container>
                 <Grid>
-                    <TextDescWithIcon desc={props.item.password} variant="caption" icon={<BiKey />} />
+                    <TextDescWithIcon
+                        color="secondary"
+                        desc={props.item.emailCheckout}
+                        variant="body2"
+                        icon={<AiOutlineMail />}
+                    />
                 </Grid>
             </Grid>
             <Grid container>
@@ -89,6 +100,21 @@ function UserHmItemList(props: Props) {
                 </Grid>
             </Grid>
             <Grid container>
+                <Grid>
+                    <TextDescWithIcon desc={props.item.getCartByName} icon={<AiOutlineUser />} />
+                </Grid>
+            </Grid>
+            <Grid container>
+                <Grid>
+                    <TextDescWithIcon desc={`First: ${props.item.firstName}`} icon={<AiOutlineUser />} />
+                </Grid>
+            </Grid>
+            <Grid container>
+                <Grid>
+                    <TextDescWithIcon desc={`Last: ${props.item.lastName}`} icon={<AiOutlineUser />} />
+                </Grid>
+            </Grid>
+            <Grid container>
                 <Grid xs={6}>
                     <Grid container>
                         <Grid>
@@ -104,22 +130,7 @@ function UserHmItemList(props: Props) {
                     </Grid>
                 </Grid>
             </Grid>
-            <Grid container>
-                <Grid xs={6}>
-                    <Grid container>
-                        <Grid>
-                            <TextDescWithIcon desc={`First: ${props.item.firstName}`} icon={<AiOutlineUser />} />
-                        </Grid>
-                    </Grid>
-                </Grid>
-                <Grid xs={6}>
-                    <Grid container>
-                        <Grid>
-                            <TextDescWithIcon desc={`Last: ${props.item.lastName}`} icon={<AiOutlineUser />} />
-                        </Grid>
-                    </Grid>
-                </Grid>
-            </Grid>
+
             <Grid container className={globalStyle.pp1}>
                 <Button
                     variant="outlined"
