@@ -13,12 +13,14 @@ import { VscHome } from 'react-icons/vsc';
 import { BiKey, BiMap } from 'react-icons/bi';
 import { EmailOutlined } from '@material-ui/icons';
 import { CgKey } from 'react-icons/cg';
+import { FiImage } from 'react-icons/fi';
 
 type Props = {
     item: UserHm;
     onEdit: (item: UserHm) => void;
     onDelete: (item: UserHm) => void;
     onSeeDetail: (item: UserHm) => void;
+    onSeeImge: (item: UserHm) => void;
 };
 const useStyle = makeStyles((theme) => ({
     root: {
@@ -46,6 +48,16 @@ function UserHmItemList(props: Props) {
                 </Grid>
                 <Grid>
                     <Grid container>
+                        <Grid>
+                            <IconButton
+                                disabled={!Boolean(props.item.imgScreenShot)}
+                                onClick={() => {
+                                    props.onSeeImge(props.item);
+                                }}
+                            >
+                                <FiImage />
+                            </IconButton>
+                        </Grid>
                         <Grid>
                             <IconButton onClick={(e) => props.onDelete(props.item)}>
                                 <IoCloseOutline />

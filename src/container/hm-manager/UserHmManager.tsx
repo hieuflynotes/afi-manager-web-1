@@ -18,6 +18,7 @@ import { handleWithPopupHook } from 'src/hook/HandleWithPopupHook';
 import PopupMergeToUser from 'src/component/AutoOrderHm/PopupMergeToUser';
 import { OrderTracking } from 'src/afi-manager-base-model/model/OrderTracking';
 import SelectBox from 'src/component/common/SelectBox';
+import DialogShowImage from './DialogShowImage';
 
 type Props = {};
 const useStyle = makeStyles((theme) => ({}));
@@ -29,6 +30,13 @@ function UserHmManager(props: Props) {
         initQuery: {
             pageSize: 50,
         },
+    });
+    const [showPopupImage, setShowPopupImage] = useState<{
+        img: string;
+        isDisplay: boolean;
+    }>({
+        img: '',
+        isDisplay: false,
     });
     const classes = useStyle();
     const globalStyle = useGlobalStyles();
@@ -46,6 +54,16 @@ function UserHmManager(props: Props) {
                 padding: theme.spacing(2),
             }}
         >
+            <DialogShowImage
+                isDisplay={showPopupImage?.isDisplay}
+                linkImage={showPopupImage?.img}
+                onCancel={() => {
+                    setShowPopupImage({
+                        img: '',
+                        isDisplay: false,
+                    });
+                }}
+            />
             <Grid container justify="center" className={clsx(globalStyle.pp2)}>
                 <PopUpConfirm
                     isDisplay={crudCompany.isShowConfirm}
@@ -135,6 +153,14 @@ function UserHmManager(props: Props) {
                                 <Zoom in={true} timeout={300}>
                                     <Grid>
                                         <UserHmItemList
+                                            onSeeImge={(itemImg) => {
+                                                if (itemImg.imgScreenShot) {
+                                                    setShowPopupImage({
+                                                        img: item.imgScreenShot || '',
+                                                        isDisplay: true,
+                                                    });
+                                                }
+                                            }}
                                             item={item}
                                             onDelete={crudCompany.onConfirm}
                                             onEdit={crudCompany.onShowPopup}

@@ -100,9 +100,20 @@ function OrderHmDetailForWarehouse(props: Props) {
         orderTrackingController.orderHmDetailForWarehouse({ orderHmId: userHmId }).then((res) => {
             setState({
                 ...state,
-                orderTracking: res.rows || [],
+                orderTracking: orderByEmail(res.rows || []) || [],
             });
         });
+    };
+
+    const orderByEmail = (orderTrackings: OrderTracking[]): OrderTracking[] => {
+        return _.sortBy(orderTrackings, (item) => getIndexEmailAfiOrderHm(item), 'desc');
+    };
+    const getIndexEmailAfiOrderHm = (item: OrderTracking): number => {
+        let textSplit = item.email || '';
+        const startSplit = textSplit.lastIndexOf('+afi') + 4;
+        const endSplit = textSplit.indexOf('@gmail.com');
+        const indexOfEmail = Number((textSplit = textSplit.substring(startSplit, endSplit)));
+        return indexOfEmail;
     };
 
     useEffect(() => {

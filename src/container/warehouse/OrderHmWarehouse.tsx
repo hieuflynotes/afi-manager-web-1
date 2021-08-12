@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import clsx from 'clsx';
-import { Chip, Grid, makeStyles, Tooltip, Typography } from '@material-ui/core';
+import { Chip, Grid, IconButton, makeStyles, Tooltip, Typography } from '@material-ui/core';
 import TextField from 'src/component/common/TextFiled';
 import Button from 'src/component/common/Button';
 import { useGlobalStyles } from 'src/theme/GlobalStyle';
@@ -16,6 +16,10 @@ import { useCrudHook } from 'src/hook/useCrudHook';
 import { StringUtil } from 'src/helper/StringUtil';
 import { useHistory } from 'react-router-dom';
 import { Pagination } from '@material-ui/lab';
+import { FiImage } from 'react-icons/fi';
+import DialogShowImage from '../hm-manager/DialogShowImage';
+import _ from 'lodash';
+import { OrderTracking } from 'src/afi-manager-base-model/model/OrderTracking';
 
 type Props = {};
 const useStyle = makeStyles((theme) => ({
@@ -45,6 +49,13 @@ function OrderHmWarehouse(props: Props) {
     const classes = useStyle();
     const [state, setState] = useState();
     const globalStyles = useGlobalStyles();
+    const [showPopupImage, setShowPopupImage] = useState<{
+        img: string;
+        isDisplay: boolean;
+    }>({
+        img: '',
+        isDisplay: false,
+    });
     useEffect(() => {
         return () => {};
     }, []);
@@ -59,30 +70,50 @@ function OrderHmWarehouse(props: Props) {
 
     return (
         <Grid container>
+            <DialogShowImage
+                isDisplay={showPopupImage?.isDisplay}
+                linkImage={showPopupImage?.img}
+                onCancel={() => {
+                    setShowPopupImage({
+                        img: '',
+                        isDisplay: false,
+                    });
+                }}
+            />
             <Grid container className={clsx(globalStyles.pt2, globalStyles.pb2)}>
                 <Typography variant="h4">My Order</Typography>
             </Grid>
             <Grid container>
                 <Grid>
-                    <TextField variant="outlined" label="Search" onChange={e => crudOrderHm.setQuery({...crudOrderHm.query, search: e.target.value, searchFields:['username']})} />
+                    <TextField
+                        variant="outlined"
+                        label="Search"
+                        onChange={(e) =>
+                            crudOrderHm.setQuery({
+                                ...crudOrderHm.query,
+                                search: e.target.value,
+                                searchFields: ['username'],
+                            })
+                        }
+                    />
                 </Grid>
             </Grid>
-            <Grid container className={globalStyles.pt2} >
-            <Grid style={{margin:"16px 0"}}>
-            <Pagination
-                count={crudOrderHm.pagingList.totalPages || 1}
-                page={crudOrderHm.pagingList.page || 1}
-                variant="outlined"
-                shape="rounded"
-                onChange={(e, page) => {
-                    crudOrderHm.setQuery({
-                        ...crudOrderHm.query,
-                        page: page,
-                    });
-                }}
-                color="primary"
-            />
-            </Grid>
+            <Grid container className={globalStyles.pt2}>
+                <Grid style={{ margin: '16px 0' }}>
+                    <Pagination
+                        count={crudOrderHm.pagingList.totalPages || 1}
+                        page={crudOrderHm.pagingList.page || 1}
+                        variant="outlined"
+                        shape="rounded"
+                        onChange={(e, page) => {
+                            crudOrderHm.setQuery({
+                                ...crudOrderHm.query,
+                                page: page,
+                            });
+                        }}
+                        color="primary"
+                    />
+                </Grid>
 
                 <ListGrid gridGap={10} minWidthItem="350px">
                     {crudOrderHm.pagingList?.rows?.map((item, index) => {
@@ -91,6 +122,20 @@ function OrderHmWarehouse(props: Props) {
                                 <Grid container justify="space-between">
                                     <Grid>
                                         <Chip label={item.status} color="secondary" />
+                                    </Grid>
+                                    <Grid>
+                                        <IconButton
+                                            disabled={!Boolean(item.imgScreenShot)}
+                                            onClick={() => {
+                                                setShowPopupImage({
+                                                    img: item.imgScreenShot || '',
+                                                    isDisplay: true,
+                                                });
+                                            }}
+                                            size="small"
+                                        >
+                                            <FiImage />
+                                        </IconButton>
                                     </Grid>
                                     <Grid>
                                         <Typography variant="caption">
