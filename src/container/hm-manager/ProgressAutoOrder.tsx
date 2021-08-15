@@ -24,6 +24,7 @@ import { UserHm } from 'src/afi-manager-base-model/model/UserHm';
 import { addAddress } from 'src/constants/IMacros';
 import PopupSplitOrder from 'src/component/AutoOrderHm/PopupSplitOrder';
 import { handleWithPopupHook } from 'src/hook/HandleWithPopupHook';
+import { aleFirebaseConfig } from 'src/constants/AleFirebaseConfig';
 
 type Props = {};
 const useStyle = makeStyles((theme) => ({
@@ -86,8 +87,10 @@ function ProgressAutoOrder(props: Props) {
     });
     const classes = useStyle();
     const globalStyle = useGlobalStyles();
+   
+
     const onListeningNotication = () => {
-        var getDos = firebaseConfig.firestore().collection('notication_order_update').doc(userHmId.toString());
+        var getDos = aleFirebaseConfig.firestore().collection('notication_order_update').doc(userHmId.toString());
         console.log({
             userHmId,
         });

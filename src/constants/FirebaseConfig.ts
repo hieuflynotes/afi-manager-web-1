@@ -10,4 +10,4 @@ const firebaseConfigData = {
     appId: '1:526807548143:web:6e89ea73bd348feea91b1a',
 };
 
-export const firebaseConfig = firebaseApp.initializeApp(firebaseConfigData);
+export const firebaseConfig = firebaseApp.initializeApp(firebaseConfigData,'hm-extension');

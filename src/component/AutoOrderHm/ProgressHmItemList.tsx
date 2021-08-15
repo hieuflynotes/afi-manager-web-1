@@ -137,6 +137,19 @@ function ProgressHmItemList(props: Props) {
         }
     };
 
+    const handleCopyToolMarcroAle = () => {
+        navigator.clipboard.writeText(
+            checkoutCode(
+                props.item.email || 'email@gmail.com',
+                props.item.userHM?.password || '123456a@',
+                props.giftCard.serialNumber,
+                props.giftCard.pin,
+                Number(props.item.totalPrice || '0'),
+            ),
+        );
+        dispatch.notification.success('Copy thành công! (Ale Extension)');
+    };
+
     useEffect(() => {
         return () => {};
     }, []);
@@ -162,32 +175,42 @@ function ProgressHmItemList(props: Props) {
     return (
         <Grid className={classes.root}>
             <Grid container justify="space-between">
-                <Popover
-                    id={props.item.id || ''}
-                    open={state.isOpenMoreInfo}
-                    anchorEl={refChipInfo.current}
-                    onClose={() => {
-                        setState({ ...state, isOpenMoreInfo: false });
-                    }}
-                    anchorOrigin={{
-                        vertical: 'bottom',
-                        horizontal: 'right',
-                    }}
-                    transformOrigin={{
-                        vertical: 'top',
-                        horizontal: 'center',
-                    }}
-                >
-                    <Grid className={classes.popoverRoot}>
-                        <Typography>Đăng kí bởi: {props.item.registerByName}</Typography>
-                        <Typography>Checkout bởi : {props.item.dataFirebase?.username}</Typography>
+                <Grid xs={6} container item>
+                    <IconButton
+                        onClick={() => {
+                            handleCopyToolMarcroAle();
+                        }}
+                        size="small"
+                    >
+                        <IoCopyOutline />
+                    </IconButton>
+                    <Popover
+                        id={props.item.id || ''}
+                        open={state.isOpenMoreInfo}
+                        anchorEl={refChipInfo.current}
+                        onClose={() => {
+                            setState({ ...state, isOpenMoreInfo: false });
+                        }}
+                        anchorOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'right',
+                        }}
+                        transformOrigin={{
+                            vertical: 'top',
+                            horizontal: 'center',
+                        }}
+                    >
+                        <Grid className={classes.popoverRoot}>
+                            <Typography>Đăng kí bởi: {props.item.registerByName}</Typography>
+                            <Typography>Checkout bởi : {props.item.dataFirebase?.username}</Typography>
+                        </Grid>
+                    </Popover>
+                    <Grid onClick={() => setState({ ...state, isOpenMoreInfo: true })} ref={refChipInfo}>
+                        {getChipStatus(props.item)}
                     </Grid>
-                </Popover>
-                <Grid onClick={() => setState({ ...state, isOpenMoreInfo: true })} ref={refChipInfo}>
-                    {getChipStatus(props.item)}
                 </Grid>
-                <Grid>
-                    <Grid>
+                <Grid container justify="flex-end" xs={6}>
+                    <Grid >
                         <IconButton
                             onClick={() => {
                                 handleCopyToolMarcro();
