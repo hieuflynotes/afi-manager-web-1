@@ -7,7 +7,7 @@ import { IconButton } from '@material-ui/core';
 import TextDesc from '../common/TextDesc';
 import { OrderTracking } from 'src/afi-manager-base-model/model/OrderTracking';
 import theme from 'src/theme/MuiTheme';
-import { checkoutCode } from 'src/constants/IMacros';
+import { checkoutCode, checkoutCodeAle } from 'src/constants/IMacros';
 import { dispatch } from '../../rematch/store';
 import { Giftcard } from '../../container/hm-manager/ProgressAutoOrder';
 import { calcBuyPrice, calcBuyPriceOrder } from 'src/helper/CalculatorHmPrice';
@@ -120,7 +120,7 @@ function ProgressHmItemList(props: Props) {
     const handleCopyToolMarcro = () => {
         if (props.item.isOrder || props.item.errorDesc) {
             navigator.clipboard.writeText(
-                checkoutCode(
+                checkoutCodeAle(
                     props.item.email || 'email@gmail.com',
                     props.item.userHM?.password || '123456a@',
                     props.giftCard.serialNumber,
@@ -135,19 +135,6 @@ function ProgressHmItemList(props: Props) {
                 title: 'Gì zạ, cái gì zạ !!',
             });
         }
-    };
-
-    const handleCopyToolMarcroAle = () => {
-        navigator.clipboard.writeText(
-            checkoutCode(
-                props.item.email || 'email@gmail.com',
-                props.item.userHM?.password || '123456a@',
-                props.giftCard.serialNumber,
-                props.giftCard.pin,
-                Number(props.item.totalPrice || '0'),
-            ),
-        );
-        dispatch.notification.success('Copy thành công! (Ale Extension)');
     };
 
     useEffect(() => {
@@ -176,14 +163,6 @@ function ProgressHmItemList(props: Props) {
         <Grid className={classes.root}>
             <Grid container justify="space-between">
                 <Grid xs={6} container item>
-                    <IconButton
-                        onClick={() => {
-                            handleCopyToolMarcroAle();
-                        }}
-                        size="small"
-                    >
-                        <IoCopyOutline />
-                    </IconButton>
                     <Popover
                         id={props.item.id || ''}
                         open={state.isOpenMoreInfo}
