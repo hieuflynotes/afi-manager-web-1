@@ -39,13 +39,13 @@ const useStyle = makeStyles((theme) => ({
     },
     giftCardForm: {
         display: 'grid',
-        gridTemplateColumns: '1fr 1fr 30px',
+        gridTemplateColumns: '1fr 1fr 200px',
         alignItems:"center",
         gridGap: 16,
         '& .MuiFormControl-fullWidth': {
             marginTop: 16,
         },
-        '& .MuiIconButton-root':{
+        '& .MuiButton-root':{
             marginTop: 16,
         }
     },
@@ -444,6 +444,7 @@ function ProgressAutoOrder(props: Props) {
                             }}
                         />
                         <Button
+                        variant="outlined"
                         color="secondary"
                         onClick={() => {
                             navigator.clipboard.writeText(
@@ -451,10 +452,10 @@ function ProgressAutoOrder(props: Props) {
                             );
                             dispatch.notification.success('Copy code thành công!');
                         }}
-                        disabled={(giftCard.serialNumber.length==0||giftCard.pin.length==0)&&crudTrackingHM.pagingList.rows?.find(r=> !r.isOrder)?true:false}
+                        disabled={(giftCard.serialNumber.length==0||giftCard.pin.length==0)}
                         size="small"
                     >
-                        <IoCopyOutline /> Code checkout hàng loạt
+                        <IoCopyOutline style={{marginRight:5}}/> Code checkout loop
                     </Button>
                     </div>
 
