@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import clsx from 'clsx';
-import { Grid, makeStyles, MenuItem, Select, Typography, Zoom } from '@material-ui/core';
+import { Avatar, Box, Button, ClickAwayListener, Grid, makeStyles, MenuItem, Select, Tooltip, Typography, Zoom } from '@material-ui/core';
 import TextField from '../../component/common/TextFiled';
 import ListGrid from '../../component/common/ListGrid';
 import { useGlobalStyles } from '../../theme/GlobalStyle';
@@ -17,14 +17,16 @@ import { mathCeilWithRound } from 'src/helper/NumberUtils';
 import { IconButton } from '@material-ui/core';
 import { IoCopyOutline } from 'react-icons/io5';
 import { dispatch } from '../../rematch/store';
-import { countBoughtProduct, countProduct } from 'src/helper/CalculatorHmPrice';
+import { calcBuyPrice, calcBuyPriceOrder, countBoughtProduct, countProduct } from 'src/helper/CalculatorHmPrice';
 import { firebaseConfig } from 'src/constants/FirebaseConfig';
 import _ from 'lodash';
 import { UserHm } from 'src/afi-manager-base-model/model/UserHm';
-import { addAddress } from 'src/constants/IMacros';
+import { addAddress, checkoutLoopAle } from 'src/constants/IMacros';
 import PopupSplitOrder from 'src/component/AutoOrderHm/PopupSplitOrder';
 import { handleWithPopupHook } from 'src/hook/HandleWithPopupHook';
 import { aleFirebaseConfig } from 'src/constants/AleFirebaseConfig';
+import HelpIcon from '@material-ui/icons/Help';
+import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 
 type Props = {};
 const useStyle = makeStyles((theme) => ({
@@ -37,12 +39,31 @@ const useStyle = makeStyles((theme) => ({
     },
     giftCardForm: {
         display: 'grid',
-        gridTemplateColumns: '1fr 1fr',
+        gridTemplateColumns: '1fr 1fr 30px',
+        alignItems:"center",
         gridGap: 16,
         '& .MuiFormControl-fullWidth': {
             marginTop: 16,
         },
+        '& .MuiIconButton-root':{
+            marginTop: 16,
+        }
     },
+    popperTootip:{
+        pointerEvents:'auto'
+    },
+    tooltipPlacementBottom:{
+        margin: '5px 0'
+    },
+    tooltip:{
+        backgroundColor:theme.palette.primary.main
+    },
+    icon:{
+        position:"fixed",
+        bottom: 80,
+        right:80,
+        cursor:"pointer"
+    }
 }));
 
 export enum OrderStatus {
@@ -52,11 +73,13 @@ export enum OrderStatus {
     addedToCard = 'addedToCard',
     done = 'done',
     error = 'error',
+    errorPrice='errPrice'
 }
 function ProgressAutoOrder(props: Props) {
     const { userHmId } = useParams<{ userHmId: string }>();
     const [userHm, setUserHm] = useState<UserHm>({} as UserHm);
     const [selectedStatus, setSelectedStatus] = useState<OrderStatus>(OrderStatus.none);
+    const [isOpenNote, setIsOpenNote] = useState(false)
     const [giftCard, setGiftCard] = useState<Giftcard>({
         serialNumber: localStorage.getItem('serialNumber') || '',
         pin: localStorage.getItem('pin') || '',
@@ -135,6 +158,9 @@ function ProgressAutoOrder(props: Props) {
         return rows?.filter((r) => {
             let isValid = false;
             switch (selectedStatus) {
+                case OrderStatus.errorPrice:
+                    isValid = (!r.dataFirebase || (r.dataFirebase?.total &&  Math.abs(Number(r.dataFirebase?.total||0) - calcBuyPriceOrder(r.productOrder || [])) <= 0.1)) ? false : true
+                    break;
                 case OrderStatus.done:
                     isValid = r.orderId != null && r.orderId.length > 0;
                     break;
@@ -248,7 +274,53 @@ function ProgressAutoOrder(props: Props) {
             </Grid>
         );
     };
-
+    const renderWarningPrice = () =>{
+        let gt20 = crudTrackingHM.pagingList?.rows?.filter(i=> (i.totalPrice && i.totalPrice>18)).length
+        let gt15 = crudTrackingHM.pagingList?.rows?.filter(i=> (i.totalPrice && i.totalPrice>15)).length
+        return(
+            gt15 ?
+            <Typography style={{display:"inline", marginLeft:"5px"}} color="error">
+                {' (Có '}
+                {gt20 && gt20 > 0 ? `${gt20} món giá >20  & `:""}
+                {gt15 && gt15 > 0 ? `${gt15} món giá >15`:""}
+                {')'}
+            </Typography>
+            :""
+        )
+    }
+    const renderPriceNote = () =>{
+        return(
+            <Box mr={1}>
+            <Tooltip title={
+                <ClickAwayListener onClickAway={()=>setIsOpenNote(false)}>
+                <Box margin="10px 5px" style={{display:"grid", gridRowGap:"10px"}}>
+                {'* Mai Linh, Elisa, Amy: Nếu giá SP > 20 => KHÔNG MUA'}
+                <br/>
+                <br/>
+                {'* PLE - Deal 1M: giá >10 hoặc có SP khác nhau => Báo Leader NGAY & K CHECKOUT CẢ ĐƠN'}
+                <br/>
+                {'* PLE - OFF40: giá >20 => Báo Leader NGAY & K CHECKOUT CẢ ĐƠN'}
+                <br/>
+                {'* PLE - còn lại: giá >17 => Báo Leader NGAY & K CHECKOUT món đó'}
+                <Button variant="contained" size="small" onClick={()=>setIsOpenNote(false)}>OK, Không check sai đâu ^^</Button>
+                </Box>
+                </ClickAwayListener>
+            }
+              classes={{popper:classes.popperTootip, tooltipPlacementBottom: classes.tooltipPlacementBottom, tooltip:classes.tooltip}}
+              open={isOpenNote}
+            >
+                <HelpIcon color="primary" fontSize="small" onClick={()=>setIsOpenNote(!isOpenNote)}></HelpIcon>
+            </Tooltip>
+            </Box>
+        )
+    }
+    const renderScrollIcon =() =>{
+        return(
+            <Avatar variant="square" className={classes.icon} onClick={()=>window.scrollTo(0,0)}>
+            <ExpandLessIcon></ExpandLessIcon>
+            </Avatar>
+        )
+    }
     const handleClickSplitOrder = (item: OrderTracking) => {
         handleWithPopupSplit.handleShowPopup(item);
     };
@@ -280,6 +352,7 @@ function ProgressAutoOrder(props: Props) {
                 padding: theme.spacing(1),
             }}
         >
+            {renderScrollIcon()}
             <PopupSplitOrder
                 isDisplay={handleWithPopupSplit.isDisplayPopup}
                 item={handleWithPopupSplit.itemSelected}
@@ -297,8 +370,10 @@ function ProgressAutoOrder(props: Props) {
             <Grid container justify="center" className={clsx(globalStyle.pp2)}>
                 <Grid>
                     <Grid container justify="center">
-                        <Typography align="center" variant="h4">
+                        <Typography align="center" variant="h4" style={{display:"flex", alignItems:"center"}}>
+                            {renderPriceNote()}
                             Chi tiết đơn hàng
+                            {renderWarningPrice()}
                             <IconButton
                                 onClick={() => {
                                     navigator.clipboard.writeText(
@@ -322,7 +397,6 @@ function ProgressAutoOrder(props: Props) {
                         {renderOrderStatusSummary()}
                         {renderPaymentStatusSummary()}
                     </Grid>
-
                     <Select
                         fullWidth
                         variant="outlined"
@@ -337,6 +411,7 @@ function ProgressAutoOrder(props: Props) {
                         <MenuItem value={OrderStatus.addedToCard}>Đã thêm vào giỏ hàng</MenuItem>
                         <MenuItem value={OrderStatus.done}>Đã thanh toán</MenuItem>
                         <MenuItem value={OrderStatus.error}>Lỗi</MenuItem>
+                        <MenuItem value={OrderStatus.errorPrice}>Lỗi sai giá</MenuItem>
                     </Select>
 
                     <div className={classes.giftCardForm}>
@@ -368,6 +443,19 @@ function ProgressAutoOrder(props: Props) {
                                 localStorage.setItem('pin', e.target.value);
                             }}
                         />
+                        <Button
+                        color="secondary"
+                        onClick={() => {
+                            navigator.clipboard.writeText(
+                                `${checkoutLoopAle(userHm.emailCheckout||"",userHm.password||"",giftCard.serialNumber,giftCard.pin)}`
+                            );
+                            dispatch.notification.success('Copy code thành công!');
+                        }}
+                        disabled={(giftCard.serialNumber.length==0||giftCard.pin.length==0)&&crudTrackingHM.pagingList.rows?.find(r=> !r.isOrder)?true:false}
+                        size="small"
+                    >
+                        <IoCopyOutline /> Code checkout hàng loạt
+                    </Button>
                     </div>
 
                     <Grid container className={clsx(globalStyle.pt2, globalStyle.pb2)}>

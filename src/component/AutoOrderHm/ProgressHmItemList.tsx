@@ -40,6 +40,9 @@ const useStyle = makeStyles((theme) => ({
     frCoinBuy: {
         color: theme.palette.error.main,
     },
+    frCoinBought: {
+        color: theme.palette.primary.main,
+    },
     icon: {
         fontSize: '1.5rem',
         paddingRight: theme.spacing(1),
@@ -297,8 +300,8 @@ function ProgressHmItemList(props: Props) {
                     );
                 })}
             </Grid>
-            <Grid container className={clsx(globalStyle.pt1)}>
-                <Grid xs={6}>
+            <Grid container className={clsx(globalStyle.pt1)} justifyContent="center">
+                <Grid xs={4}>
                     <Grid
                         className={clsx(globalStyle.pr1, classes.frCoin)}
                         style={{
@@ -312,24 +315,41 @@ function ProgressHmItemList(props: Props) {
                             <Grid className={clsx(classes.coin)}>
                                 <GiTwoCoins />
                             </Grid>
-                            <Grid>
-                                <Typography>{mathCeilWithRound(props.item.totalPrice || 0, 2)} (Gốc)</Typography>
+                            <Grid >
+                                <Typography variant="body2">{mathCeilWithRound(props.item.totalPrice || 0, 2)} (Gốc)</Typography>
                             </Grid>
                         </Grid>
                     </Grid>
                 </Grid>
-                <Grid xs={6}>
+                <Grid xs={4}>
                     <Grid className={clsx(globalStyle.pr1, classes.frCoinBuy)}>
                         <Grid container alignItems="center" className={classes.rootItem} justify="center">
                             <Grid className={clsx(classes.coin)}>
                                 <GiTwoCoins />
                             </Grid>
                             <Grid>
-                                <Typography>{`${calcBuyPriceOrder(props.item.productOrder || [])}`} (Mua)</Typography>
+                                <Typography variant="body2">{`${calcBuyPriceOrder(props.item.productOrder || [])}`} (Cần trả)</Typography>
                             </Grid>
                         </Grid>
                     </Grid>
                 </Grid>
+                {props.item.orderId && props.item.orderId.length>0 &&
+                <Grid xs={4}>
+                    <Grid className={clsx(globalStyle.pr1, classes.frCoinBought)}>
+                        <Grid container alignItems="center" className={classes.rootItem} justify="center">
+                            <Grid className={clsx(classes.coin)}>
+                                <GiTwoCoins />
+                            </Grid>
+                            <Grid>
+                                <Typography variant="body2">
+                                {props.item.dataFirebase && props.item.dataFirebase?.total ?
+                                    props.item.dataFirebase?.total+" (Đã trả)"
+                                    : "Check tay nha :(("}
+                                </Typography>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </Grid>}
             </Grid>
         </Grid>
     );

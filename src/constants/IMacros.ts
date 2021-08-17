@@ -24,6 +24,33 @@ Wait seconds=2
 TAG POS=1 TYPE=BUTTON FORM=ACTION:https://www2.hm.com/en_gb/checkout-r ATTR=TXT:SAVE
 Wait seconds=3`;
 
+export const checkoutLoopAle = (email: string,
+    password: string,
+    cardNumber: string,
+    cardPin: string)=>`VERSION BUILD=1011 RECORDER=CR
+set !var1 ${email}+afi
+add !var1 {{!loop}}
+URL GOTO=https://www2.hm.com/en_gb/logout
+wait seconds=2
+URL GOTO=https://www2.hm.com/en_gb/login
+TAG POS=1 TYPE=INPUT:TEXT FORM=ACTION:https://www2.hm.com/en_gb/login ATTR=ID:email CONTENT={{!var1}}@gmail.com
+TAG POS=1 TYPE=INPUT:PASSWORD FORM=ACTION:https://www2.hm.com/en_gb/login ATTR=ID:password CONTENT=${password}
+TAG POS=1 TYPE=BUTTON FORM=ACTION:https://www2.hm.com/en_gb/login ATTR=TXT:Sign<SP>in<SP>/<SP>Join
+wait seconds=5
+URL GOTO=https://www2.hm.com/en_gb/checkout-r
+wait seconds=5
+URL GOTO=https://www2.hm.com/en_gb/checkout-r
+wait seconds=10
+TAG POS=2 TYPE=SPAN ATTR=TXT:Add<SP>gift<SP>cards
+TAG POS=1 TYPE=INPUT:TEXT FORM=ACTION:https://www2.hm.com/en_gb/checkout-r ATTR=ID:cardNumber CONTENT=${cardNumber}
+TAG POS=1 TYPE=INPUT:TEXT FORM=ACTION:https://www2.hm.com/en_gb/checkout-r ATTR=ID:cardPin CONTENT=${cardPin}
+TAG POS=1 TYPE=BUTTON FORM=ACTION:https://www2.hm.com/en_gb/checkout-r ATTR=TXT:ADD
+Wait seconds=2
+TAG POS=1 TYPE=BUTTON FORM=ACTION:https://www2.hm.com/en_gb/checkout-r ATTR=TXT:SAVE
+wait seconds=5
+TAG POS=1 TYPE=SPAN ATTR=TXT:COMPLETE<SP>PURCHASE
+Wait seconds=20`;
+
 export const checkoutCode = (
     email: string,
     password: string,
