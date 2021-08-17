@@ -275,7 +275,7 @@ function ProgressAutoOrder(props: Props) {
         );
     };
     const renderWarningPrice = () =>{
-        let gt20 = crudTrackingHM.pagingList?.rows?.filter(i=> (i.totalPrice && i.totalPrice>18)).length
+        let gt20 = crudTrackingHM.pagingList?.rows?.filter(i=> (i.totalPrice && i.totalPrice>20)).length
         let gt15 = crudTrackingHM.pagingList?.rows?.filter(i=> (i.totalPrice && i.totalPrice>15)).length
         return(
             gt15 ?
