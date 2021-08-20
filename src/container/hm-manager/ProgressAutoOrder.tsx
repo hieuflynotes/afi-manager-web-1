@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import clsx from 'clsx';
 import { Avatar, Box, Button, ClickAwayListener, Grid, makeStyles, MenuItem, Select, Tooltip, Typography, Zoom } from '@material-ui/core';
 import TextField from '../../component/common/TextFiled';
@@ -7,7 +7,7 @@ import { useGlobalStyles } from '../../theme/GlobalStyle';
 import { useCrudHook } from '../../hook/useCrudHook';
 import { Pagination } from '@material-ui/lab';
 import { useParams } from 'react-router-dom';
-import { hMController, orderTrackingController, userHmController } from 'src/controller';
+import { orderTrackingController, userHmController } from 'src/controller';
 import theme from 'src/theme/MuiTheme';
 import { DataFirebaseHm, OrderTracking, ProductOrder } from 'src/afi-manager-base-model/model/OrderTracking';
 import ProgressHmItemList from 'src/component/AutoOrderHm/ProgressHmItemList';
@@ -17,8 +17,7 @@ import { mathCeilWithRound } from 'src/helper/NumberUtils';
 import { IconButton } from '@material-ui/core';
 import { IoCopyOutline } from 'react-icons/io5';
 import { dispatch } from '../../rematch/store';
-import { calcBuyPrice, calcBuyPriceOrder, countBoughtProduct, countProduct } from 'src/helper/CalculatorHmPrice';
-import { firebaseConfig } from 'src/constants/FirebaseConfig';
+import { calcBuyPriceOrder, countBoughtProduct, countProduct } from 'src/helper/CalculatorHmPrice';
 import _ from 'lodash';
 import { UserHm } from 'src/afi-manager-base-model/model/UserHm';
 import { addAddress, checkoutLoopAle } from 'src/constants/IMacros';
@@ -233,7 +232,7 @@ function ProgressAutoOrder(props: Props) {
                                         .join('\n') || ''
                                 }`,
                             );
-                            dispatch.notification.success('Copy danh sách sản phẩm lỗi thành công!');
+                            dispatch.notification.success('Đã copy SP lỗi!');
                         }}
                         size="small"
                     >
@@ -249,13 +248,17 @@ function ProgressAutoOrder(props: Props) {
             <Grid container className={classes.statuses} justify="center">
                 <Typography>
                     Tổng tiền:{' '}
-                    {mathCeilWithRound(
-                        crudTrackingHM.pagingList?.rows
-                            ?.map((r) => r.totalPrice || 0)
-                            .reduce((price, total) => (total += price), 0) || 0,
-                        2,
-                    )}
+                    {renderComparedData("amount").data}
+                    {renderComparedData("amount").difference > 0 && 
+                    <span style={{color:theme.palette.error.main}}>{' '} (Lệch: {renderComparedData("amount").difference})</span>
+                    }
                 </Typography>
+
+                <Typography>Tổng món: {' '}
+                {renderComparedData("quantity").data}
+                {renderComparedData("quantity").difference > 0 && 
+                <span style={{color:theme.palette.error.main}}>{' '}(Lệch: {renderComparedData("quantity").difference})</span>
+                }</Typography>
 
                 <Typography>
                     Tổng tiền checkout:{' '}
@@ -267,8 +270,6 @@ function ProgressAutoOrder(props: Props) {
                         2,
                     )}
                 </Typography>
-
-                <Typography>Tổng món: {countProduct(crudTrackingHM.pagingList?.rows || [])}</Typography>
 
                 <Typography>Tổng món đã mua: {countBoughtProduct(crudTrackingHM.pagingList?.rows || [])}</Typography>
             </Grid>
@@ -301,7 +302,7 @@ function ProgressAutoOrder(props: Props) {
                 <br/>
                 {'* PLE - OFF40: giá >20 => Báo Leader NGAY & K CHECKOUT CẢ ĐƠN'}
                 <br/>
-                {'* PLE - còn lại: giá >17 => Báo Leader NGAY & K CHECKOUT món đó'}
+                {'* PLE - còn lại: giá >15 => Báo Leader NGAY & K CHECKOUT món đó'}
                 <Button variant="contained" size="small" onClick={()=>setIsOpenNote(false)}>OK, Không check sai đâu ^^</Button>
                 </Box>
                 </ClickAwayListener>
@@ -342,7 +343,32 @@ function ProgressAutoOrder(props: Props) {
             handleWithPopupSplit.handleClosePopup();
         });
     };
-
+    const renderComparedData = (type: "amount"|"quantity") => {
+        let createdData = {data:0,difference:0}
+        switch (type) {
+            case "amount":
+                let amount = mathCeilWithRound(
+                    crudTrackingHM.pagingList?.rows
+                        ?.map((r) => r.totalPrice || 0)
+                        .reduce((price, total) => (total += price), 0) || 0,
+                    2,
+                )
+                createdData = {
+                    data:amount,
+                    difference: Math.abs(amount - (userHm?.extraInfor?.verifiedAmount||amount))
+                } ;
+                break;
+            case "quantity":
+                let quantity = countProduct(crudTrackingHM.pagingList?.rows || [])
+                createdData = {
+                    data:quantity,
+                    difference: Math.abs(quantity - (userHm?.extraInfor?.verifiedQuantity||quantity))
+                };
+                break;
+            default: break}
+            return createdData
+        }
+    
     return (crudTrackingHM.pagingList?.rows?.length || 0) > 0 ? (
         <Grid
             container
@@ -362,6 +388,7 @@ function ProgressAutoOrder(props: Props) {
                 onSplitWithNew={onSplitOrderWithNew}
             />
             <PopupAddOrderId
+                isReadyBuyAll={crudTrackingHM.pagingList?.rows?.findIndex(i => !i.isOrder) === -1}
                 isDisplay={crudTrackingHM.isShowPopup}
                 item={crudTrackingHM.itemSelected}
                 onCancel={crudTrackingHM.onCancelPopup}
