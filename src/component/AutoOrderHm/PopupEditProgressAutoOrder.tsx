@@ -29,6 +29,7 @@ import { TrackingHMHelper } from 'src/helper/TrackingHMHelper';
 const CKEditor = require('ckeditor4-react');
 
 type Props = {
+    isReadyBuyAll:boolean;
     isDisplay: boolean;
     item: OrderTracking;
     onEdit: (item: OrderTracking) => void;
@@ -171,7 +172,7 @@ export default function PopupEditProgressAutoOrder(props: Props) {
                         ></TextField>
                     </Grid>
 
-                    {formik.values.isOrder && (
+                    {(formik.values.isOrder||formik.values.isRegister) && (
                         <Grid container>
                             <Grid container>
                                 <TextField
@@ -179,7 +180,7 @@ export default function PopupEditProgressAutoOrder(props: Props) {
                                     helperText={formik.touched.orderId && formik.errors.orderId}
                                     name="orderId"
                                     onChange={formik.handleChange}
-                                    disabled={Boolean(formik.values.dataFirebase)}
+                                    // disabled={Boolean(formik.values.dataFirebase)&&!formik.values.errorDesc}
                                     onBlur={formik.handleBlur}
                                     fullWidth
                                     InputLabelProps={{
