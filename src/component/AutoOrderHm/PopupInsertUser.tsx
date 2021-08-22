@@ -1,7 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 
-import { Button, FormControl, Grid, InputLabel, makeStyles, MenuItem, Select, TextField, Typography } from '@material-ui/core';
+import { Button, FormControl, Grid, InputAdornment, InputLabel, makeStyles, MenuItem, Select, TextField, Typography } from '@material-ui/core';
 import clsx from 'clsx';
+import NumberFormat from 'react-number-format';
 import { useFormik } from 'formik';
 import _ from 'lodash';
 import { useEffect, useState } from 'react';
@@ -9,11 +10,11 @@ import * as Yup from 'yup';
 import BaseDialog from '../common/BaseDialog';
 import { useGlobalStyles } from '../../theme/GlobalStyle';
 import { UserHm } from 'src/afi-manager-base-model/model/UserHm';
-import { getAvailableCodes } from 'src/helper/CheckBestOptionForOrder';
 import { wareHouses } from 'src/constants/WareHouse';
 import PopUpAddressTemplate from './PopUpAddressTemplate';
 import { OrderAddress } from 'src/afi-manager-base-model/model/OrderAddress';
 import FavoriteRoundedIcon from '@material-ui/icons/FavoriteRounded';
+import { getAvailableCodes } from 'src/helper/CheckBestOptionForOrder';
 
 const useStyle = makeStyles((theme) => ({
     divide2Col:{
@@ -30,7 +31,7 @@ type Props = {
 };
 const validate = Yup.object({
     address: Yup.string().max(40, 'Không được quá 40 kí tự').required('Không được để trống').trim().nullable(),
-    firstName: Yup.string().max(20, 'Không quá 20 kí tự').required('Không được để trống').trim().nullable().matches(/^[aA-zZ\s]+$/, "Không được chứa ký tự đặc biệt"),
+    firstName: Yup.string().max(20, 'Không quá 20 kí tự').required('Không được để trống').trim().nullable(),
     emailCheckout: Yup.string().max(100, 'Không được quá 20 kí tự').required('Không được để trống').trim().nullable(),
     password: Yup.string()
         .max(40, 'Không được quá 40 kí tự')
@@ -51,8 +52,8 @@ const validate = Yup.object({
     username: Yup.string().max(40, 'Không được quá 40 kí tự').required('Không được để trống').trim().nullable(),
     extraInfor:Yup.object({
         wareHouse: Yup.string(),
-        verifiedAmount: Yup.number(),
-        verifiedQuantity: Yup.number(),
+        verifiedAmount: Yup.string().matches(/[0-9]/,""),
+        verifiedQuantity: Yup.string().matches(/[0-9]/,""),
         codeOff: Yup.string(),
     })
 });
@@ -144,7 +145,7 @@ export default function PopupInsertUser(props: Props) {
                     </Grid> */}
                     </>
                     <Grid>
-                            <TextField
+                        <TextField
                             value={formik.values.username}
                             helperText={formik.touched.username && formik.errors.username}
                             error={Boolean(formik.touched.username && formik.errors.username)}
@@ -337,38 +338,51 @@ export default function PopupInsertUser(props: Props) {
                         </FormControl>
                     </Grid>
                     <Grid className={classes.divide2Col}>
-                        <TextField InputLabelProps={{ shrink: true }}
+                        <NumberFormat
+                            customInput={TextField}
+                            thousandSeparator
+                            decimalScale={0}
+                            fixedDecimalScale
                             value={formik.values.extraInfor?.verifiedQuantity}
-                            helperText={Boolean(!formik.values.extraInfor?.verifiedQuantity || formik.values.extraInfor?.verifiedQuantity <= 0)&&"Chưa nhập"}
-                            error={Boolean(!formik.values.extraInfor?.verifiedQuantity || formik.values.extraInfor?.verifiedQuantity <= 0)}
-                            name="Số món"
-                            onChange={(e)=>{
+                            onValueChange={(value) => {
                                 let newValue = {...formik.values,
                                     extraInfor:{...formik.values.extraInfor,
-                                        verifiedQuantity:Number(e.target.value)}
+                                        verifiedQuantity:value.floatValue}
                                 }
-                                formik.setValues(newValue)}}
+                                formik.setValues(newValue)
+                            }}
+                            placeholder="Nhập số món"
                             fullWidth
                             variant="outlined"
                             className={clsx(globalStyles.mt1, globalStyles.mb2)}
-                            label="Số món"
-                        />
-                        <TextField InputLabelProps={{ shrink: true }}
+                            />
+                        <NumberFormat
+                            customInput={TextField}
+                            thousandSeparator
+                            decimalScale={2}
+                            fixedDecimalScale
                             value={formik.values.extraInfor?.verifiedAmount}
-                            helperText={Boolean(!formik.values.extraInfor?.verifiedAmount || formik.values.extraInfor?.verifiedAmount <= 0)&&"Chưa nhập"}
-                            error={Boolean(!formik.values.extraInfor?.verifiedAmount || formik.values.extraInfor?.verifiedAmount <= 0)}
-                            name="Tổng tiền"
-                            onChange={(e)=>{
+                            onValueChange={(value) => {
                                 let newValue = {...formik.values,
                                     extraInfor:{...formik.values.extraInfor,
-                                        verifiedAmount:Number(e.target.value)}
+                                        verifiedAmount:value.floatValue}
                                 }
-                                formik.setValues(newValue)}}
+                                formik.setValues(newValue)
+                            }}
+                            placeholder="Nhập tổng tiền"
+                            InputProps={{
+                                inputProps: {
+                                    min: 0,
+                                },
+                                startAdornment:
+                                    <InputAdornment position="start"
+                                        style={{ marginRight: 5, zIndex: 1000, color: "#333333" }}
+                                    >£</InputAdornment>,
+                            }}
                             fullWidth
                             variant="outlined"
                             className={clsx(globalStyles.mt1, globalStyles.mb2)}
-                            label="Tổng tiền"
-                        />
+                            />
                     </Grid>
                     <Grid>
                         <TextField

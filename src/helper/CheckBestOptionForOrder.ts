@@ -4,9 +4,12 @@ import { afiCodes, wareHouses } from "src/constants/WareHouse";
 
 // Todo: Find the max price can be bought
 export const maxPriceForOrder = (order:UserHm)=>{
-    return order.extraInfor?.codeOff
+     let maxPrice = Boolean(order.extraInfor && order.extraInfor.codeOff)
     ? afiCodes.find(c => c.code == order.extraInfor?.codeOff)?.maxPrice
     : wareHouses.find(w => w.name == order.extraInfor?.wareHouse)?.defaultMaxPrice
+    console.log({maxPrice});
+    
+    return maxPrice
 }
 
 // To do: Warning on product has price higher than standard
@@ -18,9 +21,17 @@ export const isDangerousPrice = (prodPrice:number,order:UserHm)=>{
 
 // to do: alert if has any product is not match code condition
 export const isCorrectCode = (order:UserHm, products:OrderTracking[]) =>{
+    if(order.extraInfor) return true
+    else {
     let maxPrice = maxPriceForOrder(order)
-    if(!products.find(p => p.totalPrice && maxPrice && p.totalPrice > (maxPrice)))return true
-    else return false
+    let productNumber = products.map(p => p.id).filter((v, i, a) => a.indexOf(v) === i).length;
+    let maxProduct = afiCodes.find(c => c.code == order.extraInfor?.codeOff)?.mustOneProduct
+                        ?1
+                        :productNumber
+    console.log({productNumber},{maxProduct})
+    if(products.findIndex(p => p.totalPrice && maxPrice && p.totalPrice > (maxPrice)) != -1 && maxProduct>=products.length)
+    return true
+    else return false}
 }
 // return list code for 
 export const getAvailableCodes = (wareHouse:string) =>{

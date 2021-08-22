@@ -26,6 +26,7 @@ import { handleWithPopupHook } from 'src/hook/HandleWithPopupHook';
 import { aleFirebaseConfig } from 'src/constants/AleFirebaseConfig';
 import HelpIcon from '@material-ui/icons/Help';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+import { isCorrectCode } from 'src/helper/CheckBestOptionForOrder';
 
 type Props = {};
 const useStyle = makeStyles((theme) => ({
@@ -77,6 +78,7 @@ export enum OrderStatus {
 function ProgressAutoOrder(props: Props) {
     const { userHmId } = useParams<{ userHmId: string }>();
     const [userHm, setUserHm] = useState<UserHm>({} as UserHm);
+    const [isConfirmed, setIsConfirmed] = useState(false)
     const [selectedStatus, setSelectedStatus] = useState<OrderStatus>(OrderStatus.none);
     const [isOpenNote, setIsOpenNote] = useState(false)
     const [giftCard, setGiftCard] = useState<Giftcard>({
@@ -249,14 +251,14 @@ function ProgressAutoOrder(props: Props) {
                 <Typography>
                     Tổng tiền:{' '}
                     {renderComparedData("amount").data}
-                    {renderComparedData("amount").difference > 0 && 
+                    {renderComparedData("amount").difference > 0.1 && 
                     <span style={{color:theme.palette.error.main}}>{' '} (Lệch: {renderComparedData("amount").difference})</span>
                     }
                 </Typography>
 
                 <Typography>Tổng món: {' '}
                 {renderComparedData("quantity").data}
-                {renderComparedData("quantity").difference > 0 && 
+                {renderComparedData("quantity").difference > 0.1 && 
                 <span style={{color:theme.palette.error.main}}>{' '}(Lệch: {renderComparedData("quantity").difference})</span>
                 }</Typography>
 
@@ -424,10 +426,36 @@ function ProgressAutoOrder(props: Props) {
                         {renderOrderStatusSummary()}
                         {renderPaymentStatusSummary()}
                     </Grid>
+                    {/* Todo: Confirm before checkout in case of wrong price */}
+                    {Boolean(crudTrackingHM.pagingList?.rows?.findIndex(r => r.orderId) == -1 
+                    && !isConfirmed) &&
+                    Boolean(!isCorrectCode(userHm,crudTrackingHM.pagingList?.rows || [])
+                    || renderComparedData("amount").difference > 0.1
+                    || renderComparedData("quantity").difference > 0.1) 
+                    ?
+                        <Grid container justify="center" alignItems="center" direction="column">
+                            <img src="https://i.pinimg.com/originals/ee/84/8f/ee848f864ebdf8d48351e5b8b8ba50bd.png"/>
+                            <Typography variant="h5" className={globalStyle.mt2}>
+                                {Boolean(!isCorrectCode(userHm,crudTrackingHM.pagingList?.rows || [])) && 
+                                "Mã giảm không phù hợp :(("}
+                            </Typography>
+                            <Typography variant="h5" className={globalStyle.mt2}>
+                            {Boolean(renderComparedData("amount").difference > 0.1 || renderComparedData("quantity").difference > 0.1) && "Tiền bị lệch!"}
+                            </Typography>
+
+                            <Typography variant="h5" className={clsx(globalStyle.mt2,globalStyle.mb2)}>
+                                Vui lòng xác nhận lại với kho trước khi mua hàng!
+                            </Typography>
+                            <Button variant="contained" color="secondary" onClick={()=>setIsConfirmed(true)}>Đã xác nhận!</Button>
+                        </Grid>
+                    :(
+                    <>
+                    <Grid>
                     <Select
                         fullWidth
                         variant="outlined"
                         value={selectedStatus}
+                        className={globalStyle.mt3}
                         onChange={(e) => {
                             setSelectedStatus(e.target.value as OrderStatus);
                         }}
@@ -440,7 +468,7 @@ function ProgressAutoOrder(props: Props) {
                         <MenuItem value={OrderStatus.error}>Lỗi</MenuItem>
                         <MenuItem value={OrderStatus.errorPrice}>Lỗi sai giá</MenuItem>
                     </Select>
-
+                    </Grid>
                     <div className={classes.giftCardForm}>
                         <TextField
                             fullWidth
@@ -496,6 +524,7 @@ function ProgressAutoOrder(props: Props) {
                                             onSplitOrder={handleClickSplitOrder}
                                             item={item}
                                             updateOrderId={crudTrackingHM.onShowPopup}
+                                            userHm={{...userHm}}
                                         />
                                     </Grid>
                                 </Zoom>
@@ -517,6 +546,7 @@ function ProgressAutoOrder(props: Props) {
                             color="primary"
                         />
                     </Grid>
+                    </>)}
                 </Grid>
             </Grid>
         </Grid>

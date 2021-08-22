@@ -17,8 +17,11 @@ import { RiAccountPinCircleFill } from 'react-icons/ri';
 import { BiKey } from 'react-icons/bi';
 import { mathCeilWithRound } from 'src/helper/NumberUtils';
 import { AiOutlineSplitCells } from 'react-icons/ai';
+import { isDangerousPrice } from 'src/helper/CheckBestOptionForOrder';
+import { UserHm } from 'src/afi-manager-base-model/model/UserHm';
 type Props = {
     item: OrderTracking;
+    userHm: UserHm;
     giftCard: Giftcard;
     updateOrderId: (item: OrderTracking) => void;
     onSplitOrder?: (item: OrderTracking) => void;
@@ -163,7 +166,7 @@ function ProgressHmItemList(props: Props) {
     };
 
     return (
-        <Grid className={classes.root}>
+        <Grid className={classes.root} style={{border:isDangerousPrice(props.item.totalPrice||0,props.userHm)?"1px solid red":""}}>
             <Grid container justify="space-between">
                 <Grid xs={6} container item>
                     <Popover
@@ -300,7 +303,7 @@ function ProgressHmItemList(props: Props) {
                     );
                 })}
             </Grid>
-            <Grid container className={clsx(globalStyle.pt1)} justifyContent="center">
+            <Grid container className={clsx(globalStyle.pt1)} justifyContent="center" >
                 <Grid xs={4}>
                     <Grid
                         className={clsx(globalStyle.pr1, classes.frCoin)}
