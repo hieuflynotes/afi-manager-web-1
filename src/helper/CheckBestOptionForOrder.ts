@@ -21,16 +21,16 @@ export const isDangerousPrice = (prodPrice:number,order:UserHm)=>{
 
 // to do: alert if has any product is not match code condition
 export const isCorrectCode = (order:UserHm, products:OrderTracking[]) =>{
-    if(order.extraInfor) return true
+    if(!order.extraInfor||!order.extraInfor.wareHouse) return true
     else {
-    let maxPrice = maxPriceForOrder(order)
-    let productNumber = products.map(p => p.id).filter((v, i, a) => a.indexOf(v) === i).length;
-    let maxProduct = afiCodes.find(c => c.code == order.extraInfor?.codeOff)?.mustOneProduct
-                        ?1
-                        :productNumber
-    console.log({productNumber},{maxProduct})
-    if(products.findIndex(p => p.totalPrice && maxPrice && p.totalPrice > (maxPrice)) != -1 && maxProduct>=products.length)
-    return true
+        let maxPrice = maxPriceForOrder(order)
+        let productNumber = products.map(p => p.id).filter((v, i, a) => a.indexOf(v) === i).length;
+        let maxProduct = afiCodes.find(c => c.code == order.extraInfor?.codeOff)?.mustOneProduct
+                            ?1
+                            :productNumber
+        console.log({productNumber},{maxProduct})
+        if(products.findIndex(p => p.totalPrice && maxPrice && p.totalPrice > (maxPrice)) != -1 && maxProduct>=products.length)
+        return true
     else return false}
 }
 // return list code for 
