@@ -43,7 +43,6 @@ export const addressTemplates: OrderAddress[] = [
     {address:'Leaside Road',address2:'Unit G168 Riverside House',town:'London',postcode:'E5 9LU',mustBeVerified:true}, 
     {address:'2B Pemberton Terrace',address2:'2B Pemberton Terrace',town:'London',postcode:'N19 5RY'}, 
     {address:'180 Elsinge Road',address2:'180 Elsinge Road',town:'Enfield',postcode:'EN1 4PA'}, 
-    {address:'Wraysbury House',address2:'Poyle Road,Colnbrook',town:'London (HNC1090SGN)',postcode:'SL3 0AY',mustBeVerified:true}, 
     {address:'36 Bournbrook Road',address2:'36 Bournbrook Road',town:'London',postcode:'SE3 8JS'}, 
     {address:'1 Ovett Gardens',address2:'1 Ovett Gardens, Gateshead',town:'Gateshead',postcode:'NE8 3JH'}, 
     {address:'21 Knightsbridge',address2:'Office 6 2nd Floor',town:'London',postcode:'SW1X 7LY'},

@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 
-import { Button, FormControl, Grid, InputAdornment, InputLabel, makeStyles, MenuItem, Select, TextField, Typography } from '@material-ui/core';
+import { Button, FormControl, Grid, InputAdornment, InputLabel, makeStyles, MenuItem, Select, TextField, Tooltip, Typography } from '@material-ui/core';
 import clsx from 'clsx';
 import NumberFormat from 'react-number-format';
 import { useFormik } from 'formik';
@@ -15,13 +15,17 @@ import PopUpAddressTemplate from './PopUpAddressTemplate';
 import { OrderAddress } from 'src/afi-manager-base-model/model/OrderAddress';
 import FavoriteRoundedIcon from '@material-ui/icons/FavoriteRounded';
 import { getAvailableCodes } from 'src/helper/CheckBestOptionForOrder';
+import WarningIcon from '@material-ui/icons/Warning';
 
 const useStyle = makeStyles((theme) => ({
     divide2Col:{
         display: "grid",
         gridTemplateColumns:"1fr 1fr",
         gridGap:20
-    }
+    },
+    tooltipPlacementTop:{
+        margin: '5px 0'
+    },
 }))
 type Props = {
     isDisplay: boolean;
@@ -60,6 +64,7 @@ const validate = Yup.object({
 
 export default function PopupInsertUser(props: Props) {
     const [isOpenAddList, setIsOpenAddList] = useState(false)
+    const [isDangerAddress, setIsDangerAddress] = useState(false)
     const formik = useFormik<UserHm>({
         initialValues: {} as UserHm,
         validationSchema: validate,
@@ -230,17 +235,31 @@ export default function PopupInsertUser(props: Props) {
                         />
                     </Grid>
                     <Grid>
-                        <TextField InputLabelProps={{ shrink: true }}
-                            value={formik.values.address}
-                            helperText={formik.touched.address && formik.errors.address}
-                            error={Boolean(formik.touched.address && formik.errors.address)}
-                            name="address"
-                            onChange={formik.handleChange}
-                            fullWidth
-                            variant="outlined"
-                            className={clsx(globalStyles.mt1)}
-                            label="Address"
-                        />
+                        <Grid container direction="row" justifyContent="space-around" alignItems="center">
+                            <TextField InputLabelProps={{ shrink: true }}
+                                value={formik.values.address}
+                                helperText={formik.touched.address && formik.errors.address}
+                                error={Boolean(formik.touched.address && formik.errors.address)}
+                                name="address"
+                                onChange={formik.handleChange}
+                                fullWidth
+                                InputProps={{
+                                    startAdornment: (
+                                      <InputAdornment position="start">
+                                        {isDangerAddress && 
+                                        <Tooltip title="Cẩn thận với địa chỉ này!" placement="top-start"
+                                        classes={{tooltipPlacementTop: classes.tooltipPlacementTop}}
+                                        >
+                                        <WarningIcon color="error" fontSize="small"/>
+                                        </Tooltip>}
+                                      </InputAdornment>
+                                    ),
+                                  }}
+                                variant="outlined"
+                                className={clsx(globalStyles.mt1)}
+                                label="Address"
+                                />
+                        </Grid>
                         <Grid container direction="row" alignItems="center" className={clsx(globalStyles.mt1,globalStyles.mb2)}>
                             <FavoriteRoundedIcon color="primary" style={{fontSize:15}}/>
                             <FavoriteRoundedIcon color="primary" style={{fontSize:15}}/>
@@ -403,6 +422,7 @@ export default function PopupInsertUser(props: Props) {
                 onCancel={()=>setIsOpenAddList(false)}
                 onSelect={(add:OrderAddress) => {
                 setIsOpenAddList(false)
+                setIsDangerAddress(add.mustBeVerified?true:false)
                 add &&
                 formik.setValues({
                     ...formik.values,

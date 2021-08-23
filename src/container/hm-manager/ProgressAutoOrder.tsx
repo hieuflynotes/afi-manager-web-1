@@ -551,8 +551,8 @@ function ProgressAutoOrder(props: Props) {
             </Grid>
         </Grid>
     ) : (
-        <Grid container justify="center">
-            <Typography variant="h2">Tài khoản này chưa tiến hành lấy order hoặc order bị trống</Typography>
+        <Grid container justify="center" style={{height:"100vh"}}>
+            <Typography variant="h5">Tài khoản này chưa tiến hành lấy order hoặc order bị trống</Typography>
         </Grid>
     );
 }
