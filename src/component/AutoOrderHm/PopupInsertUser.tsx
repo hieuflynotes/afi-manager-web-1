@@ -14,7 +14,7 @@ import { wareHouses } from 'src/constants/WareHouse';
 import PopUpAddressTemplate from './PopUpAddressTemplate';
 import { OrderAddress } from 'src/afi-manager-base-model/model/OrderAddress';
 import FavoriteRoundedIcon from '@material-ui/icons/FavoriteRounded';
-import { getAvailableCodes } from 'src/helper/CheckBestOptionForOrder';
+import { checkExpiredCode, getAvailableCodes } from 'src/helper/CheckBestOptionForOrder';
 import WarningIcon from '@material-ui/icons/Warning';
 
 const useStyle = makeStyles((theme) => ({
@@ -350,7 +350,9 @@ export default function PopupInsertUser(props: Props) {
                                 {formik.values.extraInfor?.wareHouse && getAvailableCodes(formik.values.extraInfor.wareHouse).length> 0 &&
                                     getAvailableCodes(formik.values.extraInfor?.wareHouse).map(c => {
                                     return(
-                                        <MenuItem value={c}>{c}</MenuItem>
+                                        <MenuItem disabled={checkExpiredCode(c)} value={c}>
+                                            {c} {checkExpiredCode(c) ? "(Hết hạn)" :""}
+                                        </MenuItem>
                                     )
                                 })}
                             </Select>

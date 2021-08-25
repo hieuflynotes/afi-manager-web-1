@@ -46,4 +46,5 @@ export const addressTemplates: OrderAddress[] = [
     {address:'36 Bournbrook Road',address2:'36 Bournbrook Road',town:'London',postcode:'SE3 8JS'}, 
     {address:'1 Ovett Gardens',address2:'1 Ovett Gardens, Gateshead',town:'Gateshead',postcode:'NE8 3JH'}, 
     {address:'21 Knightsbridge',address2:'Office 6 2nd Floor',town:'London',postcode:'SW1X 7LY'},
+    {address:'4 Grand Arcade',address2:'Stylish nail & beauty',town:'London',postcode:'N12 0EH'}
 ]

@@ -357,14 +357,14 @@ function ProgressAutoOrder(props: Props) {
                 )
                 createdData = {
                     data:amount,
-                    difference: Math.abs(amount - (userHm?.extraInfor?.verifiedAmount||amount))
+                    difference: mathCeilWithRound(Math.abs(amount - (userHm?.extraInfor?.verifiedAmount||amount)),2)
                 } ;
                 break;
             case "quantity":
                 let quantity = countProduct(crudTrackingHM.pagingList?.rows || [])
                 createdData = {
                     data:quantity,
-                    difference: Math.abs(quantity - (userHm?.extraInfor?.verifiedQuantity||quantity))
+                    difference: mathCeilWithRound(Math.abs(quantity - (userHm?.extraInfor?.verifiedQuantity||quantity)),2)
                 };
                 break;
             default: break}
