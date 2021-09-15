@@ -26,7 +26,7 @@ import { handleWithPopupHook } from 'src/hook/HandleWithPopupHook';
 import { aleFirebaseConfig } from 'src/constants/AleFirebaseConfig';
 import HelpIcon from '@material-ui/icons/Help';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
-import { isCorrectCode } from 'src/helper/CheckBestOptionForOrder';
+import { isCorrectCode, isDangerousPrice } from 'src/helper/CheckBestOptionForOrder';
 
 type Props = {};
 const useStyle = makeStyles((theme) => ({
@@ -160,7 +160,9 @@ function ProgressAutoOrder(props: Props) {
             let isValid = false;
             switch (selectedStatus) {
                 case OrderStatus.errorPrice:
-                    isValid = (!r.dataFirebase || (r.dataFirebase?.total &&  Math.abs(Number(r.dataFirebase?.total||0) - calcBuyPriceOrder(r.productOrder || [])) <= 0.1)) ? false : true
+                    isValid = (!r.dataFirebase || (r.dataFirebase?.total && (Number(r.dataFirebase?.total||0) - calcBuyPriceOrder(r.productOrder || [])) <= 0.1)) ? false : true
+                    if(userHm.extraInfor?.codeOff == "DEALMIX" && isDangerousPrice(r.totalPrice||0,userHm))
+                        isValid = true
                     break;
                 case OrderStatus.done:
                     isValid = r.orderId != null && r.orderId.length > 0;
@@ -201,7 +203,9 @@ function ProgressAutoOrder(props: Props) {
             return isValid;
         });
     };
+    const checkWrongMixedOrder = () =>{
 
+    }
     const renderOrderStatusSummary = () => {
         return (
             <Grid container className={classes.statuses} justify="center">
