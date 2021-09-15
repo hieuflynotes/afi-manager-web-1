@@ -17,18 +17,22 @@ wait seconds=2
 URL GOTO=https://www2.hm.com/en_gb/checkout-r
 wait seconds=10
 TAG POS=2 TYPE=SPAN ATTR=TXT:Add<SP>gift<SP>cards
-TAG POS=1 TYPE=INPUT:TEXT FORM=ACTION:https://www2.hm.com/en_gb/checkout-r ATTR=ID:cardNumber CONTENT=${cardNumber.replaceAll(" ","").trim()}
+TAG POS=1 TYPE=INPUT:TEXT FORM=ACTION:https://www2.hm.com/en_gb/checkout-r ATTR=ID:cardNumber CONTENT=${cardNumber
+    .replaceAll(' ', '')
+    .trim()}
 TAG POS=1 TYPE=INPUT:TEXT FORM=ACTION:https://www2.hm.com/en_gb/checkout-r ATTR=ID:cardPin CONTENT=${cardPin}
 TAG POS=1 TYPE=BUTTON FORM=ACTION:https://www2.hm.com/en_gb/checkout-r ATTR=TXT:ADD
 Wait seconds=2
 TAG POS=1 TYPE=BUTTON FORM=ACTION:https://www2.hm.com/en_gb/checkout-r ATTR=TXT:SAVE
 Wait seconds=3`;
 
-export const checkoutLoopAle = (email: string,
+export const checkoutLoopAle = (
+    email: string,
     password: string,
     cardNumber: string,
-    cardPin: string)=>`VERSION BUILD=1011 RECORDER=CR
-set !var1 ${email}+afi
+    cardPin: string,
+) => `VERSION BUILD=1011 RECORDER=CR
+set !var1 ${email}+hm
 add !var1 {{!loop}}
 URL GOTO=https://www2.hm.com/en_gb/logout
 wait seconds=2
@@ -74,7 +78,9 @@ ${
 }
 wait seconds=10
 TAG POS=2 TYPE=SPAN ATTR=TXT:Add<SP>gift<SP>cards
-TAG POS=1 TYPE=INPUT:TEXT FORM=ACTION:https://www2.hm.com/en_gb/checkout-r ATTR=ID:cardNumber CONTENT=${cardNumber.replaceAll(" ","").trim()}
+TAG POS=1 TYPE=INPUT:TEXT FORM=ACTION:https://www2.hm.com/en_gb/checkout-r ATTR=ID:cardNumber CONTENT=${cardNumber
+    .replaceAll(' ', '')
+    .trim()}
 TAG POS=1 TYPE=INPUT:TEXT FORM=ACTION:https://www2.hm.com/en_gb/checkout-r ATTR=ID:cardPin CONTENT=${cardPin}
 TAG POS=1 TYPE=BUTTON FORM=ACTION:https://www2.hm.com/en_gb/checkout-r ATTR=TXT:ADD
 Wait seconds=2
@@ -192,7 +198,9 @@ TAG POS=1 TYPE=BUTTON FORM=ACTION:https://www2.hm.com/en_gb/checkout-r ATTR=TXT:
 wait seconds=3
 TAG POS=2 TYPE=SPAN ATTR=TXT:Add<SP>gift<SP>cards
 wait seconds=4
-TAG POS=1 TYPE=INPUT:TEXT FORM=ACTION:https://www2.hm.com/en_gb/checkout-r ATTR=ID:cardNumber CONTENT=${cardNumber.replaceAll(" ","").trim()}
+TAG POS=1 TYPE=INPUT:TEXT FORM=ACTION:https://www2.hm.com/en_gb/checkout-r ATTR=ID:cardNumber CONTENT=${cardNumber
+    .replaceAll(' ', '')
+    .trim()}
 TAG POS=1 TYPE=INPUT:TEXT FORM=ACTION:https://www2.hm.com/en_gb/checkout-r ATTR=ID:cardPin CONTENT=${cardPin}
 TAG POS=1 TYPE=BUTTON FORM=ACTION:https://www2.hm.com/en_gb/checkout-r ATTR=TXT:ADD
 Wait seconds=4
@@ -217,7 +225,7 @@ export const addAddress = (
     return `URL GOTO=https://www2.hm.com/en_gb/logout
     wait seconds=2
     URL GOTO=https://www2.hm.com/en_gb/login
-    TAG POS=1 TYPE=INPUT:TEXT FORM=ACTION:https://www2.hm.com/en_gb/login ATTR=ID:email CONTENT=${emailCheckout}+afi{{!loop}}@gmail.com
+    TAG POS=1 TYPE=INPUT:TEXT FORM=ACTION:https://www2.hm.com/en_gb/login ATTR=ID:email CONTENT=${emailCheckout}+hm{{!loop}}@gmail.com
     TAG POS=1 TYPE=INPUT:PASSWORD FORM=ACTION:https://www2.hm.com/en_gb/login ATTR=ID:password CONTENT=${password}
     TAG POS=1 TYPE=SPAN ATTR=TXT:Sign<SP>in<SP>/<SP>Join
     Wait seconds=5

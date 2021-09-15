@@ -101,7 +101,11 @@ function OrderHmDetailForWarehouse(props: Props) {
     };
     const getIndexEmailAfiOrderHm = (item: OrderTracking): number => {
         let textSplit = item.email || '';
-        const startSplit = textSplit.lastIndexOf('+afi') + 4;
+        let startSplit = textSplit.lastIndexOf('+hm');
+        if (startSplit < 0) {
+            startSplit = textSplit.lastIndexOf('+afi');
+        }
+        startSplit += 4;
         const endSplit = textSplit.indexOf('@gmail.com');
         const indexOfEmail = Number((textSplit = textSplit.substring(startSplit, endSplit)));
         return indexOfEmail;
