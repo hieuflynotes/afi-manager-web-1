@@ -27,6 +27,7 @@ export const orderToCSVModel = (orders: OrderTracking[]) => {
                 .map((p) => {
                     let status = getProductStatus(p, o);
                     return {
+                        email: o.email,
                         productId: p.productId,
                         size: p.size,
                         price: p.price || '',
@@ -34,14 +35,15 @@ export const orderToCSVModel = (orders: OrderTracking[]) => {
                         status,
                         error: status === 'Error' && o.errorDesc ? o.errorDesc : '',
                     } as ExportOrderModel;
-                }),
+                })
         )
-        .reduce((products, arr) => arr?.concat(products || []), []);
+        .reduce((products, arr) => arr?.concat(products || []), [])?.reverse();
 };
 
 export const downloadOrders = (orders: OrderTracking[]) => {
     let orderCSV = orderToCSVModel(orders) || [];
     let csv = [];
+    
     csv.push({
         label: 'Total items',
         value: countProduct(orders),
@@ -65,6 +67,7 @@ export const downloadOrders = (orders: OrderTracking[]) => {
     csv.push({});
 
     csv.push({
+        email:"Email",
         productId: 'Variant / Product ID',
         size: 'Size',
         price: 'Price',

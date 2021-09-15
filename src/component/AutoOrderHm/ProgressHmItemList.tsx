@@ -17,8 +17,11 @@ import { RiAccountPinCircleFill } from 'react-icons/ri';
 import { BiKey } from 'react-icons/bi';
 import { mathCeilWithRound } from 'src/helper/NumberUtils';
 import { AiOutlineSplitCells } from 'react-icons/ai';
+import { isDangerousPrice } from 'src/helper/CheckBestOptionForOrder';
+import { UserHm } from 'src/afi-manager-base-model/model/UserHm';
 type Props = {
     item: OrderTracking;
+    userHm: UserHm;
     giftCard: Giftcard;
     updateOrderId: (item: OrderTracking) => void;
     onSplitOrder?: (item: OrderTracking) => void;
@@ -39,6 +42,9 @@ const useStyle = makeStyles((theme) => ({
     },
     frCoinBuy: {
         color: theme.palette.error.main,
+    },
+    frCoinBought: {
+        color: theme.palette.primary.main,
     },
     icon: {
         fontSize: '1.5rem',
@@ -160,7 +166,7 @@ function ProgressHmItemList(props: Props) {
     };
 
     return (
-        <Grid className={classes.root}>
+        <Grid className={classes.root} style={{border:isDangerousPrice(props.item.totalPrice||0,props.userHm)?"1px solid red":""}}>
             <Grid container justify="space-between">
                 <Grid xs={6} container item>
                     <Popover
@@ -297,8 +303,8 @@ function ProgressHmItemList(props: Props) {
                     );
                 })}
             </Grid>
-            <Grid container className={clsx(globalStyle.pt1)}>
-                <Grid xs={6}>
+            <Grid container className={clsx(globalStyle.pt1)} justifyContent="center" >
+                <Grid xs={4}>
                     <Grid
                         className={clsx(globalStyle.pr1, classes.frCoin)}
                         style={{
@@ -312,24 +318,41 @@ function ProgressHmItemList(props: Props) {
                             <Grid className={clsx(classes.coin)}>
                                 <GiTwoCoins />
                             </Grid>
-                            <Grid>
-                                <Typography>{mathCeilWithRound(props.item.totalPrice || 0, 2)} (Gốc)</Typography>
+                            <Grid >
+                                <Typography variant="body2">{mathCeilWithRound(props.item.totalPrice || 0, 2)} (Gốc)</Typography>
                             </Grid>
                         </Grid>
                     </Grid>
                 </Grid>
-                <Grid xs={6}>
+                <Grid xs={4}>
                     <Grid className={clsx(globalStyle.pr1, classes.frCoinBuy)}>
                         <Grid container alignItems="center" className={classes.rootItem} justify="center">
                             <Grid className={clsx(classes.coin)}>
                                 <GiTwoCoins />
                             </Grid>
                             <Grid>
-                                <Typography>{`${calcBuyPriceOrder(props.item.productOrder || [])}`} (Mua)</Typography>
+                                <Typography variant="body2">{`${calcBuyPriceOrder(props.item.productOrder || [])}`} (Cần trả)</Typography>
                             </Grid>
                         </Grid>
                     </Grid>
                 </Grid>
+                {props.item.orderId && props.item.orderId.length>0 &&
+                <Grid xs={4}>
+                    <Grid className={clsx(globalStyle.pr1, classes.frCoinBought)}>
+                        <Grid container alignItems="center" className={classes.rootItem} justify="center">
+                            <Grid className={clsx(classes.coin)}>
+                                <GiTwoCoins />
+                            </Grid>
+                            <Grid>
+                                <Typography variant="body2">
+                                {props.item.dataFirebase && props.item.dataFirebase?.total ?
+                                    props.item.dataFirebase?.total+" (Đã trả)"
+                                    : "Check tay nha :(("}
+                                </Typography>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </Grid>}
             </Grid>
         </Grid>
     );

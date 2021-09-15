@@ -124,7 +124,7 @@ function UserHmManager(props: Props) {
                             style={{ marginTop: 24 }}
                             fullWidth
                             variant="outlined"
-                            placeholder="Tìm theo by username, email, note"
+                            placeholder="Tìm theo username, email, note"
                             value={crudCompany.query?.search}
                             onChange={(e) => {
                                 crudCompany.setQuery({

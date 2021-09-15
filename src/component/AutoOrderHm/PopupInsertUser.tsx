@@ -1,16 +1,32 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 
-import { Button, FormControlLabel, FormGroup, Grid, Switch, TextField } from '@material-ui/core';
+import { Button, FormControl, Grid, InputAdornment, InputLabel, makeStyles, MenuItem, Select, TextField, Tooltip, Typography } from '@material-ui/core';
 import clsx from 'clsx';
+import NumberFormat from 'react-number-format';
 import { useFormik } from 'formik';
 import _ from 'lodash';
-import React, { useEffect } from 'react';
-import SelectBox from '../common/SelectBox';
+import { useEffect, useState } from 'react';
 import * as Yup from 'yup';
 import BaseDialog from '../common/BaseDialog';
 import { useGlobalStyles } from '../../theme/GlobalStyle';
 import { UserHm } from 'src/afi-manager-base-model/model/UserHm';
+import { wareHouses } from 'src/constants/WareHouse';
+import PopUpAddressTemplate from './PopUpAddressTemplate';
+import { OrderAddress } from 'src/afi-manager-base-model/model/OrderAddress';
+import FavoriteRoundedIcon from '@material-ui/icons/FavoriteRounded';
+import { checkExpiredCode, getAvailableCodes } from 'src/helper/CheckBestOptionForOrder';
+import WarningIcon from '@material-ui/icons/Warning';
 
+const useStyle = makeStyles((theme) => ({
+    divide2Col:{
+        display: "grid",
+        gridTemplateColumns:"1fr 1fr",
+        gridGap:20
+    },
+    tooltipPlacementTop:{
+        margin: '5px 0'
+    },
+}))
 type Props = {
     isDisplay: boolean;
     item: UserHm;
@@ -18,7 +34,6 @@ type Props = {
     onCancel: () => void;
 };
 const validate = Yup.object({
-    lastName: Yup.string().max(20, 'Không quá 20 kí tự').required('Không được để trống').trim().nullable(),
     address: Yup.string().max(40, 'Không được quá 40 kí tự').required('Không được để trống').trim().nullable(),
     firstName: Yup.string().max(20, 'Không quá 20 kí tự').required('Không được để trống').trim().nullable(),
     emailCheckout: Yup.string().max(100, 'Không được quá 20 kí tự').required('Không được để trống').trim().nullable(),
@@ -39,9 +54,17 @@ const validate = Yup.object({
     postcode: Yup.string().max(40, 'Không được quá 40 kí tự').required('Không được để trống').trim().nullable(),
     town: Yup.string().max(40, 'Không được quá 40 kí tự').required('Không được để trống').trim().nullable(),
     username: Yup.string().max(40, 'Không được quá 40 kí tự').required('Không được để trống').trim().nullable(),
+    extraInfor:Yup.object({
+        wareHouse: Yup.string(),
+        verifiedAmount: Yup.string().matches(/[0-9]/,""),
+        verifiedQuantity: Yup.string().matches(/[0-9]/,""),
+        codeOff: Yup.string(),
+    })
 });
 
 export default function PopupInsertUser(props: Props) {
+    const [isOpenAddList, setIsOpenAddList] = useState(false)
+    const [isDangerAddress, setIsDangerAddress] = useState(false)
     const formik = useFormik<UserHm>({
         initialValues: {} as UserHm,
         validationSchema: validate,
@@ -75,6 +98,7 @@ export default function PopupInsertUser(props: Props) {
     }, [props]);
 
     const globalStyles = useGlobalStyles();
+    const classes = useStyle();
     return (
         <Grid>
             <BaseDialog
@@ -83,9 +107,10 @@ export default function PopupInsertUser(props: Props) {
                 onClickConfirm={() => {
                     onSubmit();
                 }}
-                title="User HM"
+                title="Thông tin đơn hàng"
             >
                 <Grid container direction="column" justify="space-around">
+                    <>
                     {/* <Grid>
                         <FormGroup row>
                             <FormControlLabel
@@ -123,6 +148,7 @@ export default function PopupInsertUser(props: Props) {
                             />
                         </FormGroup>
                     </Grid> */}
+                    </>
                     <Grid>
                         <TextField
                             value={formik.values.username}
@@ -133,117 +159,12 @@ export default function PopupInsertUser(props: Props) {
                             fullWidth
                             variant="outlined"
                             className={clsx(globalStyles.mt1, globalStyles.mb2)}
-                            label="User name"
+                            label="Email giỏ hàng"
                             disabled={formik.values.isDone}
-                        ></TextField>
+                        />
                     </Grid>
                     <Grid>
-                        <TextField
-                            value={formik.values.password}
-                            helperText={formik.touched.password && formik.errors.password}
-                            error={Boolean(formik.touched.password && formik.errors.password)}
-                            name="password"
-                            onChange={formik.handleChange}
-                            fullWidth
-                            variant="outlined"
-                            className={clsx(globalStyles.mt1, globalStyles.mb2)}
-                            label="Password"
-                        ></TextField>
-                    </Grid>
-                    <Grid>
-                        <TextField
-                            value={formik.values.firstName}
-                            helperText={formik.touched.firstName && formik.errors.firstName}
-                            error={Boolean(formik.touched.firstName && formik.errors.firstName)}
-                            name="firstName"
-                            onChange={formik.handleChange}
-                            fullWidth
-                            variant="outlined"
-                            className={clsx(globalStyles.mt1, globalStyles.mb2)}
-                            label="First name"
-                        ></TextField>
-                    </Grid>
-                    <Grid>
-                        <TextField
-                            value={formik.values.lastName}
-                            helperText={formik.touched.lastName && formik.errors.lastName}
-                            error={Boolean(formik.touched.lastName && formik.errors.lastName)}
-                            name="lastName"
-                            onChange={formik.handleChange}
-                            fullWidth
-                            variant="outlined"
-                            className={clsx(globalStyles.mt1, globalStyles.mb2)}
-                            label="Last name"
-                        ></TextField>
-                    </Grid>
-                    <Grid>
-                        <TextField
-                            value={formik.values.phone}
-                            helperText={formik.touched.phone && formik.errors.phone}
-                            error={Boolean(formik.touched.phone && formik.errors.phone)}
-                            name="phone"
-                            onChange={formik.handleChange}
-                            fullWidth
-                            variant="outlined"
-                            className={clsx(globalStyles.mt1, globalStyles.mb2)}
-                            label="Phone"
-                        ></TextField>
-                    </Grid>
-                    <Grid>
-                        <TextField
-                            value={formik.values.address}
-                            helperText={formik.touched.address && formik.errors.address}
-                            error={Boolean(formik.touched.address && formik.errors.address)}
-                            name="address"
-                            onChange={formik.handleChange}
-                            fullWidth
-                            variant="outlined"
-                            className={clsx(globalStyles.mt1, globalStyles.mb2)}
-                            label="Address"
-                        ></TextField>
-                    </Grid>
-                    <Grid>
-                        <TextField
-                            value={formik.values.address2}
-                            helperText={formik.touched.address2 && formik.errors.address2}
-                            error={Boolean(formik.touched.address2 && formik.errors.address2)}
-                            name="address2"
-                            onChange={formik.handleChange}
-                            fullWidth
-                            variant="outlined"
-                            className={clsx(globalStyles.mt1, globalStyles.mb2)}
-                            label="Address 2"
-                        ></TextField>
-                    </Grid>
-                    <Grid>
-                        <TextField
-                            value={formik.values.town}
-                            helperText={formik.touched.town && formik.errors.town}
-                            error={Boolean(formik.touched.town && formik.errors.town)}
-                            name="town"
-                            onChange={formik.handleChange}
-                            fullWidth
-                            variant="outlined"
-                            className={clsx(globalStyles.mt1, globalStyles.mb2)}
-                            label="Town"
-                        ></TextField>
-                    </Grid>
-                    <Grid>
-                        <TextField
-                            value={formik.values.postcode}
-                            helperText={formik.touched.postcode && formik.errors.postcode}
-                            error={Boolean(formik.touched.postcode && formik.errors.postcode)}
-                            name="postcode"
-                            onChange={formik.handleChange}
-                            fullWidth
-                            variant="outlined"
-                            className={clsx(globalStyles.mt1, globalStyles.mb2)}
-                            label="Postcode"
-                        ></TextField>
-                    </Grid>
-
-                    <Grid>
-                        <TextField
+                            <TextField
                             value={formik.values.emailCheckout}
                             helperText={formik.touched.emailCheckout && formik.errors.emailCheckout}
                             error={Boolean(formik.touched.emailCheckout && formik.errors.emailCheckout)}
@@ -263,9 +184,227 @@ export default function PopupInsertUser(props: Props) {
                             variant="outlined"
                             className={clsx(globalStyles.mt1, globalStyles.mb2)}
                             label="emailCheckout (not @gmail.com)"
-                        ></TextField>
+                        />
+                    </Grid>
+                    <Grid className={classes.divide2Col}>
+                            <TextField
+                            value={formik.values.password}
+                            helperText={formik.touched.password && formik.errors.password}
+                            error={Boolean(formik.touched.password && formik.errors.password)}
+                            name="password"
+                            onChange={formik.handleChange}
+                            fullWidth
+                            variant="outlined"
+                            className={clsx(globalStyles.mt1, globalStyles.mb2)}
+                            label="Password"
+                        />
+                            <TextField
+                            value={formik.values.phone}
+                            helperText={formik.touched.phone && formik.errors.phone}
+                            error={Boolean(formik.touched.phone && formik.errors.phone)}
+                            name="phone"
+                            onChange={formik.handleChange}
+                            fullWidth
+                            variant="outlined"
+                            className={clsx(globalStyles.mt1, globalStyles.mb2)}
+                            label="Phone"
+                        />
+                    </Grid>
+                    <Grid className={classes.divide2Col}>
+                            <TextField
+                            value={formik.values.firstName}
+                            helperText={formik.touched.firstName && formik.errors.firstName}
+                            error={Boolean(formik.touched.firstName && formik.errors.firstName)}
+                            name="firstName"
+                            onChange={formik.handleChange}
+                            fullWidth
+                            variant="outlined"
+                            className={clsx(globalStyles.mt1, globalStyles.mb2)}
+                            label="First name"
+                        />
+                            <TextField
+                            value={formik.values.lastName}
+                            helperText={formik.touched.lastName && formik.errors.lastName}
+                            error={Boolean(formik.touched.lastName && formik.errors.lastName)}
+                            name="lastName"
+                            onChange={formik.handleChange}
+                            fullWidth
+                            variant="outlined"
+                            className={clsx(globalStyles.mt1, globalStyles.mb2)}
+                            label="Last name"
+                        />
+                    </Grid>
+                    <Grid>
+                        <Grid container direction="row" justifyContent="space-around" alignItems="center">
+                            <TextField InputLabelProps={{ shrink: true }}
+                                value={formik.values.address}
+                                helperText={formik.touched.address && formik.errors.address}
+                                error={Boolean(formik.touched.address && formik.errors.address)}
+                                name="address"
+                                onChange={formik.handleChange}
+                                fullWidth
+                                InputProps={{
+                                    startAdornment: (
+                                      <InputAdornment position="start">
+                                        {isDangerAddress && 
+                                        <Tooltip title="Cẩn thận với địa chỉ này!" placement="top-start"
+                                        classes={{tooltipPlacementTop: classes.tooltipPlacementTop}}
+                                        >
+                                        <WarningIcon color="error" fontSize="small"/>
+                                        </Tooltip>}
+                                      </InputAdornment>
+                                    ),
+                                  }}
+                                variant="outlined"
+                                className={clsx(globalStyles.mt1)}
+                                label="Address"
+                                />
+                        </Grid>
+                        <Grid container direction="row" alignItems="center" className={clsx(globalStyles.mt1,globalStyles.mb2)}>
+                            <FavoriteRoundedIcon color="primary" style={{fontSize:15}}/>
+                            <FavoriteRoundedIcon color="primary" style={{fontSize:15}}/>
+                            <FavoriteRoundedIcon color="primary" style={{fontSize:15}}/>
+                            <Typography color="primary" variant="body2" style={{textDecoration:"underline", marginLeft:7, cursor:"pointer"}}
+                                onClick={(e)=>setIsOpenAddList(true)}>
+                                Mẫu địa chỉ chuẩn VIP PRO!</Typography>
+                        </Grid>
+                    </Grid>
+                    <Grid>
+                        <TextField InputLabelProps={{ shrink: true }}
+                            value={formik.values.address2}
+                            helperText={formik.touched.address2 && formik.errors.address2}
+                            error={Boolean(formik.touched.address2 && formik.errors.address2)}
+                            name="address2"
+                            onChange={formik.handleChange}
+                            fullWidth
+                            variant="outlined"
+                            className={clsx(globalStyles.mt1, globalStyles.mb2)}
+                            label="Address 2"
+                        />
                     </Grid>
 
+                    <Grid className={classes.divide2Col}>
+                        <TextField InputLabelProps={{ shrink: true }}
+                            value={formik.values.town}
+                            helperText={formik.touched.town && formik.errors.town}
+                            error={Boolean(formik.touched.town && formik.errors.town)}
+                            name="town"
+                            onChange={formik.handleChange}
+                            fullWidth
+                            variant="outlined"
+                            className={clsx(globalStyles.mt1, globalStyles.mb2)}
+                            label="Town"
+                        />
+                            <TextField InputLabelProps={{ shrink: true }}
+                            value={formik.values.postcode}
+                            helperText={formik.touched.postcode && formik.errors.postcode}
+                            error={Boolean(formik.touched.postcode && formik.errors.postcode)}
+                            name="postcode"
+                            onChange={formik.handleChange}
+                            fullWidth
+                            variant="outlined"
+                            className={clsx(globalStyles.mt1, globalStyles.mb2)}
+                            label="Postcode"
+                        />
+                    </Grid>
+
+                    <Grid className={classes.divide2Col}>
+                        <FormControl variant="outlined" className={clsx(globalStyles.mt1, globalStyles.mb2)}>
+                            <InputLabel>Kho</InputLabel>
+                            <Select
+                                fullWidth
+                                label="Kho"
+                                value={formik.values.extraInfor?.wareHouse||""}
+                                onChange={(e)=>{
+                                    let newValue = {...formik.values,
+                                        extraInfor:{...formik.values.extraInfor,
+                                            codeOff:"",
+                                            wareHouse:e.target.value as string}
+                                    }
+                                    formik.setValues(newValue)}}
+                            >
+                                <MenuItem value="">Kho</MenuItem>
+                                {wareHouses.map(w => {
+                                    return(
+                                        <MenuItem value={w.name}>{w.name}</MenuItem>
+                                    )
+                                })}
+                        </Select>
+                        </FormControl>
+                        <FormControl variant="outlined" className={clsx(globalStyles.mt1, globalStyles.mb2)}>
+                            <InputLabel>{formik.values.extraInfor?.codeOff ? "Loại đơn":"Đơn thường"}</InputLabel>
+                            <Select
+                                fullWidth
+                                label={formik.values.extraInfor?.codeOff ? "Loại đơn":"Đơn thường"}
+                                value={formik.values.extraInfor?.codeOff||""}
+                                disabled={!formik.values.extraInfor?.wareHouse || formik.values.extraInfor?.wareHouse.length == 0 
+                                    ||getAvailableCodes(formik.values.extraInfor.wareHouse).length == 0}
+                                onChange={(e)=>{
+                                    let newValue = {...formik.values,
+                                        extraInfor:{...formik.values.extraInfor,
+                                            codeOff:e.target.value as string}
+                                    }
+                                    formik.setValues(newValue)}}
+                            >
+                                <MenuItem value="">Đơn thường</MenuItem>
+                                {formik.values.extraInfor?.wareHouse && getAvailableCodes(formik.values.extraInfor.wareHouse).length> 0 &&
+                                    getAvailableCodes(formik.values.extraInfor?.wareHouse).map(c => {
+                                    return(
+                                        <MenuItem disabled={checkExpiredCode(c)} value={c}>
+                                            {c} {checkExpiredCode(c) ? "(Hết hạn)" :""}
+                                        </MenuItem>
+                                    )
+                                })}
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    <Grid className={classes.divide2Col}>
+                        <NumberFormat
+                            customInput={TextField}
+                            thousandSeparator
+                            decimalScale={0}
+                            fixedDecimalScale
+                            value={formik.values.extraInfor?.verifiedQuantity}
+                            onValueChange={(value) => {
+                                let newValue = {...formik.values,
+                                    extraInfor:{...formik.values.extraInfor,
+                                        verifiedQuantity:value.floatValue}
+                                }
+                                formik.setValues(newValue)
+                            }}
+                            placeholder="Nhập số món"
+                            fullWidth
+                            variant="outlined"
+                            className={clsx(globalStyles.mt1, globalStyles.mb2)}
+                            />
+                        <NumberFormat
+                            customInput={TextField}
+                            thousandSeparator
+                            decimalScale={2}
+                            fixedDecimalScale
+                            value={formik.values.extraInfor?.verifiedAmount}
+                            onValueChange={(value) => {
+                                let newValue = {...formik.values,
+                                    extraInfor:{...formik.values.extraInfor,
+                                        verifiedAmount:value.floatValue}
+                                }
+                                formik.setValues(newValue)
+                            }}
+                            placeholder="Nhập tổng tiền"
+                            InputProps={{
+                                inputProps: {
+                                    min: 0,
+                                },
+                                startAdornment:
+                                    <InputAdornment position="start"
+                                        style={{ marginRight: 5, zIndex: 1000, color: "#333333" }}
+                                    >£</InputAdornment>,
+                            }}
+                            fullWidth
+                            variant="outlined"
+                            className={clsx(globalStyles.mt1, globalStyles.mb2)}
+                            />
+                    </Grid>
                     <Grid>
                         <TextField
                             value={formik.values.note}
@@ -276,10 +415,26 @@ export default function PopupInsertUser(props: Props) {
                             variant="outlined"
                             className={clsx(globalStyles.mt1, globalStyles.mb2)}
                             label="Note"
-                        ></TextField>
+                        />
                     </Grid>
                 </Grid>
             </BaseDialog>
+            <PopUpAddressTemplate
+                isDisplay={isOpenAddList}
+                onCancel={()=>setIsOpenAddList(false)}
+                onSelect={(add:OrderAddress) => {
+                setIsOpenAddList(false)
+                setIsDangerAddress(add.mustBeVerified?true:false)
+                add &&
+                formik.setValues({
+                    ...formik.values,
+                    address: add.address,
+                    address2:add.address2,
+                    town:add.town,
+                    postcode:add.postcode
+                })
+            }}
+            />
         </Grid>
     );
 }

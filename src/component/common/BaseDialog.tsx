@@ -21,6 +21,7 @@ type Props = {
     onCancel: () => void;
     onClickConfirm: () => void;
     title: string;
+    labelConfirmBtn?:string
 };
 
 export default function BaseDialog(props: Props) {
@@ -86,7 +87,7 @@ export default function BaseDialog(props: Props) {
                                     color="primary"
                                     onClick={props.onClickConfirm}
                                 >
-                                    Save
+                                    {props.labelConfirmBtn||"Save"}
                                 </Button>
                             </Grid>
                         </Grid>

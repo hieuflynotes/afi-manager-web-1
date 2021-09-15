@@ -1,13 +1,13 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import clsx from 'clsx';
-import { Grid, makeStyles, MenuItem, Select, Typography, Zoom } from '@material-ui/core';
+import { Avatar, Box, Button, ClickAwayListener, Grid, makeStyles, MenuItem, Select, Tooltip, Typography, Zoom } from '@material-ui/core';
 import TextField from '../../component/common/TextFiled';
 import ListGrid from '../../component/common/ListGrid';
 import { useGlobalStyles } from '../../theme/GlobalStyle';
 import { useCrudHook } from '../../hook/useCrudHook';
 import { Pagination } from '@material-ui/lab';
 import { useParams } from 'react-router-dom';
-import { hMController, orderTrackingController, userHmController } from 'src/controller';
+import { orderTrackingController, userHmController } from 'src/controller';
 import theme from 'src/theme/MuiTheme';
 import { DataFirebaseHm, OrderTracking, ProductOrder } from 'src/afi-manager-base-model/model/OrderTracking';
 import ProgressHmItemList from 'src/component/AutoOrderHm/ProgressHmItemList';
@@ -17,14 +17,16 @@ import { mathCeilWithRound } from 'src/helper/NumberUtils';
 import { IconButton } from '@material-ui/core';
 import { IoCopyOutline } from 'react-icons/io5';
 import { dispatch } from '../../rematch/store';
-import { countBoughtProduct, countProduct } from 'src/helper/CalculatorHmPrice';
-import { firebaseConfig } from 'src/constants/FirebaseConfig';
+import { calcBuyPriceOrder, countBoughtProduct, countProduct } from 'src/helper/CalculatorHmPrice';
 import _ from 'lodash';
 import { UserHm } from 'src/afi-manager-base-model/model/UserHm';
-import { addAddress } from 'src/constants/IMacros';
+import { addAddress, checkoutLoopAle } from 'src/constants/IMacros';
 import PopupSplitOrder from 'src/component/AutoOrderHm/PopupSplitOrder';
 import { handleWithPopupHook } from 'src/hook/HandleWithPopupHook';
 import { aleFirebaseConfig } from 'src/constants/AleFirebaseConfig';
+import HelpIcon from '@material-ui/icons/Help';
+import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+import { isCorrectCode } from 'src/helper/CheckBestOptionForOrder';
 
 type Props = {};
 const useStyle = makeStyles((theme) => ({
@@ -37,12 +39,31 @@ const useStyle = makeStyles((theme) => ({
     },
     giftCardForm: {
         display: 'grid',
-        gridTemplateColumns: '1fr 1fr',
+        gridTemplateColumns: '1fr 1fr 200px',
+        alignItems:"center",
         gridGap: 16,
         '& .MuiFormControl-fullWidth': {
             marginTop: 16,
         },
+        '& .MuiButton-root':{
+            marginTop: 16,
+        }
     },
+    popperTootip:{
+        pointerEvents:'auto'
+    },
+    tooltipPlacementBottom:{
+        margin: '5px 0'
+    },
+    tooltip:{
+        backgroundColor:theme.palette.primary.main
+    },
+    icon:{
+        position:"fixed",
+        bottom: 80,
+        right:80,
+        cursor:"pointer"
+    }
 }));
 
 export enum OrderStatus {
@@ -52,11 +73,14 @@ export enum OrderStatus {
     addedToCard = 'addedToCard',
     done = 'done',
     error = 'error',
+    errorPrice='errPrice'
 }
 function ProgressAutoOrder(props: Props) {
     const { userHmId } = useParams<{ userHmId: string }>();
     const [userHm, setUserHm] = useState<UserHm>({} as UserHm);
+    const [isConfirmed, setIsConfirmed] = useState(false)
     const [selectedStatus, setSelectedStatus] = useState<OrderStatus>(OrderStatus.none);
+    const [isOpenNote, setIsOpenNote] = useState(false)
     const [giftCard, setGiftCard] = useState<Giftcard>({
         serialNumber: localStorage.getItem('serialNumber') || '',
         pin: localStorage.getItem('pin') || '',
@@ -135,6 +159,9 @@ function ProgressAutoOrder(props: Props) {
         return rows?.filter((r) => {
             let isValid = false;
             switch (selectedStatus) {
+                case OrderStatus.errorPrice:
+                    isValid = (!r.dataFirebase || (r.dataFirebase?.total &&  Math.abs(Number(r.dataFirebase?.total||0) - calcBuyPriceOrder(r.productOrder || [])) <= 0.1)) ? false : true
+                    break;
                 case OrderStatus.done:
                     isValid = r.orderId != null && r.orderId.length > 0;
                     break;
@@ -207,7 +234,7 @@ function ProgressAutoOrder(props: Props) {
                                         .join('\n') || ''
                                 }`,
                             );
-                            dispatch.notification.success('Copy danh sách sản phẩm lỗi thành công!');
+                            dispatch.notification.success('Đã copy SP lỗi!');
                         }}
                         size="small"
                     >
@@ -223,13 +250,17 @@ function ProgressAutoOrder(props: Props) {
             <Grid container className={classes.statuses} justify="center">
                 <Typography>
                     Tổng tiền:{' '}
-                    {mathCeilWithRound(
-                        crudTrackingHM.pagingList?.rows
-                            ?.map((r) => r.totalPrice || 0)
-                            .reduce((price, total) => (total += price), 0) || 0,
-                        2,
-                    )}
+                    {renderComparedData("amount").data}
+                    {renderComparedData("amount").difference > 0.1 && 
+                    <span style={{color:theme.palette.error.main}}>{' '} (Lệch: {renderComparedData("amount").difference})</span>
+                    }
                 </Typography>
+
+                <Typography>Tổng món: {' '}
+                {renderComparedData("quantity").data}
+                {renderComparedData("quantity").difference > 0.1 && 
+                <span style={{color:theme.palette.error.main}}>{' '}(Lệch: {renderComparedData("quantity").difference})</span>
+                }</Typography>
 
                 <Typography>
                     Tổng tiền checkout:{' '}
@@ -242,13 +273,57 @@ function ProgressAutoOrder(props: Props) {
                     )}
                 </Typography>
 
-                <Typography>Tổng món: {countProduct(crudTrackingHM.pagingList?.rows || [])}</Typography>
-
                 <Typography>Tổng món đã mua: {countBoughtProduct(crudTrackingHM.pagingList?.rows || [])}</Typography>
             </Grid>
         );
     };
-
+    const renderWarningPrice = () =>{
+        let gt20 = crudTrackingHM.pagingList?.rows?.filter(i=> (i.totalPrice && i.totalPrice>20)).length
+        let gt15 = crudTrackingHM.pagingList?.rows?.filter(i=> (i.totalPrice && i.totalPrice>15)).length
+        return(
+            gt15 ?
+            <Typography style={{display:"inline", marginLeft:"5px"}} color="error">
+                {' (Có '}
+                {gt20 && gt20 > 0 ? `${gt20} món giá >20  & `:""}
+                {gt15 && gt15 > 0 ? `${gt15} món giá >15`:""}
+                {')'}
+            </Typography>
+            :""
+        )
+    }
+    const renderPriceNote = () =>{
+        return(
+            <Box mr={1}>
+            <Tooltip title={
+                <ClickAwayListener onClickAway={()=>setIsOpenNote(false)}>
+                <Box margin="10px 5px" style={{display:"grid", gridRowGap:"10px"}}>
+                {'* Mai Linh, Elisa, Amy: Nếu giá SP > 20 => KHÔNG MUA'}
+                <br/>
+                <br/>
+                {'* PLE - Deal 1M: giá >10 hoặc có SP khác nhau => Báo Leader NGAY & K CHECKOUT CẢ ĐƠN'}
+                <br/>
+                {'* PLE - OFF40: giá >20 => Báo Leader NGAY & K CHECKOUT CẢ ĐƠN'}
+                <br/>
+                {'* PLE - còn lại: giá >15 => Báo Leader NGAY & K CHECKOUT món đó'}
+                <Button variant="contained" size="small" onClick={()=>setIsOpenNote(false)}>OK, Không check sai đâu ^^</Button>
+                </Box>
+                </ClickAwayListener>
+            }
+              classes={{popper:classes.popperTootip, tooltipPlacementBottom: classes.tooltipPlacementBottom, tooltip:classes.tooltip}}
+              open={isOpenNote}
+            >
+                <HelpIcon color="primary" fontSize="small" onClick={()=>setIsOpenNote(!isOpenNote)}></HelpIcon>
+            </Tooltip>
+            </Box>
+        )
+    }
+    const renderScrollIcon =() =>{
+        return(
+            <Avatar variant="square" className={classes.icon} onClick={()=>window.scrollTo(0,0)}>
+            <ExpandLessIcon></ExpandLessIcon>
+            </Avatar>
+        )
+    }
     const handleClickSplitOrder = (item: OrderTracking) => {
         handleWithPopupSplit.handleShowPopup(item);
     };
@@ -270,7 +345,32 @@ function ProgressAutoOrder(props: Props) {
             handleWithPopupSplit.handleClosePopup();
         });
     };
-
+    const renderComparedData = (type: "amount"|"quantity") => {
+        let createdData = {data:0,difference:0}
+        switch (type) {
+            case "amount":
+                let amount = mathCeilWithRound(
+                    crudTrackingHM.pagingList?.rows
+                        ?.map((r) => r.totalPrice || 0)
+                        .reduce((price, total) => (total += price), 0) || 0,
+                    2,
+                )
+                createdData = {
+                    data:amount,
+                    difference: mathCeilWithRound(Math.abs(amount - (userHm?.extraInfor?.verifiedAmount||amount)),2)
+                } ;
+                break;
+            case "quantity":
+                let quantity = countProduct(crudTrackingHM.pagingList?.rows || [])
+                createdData = {
+                    data:quantity,
+                    difference: mathCeilWithRound(Math.abs(quantity - (userHm?.extraInfor?.verifiedQuantity||quantity)),2)
+                };
+                break;
+            default: break}
+            return createdData
+        }
+    
     return (crudTrackingHM.pagingList?.rows?.length || 0) > 0 ? (
         <Grid
             container
@@ -280,6 +380,7 @@ function ProgressAutoOrder(props: Props) {
                 padding: theme.spacing(1),
             }}
         >
+            {renderScrollIcon()}
             <PopupSplitOrder
                 isDisplay={handleWithPopupSplit.isDisplayPopup}
                 item={handleWithPopupSplit.itemSelected}
@@ -289,6 +390,7 @@ function ProgressAutoOrder(props: Props) {
                 onSplitWithNew={onSplitOrderWithNew}
             />
             <PopupAddOrderId
+                isReadyBuyAll={crudTrackingHM.pagingList?.rows?.findIndex(i => !i.isOrder) === -1}
                 isDisplay={crudTrackingHM.isShowPopup}
                 item={crudTrackingHM.itemSelected}
                 onCancel={crudTrackingHM.onCancelPopup}
@@ -297,8 +399,10 @@ function ProgressAutoOrder(props: Props) {
             <Grid container justify="center" className={clsx(globalStyle.pp2)}>
                 <Grid>
                     <Grid container justify="center">
-                        <Typography align="center" variant="h4">
+                        <Typography align="center" variant="h4" style={{display:"flex", alignItems:"center"}}>
+                            {renderPriceNote()}
                             Chi tiết đơn hàng
+                            {renderWarningPrice()}
                             <IconButton
                                 onClick={() => {
                                     navigator.clipboard.writeText(
@@ -322,11 +426,36 @@ function ProgressAutoOrder(props: Props) {
                         {renderOrderStatusSummary()}
                         {renderPaymentStatusSummary()}
                     </Grid>
+                    {/* Todo: Confirm before checkout in case of wrong price */}
+                    {Boolean(crudTrackingHM.pagingList?.rows?.findIndex(r => r.orderId) == -1 
+                    && !isConfirmed) &&
+                    Boolean(!isCorrectCode(userHm,crudTrackingHM.pagingList?.rows || [])
+                    || renderComparedData("amount").difference > 0.1
+                    || renderComparedData("quantity").difference > 0.1) 
+                    ?
+                        <Grid container justify="center" alignItems="center" direction="column">
+                            <img src="https://i.pinimg.com/originals/ee/84/8f/ee848f864ebdf8d48351e5b8b8ba50bd.png"/>
+                            <Typography variant="h5" className={globalStyle.mt2}>
+                                {Boolean(!isCorrectCode(userHm,crudTrackingHM.pagingList?.rows || [])) && 
+                                "Mã giảm không phù hợp :(("}
+                            </Typography>
+                            <Typography variant="h5" className={globalStyle.mt2}>
+                            {Boolean(renderComparedData("amount").difference > 0.1 || renderComparedData("quantity").difference > 0.1) && "Tiền bị lệch!"}
+                            </Typography>
 
+                            <Typography variant="h5" className={clsx(globalStyle.mt2,globalStyle.mb2)}>
+                                Vui lòng xác nhận lại với kho trước khi mua hàng!
+                            </Typography>
+                            <Button variant="contained" color="secondary" onClick={()=>setIsConfirmed(true)}>Đã xác nhận!</Button>
+                        </Grid>
+                    :(
+                    <>
+                    <Grid>
                     <Select
                         fullWidth
                         variant="outlined"
                         value={selectedStatus}
+                        className={globalStyle.mt3}
                         onChange={(e) => {
                             setSelectedStatus(e.target.value as OrderStatus);
                         }}
@@ -337,8 +466,9 @@ function ProgressAutoOrder(props: Props) {
                         <MenuItem value={OrderStatus.addedToCard}>Đã thêm vào giỏ hàng</MenuItem>
                         <MenuItem value={OrderStatus.done}>Đã thanh toán</MenuItem>
                         <MenuItem value={OrderStatus.error}>Lỗi</MenuItem>
+                        <MenuItem value={OrderStatus.errorPrice}>Lỗi sai giá</MenuItem>
                     </Select>
-
+                    </Grid>
                     <div className={classes.giftCardForm}>
                         <TextField
                             fullWidth
@@ -368,6 +498,20 @@ function ProgressAutoOrder(props: Props) {
                                 localStorage.setItem('pin', e.target.value);
                             }}
                         />
+                        <Button
+                        variant="outlined"
+                        color="secondary"
+                        onClick={() => {
+                            navigator.clipboard.writeText(
+                                `${checkoutLoopAle(userHm.emailCheckout||"",userHm.password||"",giftCard.serialNumber,giftCard.pin)}`
+                            );
+                            dispatch.notification.success('Copy code thành công!');
+                        }}
+                        disabled={(giftCard.serialNumber.length==0||giftCard.pin.length==0)}
+                        size="small"
+                    >
+                        <IoCopyOutline style={{marginRight:5}}/> Code checkout loop
+                    </Button>
                     </div>
 
                     <Grid container className={clsx(globalStyle.pt2, globalStyle.pb2)}>
@@ -380,6 +524,7 @@ function ProgressAutoOrder(props: Props) {
                                             onSplitOrder={handleClickSplitOrder}
                                             item={item}
                                             updateOrderId={crudTrackingHM.onShowPopup}
+                                            userHm={{...userHm}}
                                         />
                                     </Grid>
                                 </Zoom>
@@ -401,12 +546,13 @@ function ProgressAutoOrder(props: Props) {
                             color="primary"
                         />
                     </Grid>
+                    </>)}
                 </Grid>
             </Grid>
         </Grid>
     ) : (
-        <Grid container justify="center">
-            <Typography variant="h2">Tài khoản này chưa tiến hành lấy order hoặc order bị trống</Typography>
+        <Grid container justify="center" style={{height:"100vh"}}>
+            <Typography variant="h5">Tài khoản này chưa tiến hành lấy order hoặc order bị trống</Typography>
         </Grid>
     );
 }
