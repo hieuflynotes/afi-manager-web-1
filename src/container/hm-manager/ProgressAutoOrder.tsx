@@ -5,7 +5,7 @@ import TextField from '../../component/common/TextFiled';
 import ListGrid from '../../component/common/ListGrid';
 import { useGlobalStyles } from '../../theme/GlobalStyle';
 import { useCrudHook } from '../../hook/useCrudHook';
-import { Pagination } from '@material-ui/lab';
+import { Alert, Pagination } from '@material-ui/lab';
 import { useParams } from 'react-router-dom';
 import { orderTrackingController, userHmController } from 'src/controller';
 import theme from 'src/theme/MuiTheme';
@@ -40,31 +40,37 @@ const useStyle = makeStyles((theme) => ({
     giftCardForm: {
         display: 'grid',
         gridTemplateColumns: '1fr 1fr 200px',
-        alignItems:"center",
+        alignItems: "center",
         gridGap: 16,
         '& .MuiFormControl-fullWidth': {
             marginTop: 16,
         },
-        '& .MuiButton-root':{
+        '& .MuiButton-root': {
             marginTop: 16,
         }
     },
-    popperTootip:{
-        pointerEvents:'auto'
+    popperTootip: {
+        pointerEvents: 'auto'
     },
-    tooltipPlacementBottom:{
+    tooltipPlacementBottom: {
         margin: '5px 0'
     },
-    tooltip:{
-        backgroundColor:theme.palette.primary.main
+    tooltip: {
+        backgroundColor: theme.palette.primary.main
     },
-    icon:{
-        position:"fixed",
+    icon: {
+        position: "fixed",
         bottom: 80,
-        right:80,
-        cursor:"pointer"
+        right: 80,
+        cursor: "pointer"
+    },
+    notify: {
+        backgroundColor: "rgb(252, 239, 238)",
+        padding: "16px 16px",
+        borderEadius: "4px",
+        color: "red"
     }
-}));
+}))
 
 export enum OrderStatus {
     none = 'none',
@@ -73,7 +79,7 @@ export enum OrderStatus {
     addedToCard = 'addedToCard',
     done = 'done',
     error = 'error',
-    errorPrice='errPrice'
+    errorPrice = 'errPrice'
 }
 function ProgressAutoOrder(props: Props) {
     const { userHmId } = useParams<{ userHmId: string }>();
@@ -111,7 +117,7 @@ function ProgressAutoOrder(props: Props) {
     });
     const classes = useStyle();
     const globalStyle = useGlobalStyles();
-   
+
 
     const onListeningNotication = () => {
         var getDos = aleFirebaseConfig.firestore().collection('notication_order_update').doc(userHmId.toString());
@@ -143,7 +149,9 @@ function ProgressAutoOrder(props: Props) {
             },
         );
     };
+
     useEffect(() => {
+        window.scrollTo(0, 0)
         userHmController.list({ filter: { id: userHmId } }).then((paging) => {
             if (paging && paging.rows && paging.rows.length > 0) {
                 setUserHm(paging.rows[0]);
@@ -160,8 +168,8 @@ function ProgressAutoOrder(props: Props) {
             let isValid = false;
             switch (selectedStatus) {
                 case OrderStatus.errorPrice:
-                    isValid = (!r.dataFirebase || (r.dataFirebase?.total && (Number(r.dataFirebase?.total||0) - calcBuyPriceOrder(r.productOrder || [])) <= 0.1)) ? false : true
-                    if(userHm.extraInfor?.codeOff == "DEALMIX" && isDangerousPrice(r.totalPrice||0,userHm))
+                    isValid = (!r.dataFirebase || (r.dataFirebase?.total && (Number(r.dataFirebase?.total || 0) - calcBuyPriceOrder(r.productOrder || [])) <= 0.1)) ? false : true
+                    if (userHm.extraInfor?.codeOff == "DEALMIX" && isDangerousPrice(r.totalPrice || 0, userHm))
                         isValid = true
                     break;
                 case OrderStatus.done:
@@ -173,26 +181,26 @@ function ProgressAutoOrder(props: Props) {
                 case OrderStatus.addedToCard:
                     isValid =
                         (r.orderId == null || r.orderId.length === 0) &&
-                        (r.errorDesc == null || r.errorDesc.length === 0) &&
-                        r.isOrder
+                            (r.errorDesc == null || r.errorDesc.length === 0) &&
+                            r.isOrder
                             ? r.isOrder
                             : false;
                     break;
                 case OrderStatus.created:
                     isValid =
                         (r.orderId == null || r.orderId.length === 0) &&
-                        (r.errorDesc == null || r.errorDesc.length === 0) &&
-                        (r.isOrder == null || r.isOrder === false) &&
-                        r.isRegister
+                            (r.errorDesc == null || r.errorDesc.length === 0) &&
+                            (r.isOrder == null || r.isOrder === false) &&
+                            r.isRegister
                             ? r.isRegister
                             : false;
                     break;
                 case OrderStatus.initial:
                     isValid =
                         (r.orderId == null || r.orderId.length === 0) &&
-                        (r.errorDesc == null || r.errorDesc.length === 0) &&
-                        (r.isOrder == null || r.isOrder === false) &&
-                        (r.isRegister == null || r.isRegister === false)
+                            (r.errorDesc == null || r.errorDesc.length === 0) &&
+                            (r.isOrder == null || r.isOrder === false) &&
+                            (r.isRegister == null || r.isRegister === false)
                             ? true
                             : false;
                     break;
@@ -203,8 +211,14 @@ function ProgressAutoOrder(props: Props) {
             return isValid;
         });
     };
-    const checkWrongMixedOrder = () =>{
-
+    const hasWrongBuyPrice = (rows: OrderTracking[]) => {
+        return rows?.filter((r) => {
+            let isValid = false;
+            isValid = (!r.dataFirebase || (r.dataFirebase?.total && (Number(r.dataFirebase?.total || 0) - calcBuyPriceOrder(r.productOrder || [])) <= 0.1)) ? false : true
+            if (userHm.extraInfor?.codeOff == "DEALMIX" && isDangerousPrice(r.totalPrice || 0, userHm))
+                isValid = true
+            return isValid
+        }).length > 0 ? true : false
     }
     const renderOrderStatusSummary = () => {
         return (
@@ -219,31 +233,6 @@ function ProgressAutoOrder(props: Props) {
                 <Typography>Hoàn thành: {crudTrackingHM.pagingList?.rows?.filter((i) => i.orderId).length}</Typography>
                 <Typography>
                     Lỗi: {crudTrackingHM.pagingList?.rows?.filter((i) => i.errorDesc).length}
-                    <IconButton
-                        color="secondary"
-                        onClick={() => {
-                            navigator.clipboard.writeText(
-                                `Lỗi: ${
-                                    countProduct(crudTrackingHM.pagingList?.rows || []) -
-                                    countBoughtProduct(crudTrackingHM.pagingList?.rows || [])
-                                } món\n${
-                                    crudTrackingHM.pagingList?.rows
-                                        ?.filter((i) => i.errorDesc != null && i.errorDesc.length > 0)
-                                        .map(
-                                            (r) =>
-                                                `[${r.productOrder?.map((p) => p.productId).join(',')}]: ${
-                                                    r.errorDesc
-                                                }`,
-                                        )
-                                        .join('\n') || ''
-                                }`,
-                            );
-                            dispatch.notification.success('Đã copy SP lỗi!');
-                        }}
-                        size="small"
-                    >
-                        <IoCopyOutline />
-                    </IconButton>
                 </Typography>
             </Grid>
         );
@@ -255,16 +244,16 @@ function ProgressAutoOrder(props: Props) {
                 <Typography>
                     Tổng tiền:{' '}
                     {renderComparedData("amount").data}
-                    {renderComparedData("amount").difference > 0.1 && 
-                    <span style={{color:theme.palette.error.main}}>{' '} (Lệch: {renderComparedData("amount").difference})</span>
+                    {renderComparedData("amount").difference > 0.1 &&
+                        <span style={{ color: theme.palette.error.main }}>{' '} (Lệch: {renderComparedData("amount").difference})</span>
                     }
                 </Typography>
 
                 <Typography>Tổng món: {' '}
-                {renderComparedData("quantity").data}
-                {renderComparedData("quantity").difference > 0.1 && 
-                <span style={{color:theme.palette.error.main}}>{' '}(Lệch: {renderComparedData("quantity").difference})</span>
-                }</Typography>
+                    {renderComparedData("quantity").data}
+                    {renderComparedData("quantity").difference > 0.1 &&
+                        <span style={{ color: theme.palette.error.main }}>{' '}(Lệch: {renderComparedData("quantity").difference})</span>
+                    }</Typography>
 
                 <Typography>
                     Tổng tiền checkout:{' '}
@@ -277,54 +266,86 @@ function ProgressAutoOrder(props: Props) {
                     )}
                 </Typography>
 
-                <Typography>Tổng món đã mua: {countBoughtProduct(crudTrackingHM.pagingList?.rows || [])}</Typography>
+                <Typography>{`Tổng món đã mua: ${countBoughtProduct(crudTrackingHM.pagingList?.rows || [])}`} <b style={{ color: "red" }}>{`- còn ${crudTrackingHM.pagingList?.rows?.filter(r => (!r.errorDesc && !r.orderId)).length}`}</b></Typography>
+                <IconButton
+                    color="secondary"
+                    onClick={() => {
+                        let exportdata = {
+                            buyItems: `Tổng tiền checkout: ${mathCeilWithRound(
+                                crudTrackingHM.pagingList?.rows
+                                    ?.filter((i) => i.orderId != null && i.orderId.length > 0)
+                                    .map((r) => r.totalPrice || 0)
+                                    .reduce((price, total) => (total += price), 0) || 0,
+                                2,
+                            )} - Tổng món đã mua: ${countBoughtProduct(crudTrackingHM.pagingList?.rows || [])}`,
+                            err: `Lỗi: ${countProduct(crudTrackingHM.pagingList?.rows || []) -
+                                countBoughtProduct(crudTrackingHM.pagingList?.rows || []) +
+                                renderComparedData("quantity").difference
+                                } món : ${crudTrackingHM.pagingList?.rows
+                                    ?.filter((i) => i.errorDesc != null && i.errorDesc.length > 0)
+                                    .map(
+                                        (r) =>
+                                            `[${r.productOrder?.map((p) => p.productId).join(',')}]: ${r.errorDesc
+                                            }`,
+                                    )
+                                || ''
+                                }`,
+                            imgBag: `${userHm.imgScreenShot}`
+                        }
+                        navigator.clipboard.writeText(`${exportdata.buyItems}\t${exportdata.err}\t${exportdata.imgBag}`);
+                        dispatch.notification.success('Đã copy thông tin checkout');
+                    }}
+                    size="small"
+                >
+                    <IoCopyOutline />
+                </IconButton>
             </Grid>
         );
     };
-    const renderWarningPrice = () =>{
-        let gt20 = crudTrackingHM.pagingList?.rows?.filter(i=> (i.totalPrice && i.totalPrice>20)).length
-        let gt15 = crudTrackingHM.pagingList?.rows?.filter(i=> (i.totalPrice && i.totalPrice>15)).length
-        return(
+    const renderWarningPrice = () => {
+        let gt20 = crudTrackingHM.pagingList?.rows?.filter(i => (i.totalPrice && i.totalPrice > 20)).length
+        let gt15 = crudTrackingHM.pagingList?.rows?.filter(i => (i.totalPrice && i.totalPrice > 15)).length
+        return (
             gt15 ?
-            <Typography style={{display:"inline", marginLeft:"5px"}} color="error">
-                {' (Có '}
-                {gt20 && gt20 > 0 ? `${gt20} món giá >20  & `:""}
-                {gt15 && gt15 > 0 ? `${gt15} món giá >15`:""}
-                {')'}
-            </Typography>
-            :""
+                <Typography style={{ display: "inline", marginLeft: "5px" }} color="error">
+                    {' (Có '}
+                    {gt20 && gt20 > 0 ? `${gt20} món giá >20  & ` : ""}
+                    {gt15 && gt15 > 0 ? `${gt15} món giá >15` : ""}
+                    {')'}
+                </Typography>
+                : ""
         )
     }
-    const renderPriceNote = () =>{
-        return(
+    const renderPriceNote = () => {
+        return (
             <Box mr={1}>
-            <Tooltip title={
-                <ClickAwayListener onClickAway={()=>setIsOpenNote(false)}>
-                <Box margin="10px 5px" style={{display:"grid", gridRowGap:"10px"}}>
-                {'* Mai Linh, Elisa, Amy: Nếu giá SP > 20 => KHÔNG MUA'}
-                <br/>
-                <br/>
-                {'* PLE - Deal 1M: giá >10 hoặc có SP khác nhau => Báo Leader NGAY & K CHECKOUT CẢ ĐƠN'}
-                <br/>
-                {'* PLE - OFF40: giá >20 => Báo Leader NGAY & K CHECKOUT CẢ ĐƠN'}
-                <br/>
-                {'* PLE - còn lại: giá >15 => Báo Leader NGAY & K CHECKOUT món đó'}
-                <Button variant="contained" size="small" onClick={()=>setIsOpenNote(false)}>OK, Không check sai đâu ^^</Button>
-                </Box>
-                </ClickAwayListener>
-            }
-              classes={{popper:classes.popperTootip, tooltipPlacementBottom: classes.tooltipPlacementBottom, tooltip:classes.tooltip}}
-              open={isOpenNote}
-            >
-                <HelpIcon color="primary" fontSize="small" onClick={()=>setIsOpenNote(!isOpenNote)}></HelpIcon>
-            </Tooltip>
+                <Tooltip title={
+                    <ClickAwayListener onClickAway={() => setIsOpenNote(false)}>
+                        <Box margin="10px 5px" style={{ display: "grid", gridRowGap: "10px" }}>
+                            {'* Mai Linh, Elisa, Amy: Nếu giá SP > 20 => KHÔNG MUA'}
+                            <br />
+                            <br />
+                            {'* PLE - Deal 1M: giá >10 hoặc có SP khác nhau => Báo Leader NGAY & K CHECKOUT CẢ ĐƠN'}
+                            <br />
+                            {'* PLE - OFF40: giá >20 => Báo Leader NGAY & K CHECKOUT CẢ ĐƠN'}
+                            <br />
+                            {'* PLE - còn lại: giá >15 => Báo Leader NGAY & K CHECKOUT món đó'}
+                            <Button variant="contained" size="small" onClick={() => setIsOpenNote(false)}>OK, Không check sai đâu ^^</Button>
+                        </Box>
+                    </ClickAwayListener>
+                }
+                    classes={{ popper: classes.popperTootip, tooltipPlacementBottom: classes.tooltipPlacementBottom, tooltip: classes.tooltip }}
+                    open={isOpenNote}
+                >
+                    <HelpIcon color="primary" fontSize="small" onClick={() => setIsOpenNote(!isOpenNote)}></HelpIcon>
+                </Tooltip>
             </Box>
         )
     }
-    const renderScrollIcon =() =>{
-        return(
-            <Avatar variant="square" className={classes.icon} onClick={()=>window.scrollTo(0,0)}>
-            <ExpandLessIcon></ExpandLessIcon>
+    const renderScrollIcon = () => {
+        return (
+            <Avatar variant="square" className={classes.icon} onClick={() => window.scrollTo(0, 0)}>
+                <ExpandLessIcon></ExpandLessIcon>
             </Avatar>
         )
     }
@@ -349,8 +370,8 @@ function ProgressAutoOrder(props: Props) {
             handleWithPopupSplit.handleClosePopup();
         });
     };
-    const renderComparedData = (type: "amount"|"quantity") => {
-        let createdData = {data:0,difference:0}
+    const renderComparedData = (type: "amount" | "quantity") => {
+        let createdData = { data: 0, difference: 0 }
         switch (type) {
             case "amount":
                 let amount = mathCeilWithRound(
@@ -360,21 +381,22 @@ function ProgressAutoOrder(props: Props) {
                     2,
                 )
                 createdData = {
-                    data:amount,
-                    difference: mathCeilWithRound(Math.abs(amount - (userHm?.extraInfor?.verifiedAmount||amount)),2)
-                } ;
+                    data: amount,
+                    difference: mathCeilWithRound(Math.abs(amount - (userHm?.extraInfor?.verifiedAmount || amount)), 2)
+                };
                 break;
             case "quantity":
                 let quantity = countProduct(crudTrackingHM.pagingList?.rows || [])
                 createdData = {
-                    data:quantity,
-                    difference: mathCeilWithRound(Math.abs(quantity - (userHm?.extraInfor?.verifiedQuantity||quantity)),2)
+                    data: quantity,
+                    difference: mathCeilWithRound(Math.abs(quantity - (userHm?.extraInfor?.verifiedQuantity || quantity)), 2)
                 };
                 break;
-            default: break}
-            return createdData
+            default: break
         }
-    
+        return createdData
+    }
+
     return (crudTrackingHM.pagingList?.rows?.length || 0) > 0 ? (
         <Grid
             container
@@ -403,8 +425,7 @@ function ProgressAutoOrder(props: Props) {
             <Grid container justify="center" className={clsx(globalStyle.pp2)}>
                 <Grid>
                     <Grid container justify="center">
-                        <Typography align="center" variant="h4" style={{display:"flex", alignItems:"center"}}>
-                            {renderPriceNote()}
+                        <Typography align="center" variant="h4" style={{ display: "flex", alignItems: "center" }}>
                             Chi tiết đơn hàng
                             {renderWarningPrice()}
                             <IconButton
@@ -430,132 +451,141 @@ function ProgressAutoOrder(props: Props) {
                         {renderOrderStatusSummary()}
                         {renderPaymentStatusSummary()}
                     </Grid>
+                    {crudTrackingHM.pagingList?.rows && hasWrongBuyPrice(crudTrackingHM.pagingList?.rows)
+                        &&
+                        <Grid container className={classes.notify} alignItems="center" justifyContent="center">
+                            <Typography variant="h6" align="center"> Có món mua sai giá!!!</Typography>
+                            <Button style={{ marginLeft: 10 }} onClick={() => setSelectedStatus(OrderStatus.errorPrice)}>
+                                Xem ngay!</Button>
+                        </Grid>
+                    }
+
                     {/* Todo: Confirm before checkout in case of wrong price */}
-                    {Boolean(crudTrackingHM.pagingList?.rows?.findIndex(r => r.orderId) == -1 
-                    && !isConfirmed) &&
-                    Boolean(!isCorrectCode(userHm,crudTrackingHM.pagingList?.rows || [])
-                    || renderComparedData("amount").difference > 0.1
-                    || renderComparedData("quantity").difference > 0.1) 
-                    ?
+                    {Boolean(crudTrackingHM.pagingList?.rows?.findIndex(r => r.orderId) == -1
+                        && !isConfirmed) &&
+                        Boolean(!isCorrectCode(userHm, crudTrackingHM.pagingList?.rows || [])
+                            || renderComparedData("amount").difference > 0.1
+                            || renderComparedData("quantity").difference > 0.1)
+                        ?
                         <Grid container justify="center" alignItems="center" direction="column">
-                            <img src="https://i.pinimg.com/originals/ee/84/8f/ee848f864ebdf8d48351e5b8b8ba50bd.png"/>
+                            <img src="https://i.pinimg.com/originals/ee/84/8f/ee848f864ebdf8d48351e5b8b8ba50bd.png" />
                             <Typography variant="h5" className={globalStyle.mt2}>
-                                {Boolean(!isCorrectCode(userHm,crudTrackingHM.pagingList?.rows || [])) && 
-                                "Mã giảm không phù hợp :(("}
+                                {Boolean(!isCorrectCode(userHm, crudTrackingHM.pagingList?.rows || [])) &&
+                                    "Mã giảm không phù hợp :(("}
                             </Typography>
                             <Typography variant="h5" className={globalStyle.mt2}>
-                            {Boolean(renderComparedData("amount").difference > 0.1 || renderComparedData("quantity").difference > 0.1) && "Tiền bị lệch!"}
+                                {Boolean(renderComparedData("amount").difference > 0.1 || renderComparedData("quantity").difference > 0.1) && "Tiền bị lệch!"}
                             </Typography>
 
-                            <Typography variant="h5" className={clsx(globalStyle.mt2,globalStyle.mb2)}>
+                            <Typography variant="h5" className={clsx(globalStyle.mt2, globalStyle.mb2)}>
                                 Vui lòng xác nhận lại với kho trước khi mua hàng!
                             </Typography>
-                            <Button variant="contained" color="secondary" onClick={()=>setIsConfirmed(true)}>Đã xác nhận!</Button>
+                            <Button variant="contained" color="secondary" onClick={() => setIsConfirmed(true)}>Đã xác nhận!</Button>
                         </Grid>
-                    :(
-                    <>
-                    <Grid>
-                    <Select
-                        fullWidth
-                        variant="outlined"
-                        value={selectedStatus}
-                        className={globalStyle.mt3}
-                        onChange={(e) => {
-                            setSelectedStatus(e.target.value as OrderStatus);
-                        }}
-                    >
-                        <MenuItem value={OrderStatus.none}>Tất cả</MenuItem>
-                        <MenuItem value={OrderStatus.initial}>Khởi tạo</MenuItem>
-                        <MenuItem value={OrderStatus.created}>Đã tạo tài khoản</MenuItem>
-                        <MenuItem value={OrderStatus.addedToCard}>Đã thêm vào giỏ hàng</MenuItem>
-                        <MenuItem value={OrderStatus.done}>Đã thanh toán</MenuItem>
-                        <MenuItem value={OrderStatus.error}>Lỗi</MenuItem>
-                        <MenuItem value={OrderStatus.errorPrice}>Lỗi sai giá</MenuItem>
-                    </Select>
-                    </Grid>
-                    <div className={classes.giftCardForm}>
-                        <TextField
-                            fullWidth
-                            variant="outlined"
-                            label="Serial number"
-                            size="medium"
-                            value={giftCard.serialNumber}
-                            onChange={(e) => {
-                                setGiftCard({
-                                    ...giftCard,
-                                    serialNumber: e.target.value,
-                                });
-                                localStorage.setItem('serialNumber', e.target.value);
-                            }}
-                        />
-                        <TextField
-                            fullWidth
-                            variant="outlined"
-                            label="Pin"
-                            size="medium"
-                            value={giftCard.pin}
-                            onChange={(e) => {
-                                setGiftCard({
-                                    ...giftCard,
-                                    pin: e.target.value,
-                                });
-                                localStorage.setItem('pin', e.target.value);
-                            }}
-                        />
-                        <Button
-                        variant="outlined"
-                        color="secondary"
-                        onClick={() => {
-                            navigator.clipboard.writeText(
-                                `${checkoutLoopAle(userHm.emailCheckout||"",userHm.password||"",giftCard.serialNumber,giftCard.pin)}`
-                            );
-                            dispatch.notification.success('Copy code thành công!');
-                        }}
-                        disabled={(giftCard.serialNumber.length==0||giftCard.pin.length==0)}
-                        size="small"
-                    >
-                        <IoCopyOutline style={{marginRight:5}}/> Code checkout loop
-                    </Button>
-                    </div>
+                        : (
+                            <>
+                                <Grid>
+                                    <Select
+                                        fullWidth
+                                        variant="outlined"
+                                        value={selectedStatus}
+                                        className={globalStyle.mt3}
+                                        onChange={(e) => {
+                                            setSelectedStatus(e.target.value as OrderStatus);
+                                        }}
+                                    >
+                                        <MenuItem value={OrderStatus.none}>Tất cả</MenuItem>
+                                        <MenuItem value={OrderStatus.initial}>Khởi tạo</MenuItem>
+                                        <MenuItem value={OrderStatus.created}>Đã tạo tài khoản</MenuItem>
+                                        <MenuItem value={OrderStatus.addedToCard}>Đã thêm vào giỏ hàng</MenuItem>
+                                        <MenuItem value={OrderStatus.done}>Đã thanh toán</MenuItem>
+                                        <MenuItem value={OrderStatus.error}>Lỗi</MenuItem>
+                                        <MenuItem value={OrderStatus.errorPrice}>Lỗi sai giá</MenuItem>
+                                    </Select>
+                                </Grid>
+                                <div className={classes.giftCardForm}>
+                                    <TextField
+                                        fullWidth
+                                        variant="outlined"
+                                        label="Serial number"
+                                        size="medium"
+                                        value={giftCard.serialNumber}
+                                        onChange={(e) => {
+                                            setGiftCard({
+                                                ...giftCard,
+                                                serialNumber: e.target.value,
+                                            });
+                                            localStorage.setItem('serialNumber', e.target.value);
+                                        }}
+                                    />
+                                    <TextField
+                                        fullWidth
+                                        variant="outlined"
+                                        label="Pin"
+                                        size="medium"
+                                        value={giftCard.pin}
+                                        onChange={(e) => {
+                                            setGiftCard({
+                                                ...giftCard,
+                                                pin: e.target.value,
+                                            });
+                                            localStorage.setItem('pin', e.target.value);
+                                        }}
+                                    />
+                                    <Button
+                                        variant="outlined"
+                                        color="secondary"
+                                        onClick={() => {
+                                            navigator.clipboard.writeText(
+                                                `${checkoutLoopAle(userHm.emailCheckout || "", userHm.password || "", giftCard.serialNumber, giftCard.pin)}`
+                                            );
+                                            dispatch.notification.success('Copy code thành công!');
+                                        }}
+                                        disabled={(giftCard.serialNumber.length == 0 || giftCard.pin.length == 0)}
+                                        size="small"
+                                    >
+                                        <IoCopyOutline style={{ marginRight: 5 }} /> Code checkout loop
+                                    </Button>
+                                </div>
 
-                    <Grid container className={clsx(globalStyle.pt2, globalStyle.pb2)}>
-                        <ListGrid minWidthItem={'450px'} gridGap={20}>
-                            {filterByStatus(crudTrackingHM.pagingList?.rows || []).map((item, index) => (
-                                <Zoom in={true} timeout={index * 50}>
-                                    <Grid>
-                                        <ProgressHmItemList
-                                            giftCard={giftCard}
-                                            onSplitOrder={handleClickSplitOrder}
-                                            item={item}
-                                            updateOrderId={crudTrackingHM.onShowPopup}
-                                            userHm={{...userHm}}
-                                        />
-                                    </Grid>
-                                </Zoom>
-                            ))}
-                        </ListGrid>
-                    </Grid>
-                    <Grid container justify="center" className={clsx(globalStyle.pt2, globalStyle.pb2)}>
-                        <Pagination
-                            count={crudTrackingHM.pagingList.totalPages || 1}
-                            page={crudTrackingHM.pagingList.page || 1}
-                            variant="outlined"
-                            shape="rounded"
-                            onChange={(e, page) => {
-                                crudTrackingHM.setQuery({
-                                    ...crudTrackingHM.query,
-                                    page: page,
-                                });
-                            }}
-                            color="primary"
-                        />
-                    </Grid>
-                    </>)}
+                                <Grid container className={clsx(globalStyle.pt2, globalStyle.pb2)}>
+                                    <ListGrid minWidthItem={'450px'} gridGap={20}>
+                                        {filterByStatus(crudTrackingHM.pagingList?.rows || []).map((item, index) => (
+                                            <Zoom in={true} timeout={index * 50}>
+                                                <Grid>
+                                                    <ProgressHmItemList
+                                                        giftCard={giftCard}
+                                                        onSplitOrder={handleClickSplitOrder}
+                                                        item={item}
+                                                        updateOrderId={crudTrackingHM.onShowPopup}
+                                                        userHm={{ ...userHm }}
+                                                    />
+                                                </Grid>
+                                            </Zoom>
+                                        ))}
+                                    </ListGrid>
+                                </Grid>
+                                <Grid container justify="center" className={clsx(globalStyle.pt2, globalStyle.pb2)}>
+                                    <Pagination
+                                        count={crudTrackingHM.pagingList.totalPages || 1}
+                                        page={crudTrackingHM.pagingList.page || 1}
+                                        variant="outlined"
+                                        shape="rounded"
+                                        onChange={(e, page) => {
+                                            crudTrackingHM.setQuery({
+                                                ...crudTrackingHM.query,
+                                                page: page,
+                                            });
+                                        }}
+                                        color="primary"
+                                    />
+                                </Grid>
+                            </>)}
                 </Grid>
             </Grid>
         </Grid>
     ) : (
-        <Grid container justify="center" style={{height:"100vh"}}>
+        <Grid container justify="center" style={{ height: "100vh" }}>
             <Typography variant="h5">Tài khoản này chưa tiến hành lấy order hoặc order bị trống</Typography>
         </Grid>
     );

@@ -29,7 +29,7 @@ import { TrackingHMHelper } from 'src/helper/TrackingHMHelper';
 const CKEditor = require('ckeditor4-react');
 
 type Props = {
-    isReadyBuyAll:boolean;
+    isReadyBuyAll: boolean;
     isDisplay: boolean;
     item: OrderTracking;
     onEdit: (item: OrderTracking) => void;
@@ -172,7 +172,8 @@ export default function PopupEditProgressAutoOrder(props: Props) {
                         ></TextField>
                     </Grid>
 
-                    {(formik.values.isOrder||formik.values.isRegister) && (
+                    {
+                        // (formik.values.isOrder||formik.values.isRegister) && (
                         <Grid container>
                             <Grid container>
                                 <TextField
@@ -207,7 +208,7 @@ export default function PopupEditProgressAutoOrder(props: Props) {
                                         <Typography
                                             variant="h4"
                                             align="center"
-                                            // color="textPrimary"
+                                        // color="textPrimary"
                                         >
                                             {'Order Error'}
                                         </Typography>
@@ -270,7 +271,8 @@ export default function PopupEditProgressAutoOrder(props: Props) {
                                 </Accordion>
                             )}
                         </Grid>
-                    )}
+                        // )
+                    }
                     <Grid></Grid>
                 </Grid>
             </BaseDialog>
