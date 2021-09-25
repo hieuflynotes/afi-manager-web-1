@@ -103,6 +103,8 @@ export default function StatisticAleTeam() {
                 }) as any),
             ]),
         );
+        console.log({intervalCheckoutTeam});
+        
         return intervalCheckoutTeam;
     };
 
@@ -189,7 +191,7 @@ export default function StatisticAleTeam() {
                                     <ChartGoogle
                                         width={'95%'}
                                         height={'600px'}
-                                        chartType="LineChart"
+                                        chartType="BarChart"
                                         loader={<div>Loading Chart</div>}
                                         data={getIntervalChart({
                                             interval: statisticAleTeam?.intervalCheckoutTeam || [],
@@ -199,6 +201,7 @@ export default function StatisticAleTeam() {
                                                 ) || [],
                                         })}
                                         options={{
+                                            isStacked: true,
                                             animation: {
                                                 duration: 500,
                                                 easing: 'out',
@@ -209,8 +212,7 @@ export default function StatisticAleTeam() {
                                     />
                                 </Grid>
                             </Grid>
-                            <Grid item lg={12} md={12}>
-                                {/* <RecentGriftCard /> */}
+                            {/* <Grid item lg={12} md={12}>
                                 <Grid className={classes.frChart}>
                                     <Grid>
                                         <Typography variant="h5">Team Regsiter</Typography>
@@ -269,7 +271,7 @@ export default function StatisticAleTeam() {
                                         rootProps={{ 'data-testid': '2' }}
                                     />
                                 </Grid>
-                            </Grid>
+                            </Grid> */}
                         </Grid>
                     </Grid>
                 </Grid>
