@@ -74,6 +74,8 @@ export default function PopupEditProgressAutoOrder(props: Props) {
             // .filter((item) => Boolean(item))
             props.onEdit({
                 ...formik.values,
+                errorDesc: formik.values.errorDesc && formik.values.errorDesc.length>0?formik.values.errorDesc : null as any as string,
+                orderId: formik.values.orderId && formik.values.orderId.length>0?formik.values.orderId: null as any as string,
                 productLink: formik.values?.productLink?.filter((item) => Boolean(item)),
             });
         },
