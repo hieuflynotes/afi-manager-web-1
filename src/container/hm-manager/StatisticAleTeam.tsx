@@ -1,4 +1,5 @@
-import { Checkbox, FormControlLabel, Grid, makeStyles, Typography } from '@material-ui/core';
+import { Checkbox, FormControlLabel, Grid, makeStyles, TextField, Typography } from '@material-ui/core';
+import { Autocomplete } from '@material-ui/lab';
 import clsx from 'clsx';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
@@ -153,11 +154,35 @@ export default function StatisticAleTeam() {
                             <Grid item lg={12} md={12}>
                                 {/* <RecentGriftCard /> */}
                                 <Grid className={classes.frChart}>
-                                    <Grid>
-                                        <Typography variant="h5">Team Checkout</Typography>
-                                    </Grid>
-                                    <Grid container>
-                                        {statisticAleTeam.nameOfTeamCheckout?.map((item) => (
+                                    <Grid style={{marginTop: 24}} xs={12} container>
+                                        <Autocomplete
+                                            multiple
+                                            fullWidth
+                                            id="tags-outlined"
+                                            options={statisticAleTeam.nameOfTeamCheckout || []}
+                                            getOptionLabel={(option) => option}
+                                            value={(statisticAleTeam.nameOfTeamCheckout || []).filter(n => !!statisticAleTeam.nameOfTeamCheckoutSelect?.get(n))}
+                                            defaultValue={statisticAleTeam.nameOfTeamCheckout || []}
+                                            onChange={(e, values) => {
+                                                setStatisticAleTeam({
+                                                    ...statisticAleTeam,
+                                                    nameOfTeamCheckoutSelect: values && values.length>0
+                                                    ?new Map(values.map(v => [v,v])): new Map()
+                                                })
+                                            }}
+                                            
+                                            filterSelectedOptions
+                                            renderInput={(params) => (
+                                            <TextField
+                                                {...params}
+                                                fullWidth
+                                                variant="outlined"
+                                                label="Nhân viên"
+                                                placeholder="Favorites"
+                                            />
+                                            )}
+                                        />
+                                        {/* {statisticAleTeam.nameOfTeamCheckout?.map((item) => (
                                             <Grid className={clsx(globalStyle.pp0)}>
                                                 <FormControlLabel
                                                     control={
@@ -184,9 +209,9 @@ export default function StatisticAleTeam() {
                                                         />
                                                     }
                                                     label={item}
-                                                />
+                                                /> 
                                             </Grid>
-                                        ))}
+                                        ))} */}
                                     </Grid>
                                     <ChartGoogle
                                         width={'95%'}
