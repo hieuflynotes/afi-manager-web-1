@@ -70,12 +70,6 @@ function OrderHmDetailForWarehouseItemList(props: Props) {
                 />
             );
         }
-        if (!item.isRegister) {
-            return <Chip label={'Created'} />;
-        }
-        if (item.isRegister && !item.isOrder) {
-            return <Chip label={'Registed'} />;
-        }
         if (item.isOrder && item.orderId) {
             return (
                 <Chip
@@ -90,6 +84,14 @@ function OrderHmDetailForWarehouseItemList(props: Props) {
         if (item.isOrder) {
             return <Chip label={'Added to cart'} />;
         }
+        if (!item.isRegister) {
+            return <Chip label={'Created'} />;
+        }
+        if (item.isRegister && !item.isOrder) {
+            return <Chip label={'Registed'} />;
+        }
+        
+     
         return <></>;
     };
 

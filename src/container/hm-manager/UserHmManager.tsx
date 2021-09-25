@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useState } from 'react';
 import clsx from 'clsx';
@@ -46,12 +47,22 @@ function UserHmManager(props: Props) {
     const classes = useStyle();
     const globalStyle = useGlobalStyles();
     const [state, setState] = useState();
+    
     useEffect(() => {
         return () => {};
     }, []);
 
     const normalizeData  =(text: string) => (text || '').trim()
-
+    const normalizePhone = (phone:string) =>{
+        let trimPhone  = (phone || '').replaceAll(" ","")
+        return trimPhone.startsWith('+44'||'(+44)')
+            ?trimPhone
+            :trimPhone.startsWith('44')
+            ?`+${trimPhone}`
+            :trimPhone.startsWith('0')
+            ?`+44${trimPhone.substring(1,trimPhone.length)}`
+            :`+44${trimPhone}`
+    }
     return (
         <Grid
             container
@@ -233,11 +244,11 @@ function UserHmManager(props: Props) {
                                         password: normalizeData(password),
                                         firstName: normalizeData(firstName),
                                         lastName: normalizeData(lastName),
-                                        phone: normalizeData(phone),
-                                        address2: normalizeData(address2),
-                                        address: normalizeData(address),
-                                        town: normalizeData(town),
-                                        postcode: normalizeData(postcode),
+                                        phone: normalizePhone(phone),
+                                        // address2: normalizeData(address2).replaceAll(/\(.*\)/g,''),
+                                        address: normalizeData(address).replaceAll(/\(.*\)/g,''),
+                                        // town: normalizeData(town),
+                                        // postcode: normalizeData(postcode),
                                         extraInfor: {
                                             verifiedQuantity: Number((verifiedQuantity || "").replaceAll(',','.')),
                                             verifiedAmount: Number((verifiedAmount || "").replaceAll(',','.')),
