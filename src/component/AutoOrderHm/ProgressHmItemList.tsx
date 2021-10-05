@@ -73,24 +73,7 @@ function ProgressHmItemList(props: Props) {
     const refChipInfo = useRef(null);
 
     const getChipStatus = (item: OrderTracking): React.ReactElement => {
-        if (item.errorDesc) {
-            return (
-                <Chip
-                    style={{
-                        background: theme.palette.error.light,
-                    }}
-                    color="primary"
-                    label={item.errorDesc}
-                />
-            );
-        }
-        if (!item.isRegister) {
-            return <Chip label={'Created'} />;
-        }
-        if (item.isRegister && !item.isOrder) {
-            return <Chip label={'Registed'} />;
-        }
-        if (item.isOrder && item.orderId) {
+        if (item.orderId) {
             return (
                 <Chip
                     style={{
@@ -101,9 +84,20 @@ function ProgressHmItemList(props: Props) {
                 />
             );
         }
+
         if (item.isOrder) {
             return <Chip label={'Added to cart'} />;
         }
+
+        if (item.isRegister && !item.isOrder) {
+            return <Chip label={'Registed'} />;
+        }
+
+        if (!item.isRegister) {
+            return <Chip label={'Created'} />;
+        }
+
+
         return <></>;
     };
 
@@ -144,7 +138,7 @@ function ProgressHmItemList(props: Props) {
     };
 
     useEffect(() => {
-        return () => {};
+        return () => { };
     }, []);
 
     const checkIsCanSplit = (item: OrderTracking): boolean => {
@@ -166,7 +160,7 @@ function ProgressHmItemList(props: Props) {
     };
 
     return (
-        <Grid className={classes.root} style={{border:isDangerousPrice(props.item.totalPrice||0,props.userHm)?"1px solid red":""}}>
+        <Grid className={classes.root} style={{ border: isDangerousPrice(props.item.totalPrice || 0, props.userHm) ? "1px solid red" : "" }}>
             <Grid container justify="space-between">
                 <Grid xs={6} container item>
                     <Popover
@@ -191,7 +185,19 @@ function ProgressHmItemList(props: Props) {
                         </Grid>
                     </Popover>
                     <Grid onClick={() => setState({ ...state, isOpenMoreInfo: true })} ref={refChipInfo}>
-                        {getChipStatus(props.item)}
+                        <Grid container alignItems="center">
+                            {props.item.errorDesc &&
+                                <Chip
+                                    style={{
+                                        background: theme.palette.error.light,
+                                        marginRight:"5px"
+                                    }}
+                                    color="primary"
+                                    label={props.item.errorDesc}
+                                />
+                            }
+                            {getChipStatus(props.item)}
+                        </Grid>
                     </Grid>
                 </Grid>
                 <Grid container justify="flex-end" xs={6}>
@@ -249,9 +255,9 @@ function ProgressHmItemList(props: Props) {
             <Grid
                 container
 
-                // style={{
-                //     minHeight: 80,
-                // }}
+            // style={{
+            //     minHeight: 80,
+            // }}
             >
                 {props.item?.productOrder?.map((product) => {
                     return (
@@ -336,23 +342,23 @@ function ProgressHmItemList(props: Props) {
                         </Grid>
                     </Grid>
                 </Grid>
-                {props.item.orderId && props.item.orderId.length>0 &&
-                <Grid xs={4}>
-                    <Grid className={clsx(globalStyle.pr1, classes.frCoinBought)}>
-                        <Grid container alignItems="center" className={classes.rootItem} justify="center">
-                            <Grid className={clsx(classes.coin)}>
-                                <GiTwoCoins />
-                            </Grid>
-                            <Grid>
-                                <Typography variant="body2">
-                                {props.item.dataFirebase && props.item.dataFirebase?.total ?
-                                    props.item.dataFirebase?.total+" (Đã trả)"
-                                    : "Check tay nha :(("}
-                                </Typography>
+                {props.item.orderId && props.item.orderId.length > 0 &&
+                    <Grid xs={4}>
+                        <Grid className={clsx(globalStyle.pr1, classes.frCoinBought)}>
+                            <Grid container alignItems="center" className={classes.rootItem} justify="center">
+                                <Grid className={clsx(classes.coin)}>
+                                    <GiTwoCoins />
+                                </Grid>
+                                <Grid>
+                                    <Typography variant="body2">
+                                        {props.item.dataFirebase && props.item.dataFirebase?.total ?
+                                            props.item.dataFirebase?.total + " (Đã trả)"
+                                            : "Check tay nha :(("}
+                                    </Typography>
+                                </Grid>
                             </Grid>
                         </Grid>
-                    </Grid>
-                </Grid>}
+                    </Grid>}
             </Grid>
         </Grid>
     );

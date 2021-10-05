@@ -8,7 +8,11 @@ export enum OrderStatus {
 }
 
 export const calcBuyPrice = (price: number) =>
-    price >= 5.99
+    price > 12
+        ? Math.round((price - 3 - price * 0.25) * 100) / 100
+        : (price >= 7 && price <=12 )
+        ? Math.round((price - 6) * 100) / 100
+        : price >= 5.99
         ? Math.round((price - 3 - price * 0.25) * 100) / 100
         : price > 5
         ? Math.round((price - 3 - (price - 3) * 0.25) * 100) / 100
@@ -42,6 +46,9 @@ export const calcBuyPriceOrder = (products: ProductOrder[]) => {
     if (products.length === 2) {
         const priceP1 = products[0].price || 0;
         const priceP2 = products[1].price || 0;
+
+        if(priceP1+priceP2 >= 7 && priceP1 + priceP2< 12) 
+            return calcBuyPrice(products.map((p) => p.price || 0).reduce((item, sum) => sum + item, 0));
 
         let result = mathCeilWithRound((priceP1+priceP2>5)?Math.min(priceP1 * 0.75 + priceP2 - 3, priceP2 * 0.75 + priceP1 - 3):(priceP1+priceP2-3), 2);
         console.log({ priceP1, priceP2, result });

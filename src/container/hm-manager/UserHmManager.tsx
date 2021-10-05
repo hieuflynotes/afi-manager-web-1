@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useState } from 'react';
 import clsx from 'clsx';
 import { Grid, makeStyles, Typography, Zoom } from '@material-ui/core';
@@ -19,6 +21,8 @@ import PopupMergeToUser from 'src/component/AutoOrderHm/PopupMergeToUser';
 import { OrderTracking } from 'src/afi-manager-base-model/model/OrderTracking';
 import SelectBox from 'src/component/common/SelectBox';
 import DialogShowImage from './DialogShowImage';
+import BaseDialog from 'src/component/common/BaseDialog';
+import { User } from 'src/afi-manager-base-model/model/User';
 
 type Props = {};
 const useStyle = makeStyles((theme) => ({}));
@@ -38,13 +42,27 @@ function UserHmManager(props: Props) {
         img: '',
         isDisplay: false,
     });
+    const [isDisplayQuickCreateOrder, setIsDisplayQuickCreateOrder] = useState(false);
+    const [quickOrder, setQuickOrder] = useState<UserHm>({} as UserHm);
     const classes = useStyle();
     const globalStyle = useGlobalStyles();
     const [state, setState] = useState();
+    
     useEffect(() => {
         return () => {};
     }, []);
 
+    const normalizeData  =(text: string) => (text || '').trim()
+    const normalizePhone = (phone:string) =>{
+        let trimPhone  = (phone || '').replaceAll(" ","")
+        return trimPhone.startsWith('+44'||'(+44)')
+            ?trimPhone
+            :trimPhone.startsWith('44')
+            ?`+${trimPhone}`
+            :trimPhone.startsWith('0')
+            ?`+44${trimPhone.substring(1,trimPhone.length)}`
+            :`+44${trimPhone}`
+    }
     return (
         <Grid
             container
@@ -74,7 +92,7 @@ function UserHmManager(props: Props) {
                 <PopupInsertUser
                     isDisplay={crudCompany.isShowPopup}
                     item={crudCompany.itemSelected}
-                    onCancel={crudCompany.onCancelPopup}
+                    onCancel={() => {crudCompany.onCancelPopup()}}
                     onEdit={crudCompany.onSave}
                 />
                 <Grid md={10}>
@@ -138,7 +156,7 @@ function UserHmManager(props: Props) {
                             // className={clsx(globalStyle.mt2, globalStyle.mb2)}
                             variant="contained"
                             color="primary"
-                            onClick={() => crudCompany.onShowPopup({})}
+                            onClick={() => setIsDisplayQuickCreateOrder(true)}
                         >
                             Tạo Order Hm
                         </Button>
@@ -186,6 +204,68 @@ function UserHmManager(props: Props) {
                             color="primary"
                         />
                     </Grid>
+                    <BaseDialog
+                        isDisplay={isDisplayQuickCreateOrder}
+                        labelConfirmBtn={"Tạo nhanh"}
+                        onCancel={() => {
+                            setIsDisplayQuickCreateOrder(false);
+                            crudCompany.onShowPopup({});
+                        }}
+                        title="Tạo nhanh đơn hàng"
+                        onClickConfirm={() => {
+                            crudCompany.onShowPopup(quickOrder);
+                            setIsDisplayQuickCreateOrder(false);
+                        }}
+                    >
+                        <Grid>
+                            <TextField
+                                onChange={(e) => {
+                                    const [
+                                        id,
+                                        orderStatus,
+                                        assigned,
+                                        note,
+                                        emailCheckout,
+                                        username,
+                                        password,
+                                        firstName,
+                                        lastName,
+                                        phone,
+                                        address,
+                                        address2,
+                                        town,
+                                        postcode,
+                                        verifiedQuantity,
+                                        verifiedAmount,
+                                    ] = e.target.value.split('\t')
+                                    setQuickOrder({
+                                        emailCheckout: normalizeData(emailCheckout),
+                                        username: normalizeData(username),
+                                        password: normalizeData(password),
+                                        firstName: normalizeData(firstName),
+                                        lastName: normalizeData(lastName),
+                                        phone: normalizePhone(phone),
+                                        // address2: normalizeData(address2).replaceAll(/\(.*\)/g,''),
+                                        address: normalizeData(address).replaceAll(/\(.*\)/g,''),
+                                        // town: normalizeData(town),
+                                        // postcode: normalizeData(postcode),
+                                        extraInfor: {
+                                            verifiedQuantity: Number((verifiedQuantity || "").replaceAll(',','.')),
+                                            verifiedAmount: Number((verifiedAmount || "").replaceAll(',','.')),
+                                        },
+                                    });
+                                }}
+                                multiline={true}
+                                minRows={3}
+                                fullWidth
+                                InputLabelProps={{
+                                    shrink: true,
+                                }}
+                                variant="outlined"
+                                label="Copy nguyên dòng trong file excel"
+                            ></TextField>
+                        </Grid>
+                    </BaseDialog>
                 </Grid>
             </Grid>
         </Grid>
