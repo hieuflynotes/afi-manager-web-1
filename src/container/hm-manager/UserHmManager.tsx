@@ -245,10 +245,10 @@ function UserHmManager(props: Props) {
                                         firstName: normalizeData(firstName),
                                         lastName: normalizeData(lastName),
                                         phone: normalizePhone(phone),
-                                        // address2: normalizeData(address2).replaceAll(/\(.*\)/g,''),
+                                        address2: normalizeData(address2).replaceAll(/\(.*\)/g,''),
                                         address: normalizeData(address).replaceAll(/\(.*\)/g,''),
-                                        // town: normalizeData(town),
-                                        // postcode: normalizeData(postcode),
+                                        town: normalizeData(town),
+                                        postcode: normalizeData(postcode),
                                         extraInfor: {
                                             verifiedQuantity: Number((verifiedQuantity || "").replaceAll(',','.')),
                                             verifiedAmount: Number((verifiedAmount || "").replaceAll(',','.')),
