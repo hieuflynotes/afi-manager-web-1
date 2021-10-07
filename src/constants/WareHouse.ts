@@ -1,37 +1,39 @@
 export const wareHouses:WareHouse[] = [
-    {name: "Mai Linh",defaultMaxPrice:50,codeOffs:["OFF45","OFF30","OFF36","DEALMIX"]},
-    {name:"PLE",defaultMaxPrice:30,codeOffs:["DEAL 1M","MAX10","DEALMIX"]},
-    {name: "Amy",defaultMaxPrice:50,codeOffs:["OFF45","OFF30","OFF36","DEALMIX"]},
-    {name: "Trang",defaultMaxPrice:50},
-    {name: "Hải pro",defaultMaxPrice:50,codeOffs:["DEALMIX"]},
-    {name: "Elisa",defaultMaxPrice:50,codeOffs:["OFF50-8","EXTRA-50","OFF36","DEAL-299","DEALMIX"]},
-    {name: "Yến Anh",defaultMaxPrice:25,codeOffs:["MAX10","OFF50-10","DEALMIX"]},
-    {name: "Alan",defaultMaxPrice:10,codeOffs:["DEALMIX"]},
-    {name: "Hương Quỳnh",defaultMaxPrice:25,codeOffs:["DEALMIX"]},
+    {name: "Mai Linh",codeDefault:"OFF40-18", codeOffs:["OFF40-18","OFF45-15","OFF30-60","OFF36-25","DEAL10","DEAL60"]},
+    {name:"PLE",codeDefault:"DEAL25",codeOffs:["DEAL25"]},
+    {name: "Amy",codeDefault:"OFF40-20",codeOffs:["OFF40-20","OFF30-60"]},
+    {name: "Trang",codeDefault:"DEAL60",codeOffs:["DEAL60"]},
+    {name: "Hải Pro",codeDefault:"DEAL25",codeOffs:["DEAL25","DEAL60"]},
+    {name: "Elisa",codeDefault:"OFF40-18",codeOffs:["OFF50-10","OFF40-18","OFF45-15","OFF30-60","OFF36-25","DEAL10","DEAL60"]},
+    {name: "Yến Anh",codeDefault:"DEAL60",codeOffs:["DEAL60"]},
+    {name: "Alan",codeDefault:"DEAL10",codeOffs:["DEAL10","DEAL60"]},
+    {name: "Hương Quỳnh",codeDefault:"DEAL60",codeOffs:["DEAL60"]},
 ]
 
 export const afiCodes: CodeOff[] = [
-    {code:"DEAL 1M",maxPrice:10,mustOneProduct:true,isExpired:true},
-    {code:"OFF40",maxPrice:18, isExpired:true},
-    {code:"OFF45",maxPrice:15},
-    {code:"OFF30",maxPrice:60},
-    {code:"OFF36",maxPrice:25},
-    {code:"OFF50-10",maxPrice:10,isExpired:true},
-    {code:"OFF50-8",maxPrice:8, isExpired:true},
-    {code:"EXTRA-50", maxPrice:10},
-    {code:"MAX10",maxPrice:10,isExpired:true},
-    {code:"DEAL-299", maxPrice:15, isExpired:true},
-    {code:"DEALMIX", maxPrice:8},
+    {code:"OFF50-10",maxPrice:10},
+    {code:"OFF40-18",maxPrice:18},
+    {code:"OFF40-20",maxPrice:20},
+    {code:"OFF45-15",maxPrice:15},
+    {code:"OFF30-60",maxPrice:60},
+    {code:"OFF36-25",maxPrice:25},
+    {code:"DEAL10", maxPrice:10},
+    {code:"DEAL25", maxPrice:25},
+    {code:"DEAL60", maxPrice:60},
 ]
 
 export interface WareHouse {
     name:string,
-    defaultMaxPrice:number
+    codeDefault:string,
+    // defaultMaxPrice:number,
     codeOffs?:string[],
 }
 export interface CodeOff {
     code:string,
-    maxPrice:number,
+    minPrice?:number,
+    maxPrice?:number,
+    minQuantity?:number,
     mustOneProduct?:boolean,
+    suitablePrices?:number[],
     isExpired?:boolean
 }

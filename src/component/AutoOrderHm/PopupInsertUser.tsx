@@ -16,6 +16,7 @@ import { OrderAddress } from 'src/afi-manager-base-model/model/OrderAddress';
 import FavoriteRoundedIcon from '@material-ui/icons/FavoriteRounded';
 import { checkExpiredCode, getAvailableCodes } from 'src/helper/CheckBestOptionForOrder';
 import WarningIcon from '@material-ui/icons/Warning';
+import Autocomplete from '@material-ui/lab/Autocomplete/Autocomplete';
 
 const useStyle = makeStyles((theme) => ({
     divide2Col:{
@@ -330,32 +331,27 @@ export default function PopupInsertUser(props: Props) {
                                     )
                                 })}
                         </Select>
+
                         </FormControl>
                         <FormControl variant="outlined" className={clsx(globalStyles.mt1, globalStyles.mb2)}>
-                            <InputLabel>{formik.values.extraInfor?.codeOff ? "Loại đơn":"Đơn thường"}</InputLabel>
-                            <Select
-                                fullWidth
-                                label={formik.values.extraInfor?.codeOff ? "Loại đơn":"Đơn thường"}
-                                value={formik.values.extraInfor?.codeOff||""}
+                            <Autocomplete
+                                freeSolo
+                                value={formik.values.extraInfor?.codeOff ? `${formik.values.extraInfor?.codeOff} ${checkExpiredCode(formik.values.extraInfor?.codeOff) && formik.values.extraInfor?.codeOff ? "(Hết hạn)":""}`:"Đơn thường"}
                                 disabled={!formik.values.extraInfor?.wareHouse || formik.values.extraInfor?.wareHouse.length == 0 
                                     ||getAvailableCodes(formik.values.extraInfor.wareHouse).length == 0}
-                                onChange={(e)=>{
-                                    let newValue = {...formik.values,
+                                onChange={(event: any, newValue: string | null)=>{
+                                    let newCode = {...formik.values,
                                         extraInfor:{...formik.values.extraInfor,
-                                            codeOff:e.target.value as string}
+                                            codeOff:newValue as string}
                                     }
-                                    formik.setValues(newValue)}}
-                            >
-                                <MenuItem value="">Đơn thường</MenuItem>
-                                {formik.values.extraInfor?.wareHouse && getAvailableCodes(formik.values.extraInfor.wareHouse).length> 0 &&
-                                    getAvailableCodes(formik.values.extraInfor?.wareHouse).map(c => {
-                                    return(
-                                        <MenuItem disabled={checkExpiredCode(c)} value={c}>
-                                            {c} {checkExpiredCode(c) ? "(Hết hạn)" :""}
-                                        </MenuItem>
-                                    )
-                                })}
-                            </Select>
+                                    formik.setValues(newCode)}}
+                                renderInput={(params) => <TextField 
+                                    variant="outlined"
+                                    label="Code" {...params}/>}
+                                options={formik.values.extraInfor?.wareHouse && getAvailableCodes(formik.values.extraInfor.wareHouse).length> 0 &&
+                                    ["Đơn thường",...getAvailableCodes(formik.values.extraInfor?.wareHouse).filter(c => !checkExpiredCode(c))||[]]||["Đơn thường"]}
+                                
+                                />
                         </FormControl>
                     </Grid>
                     <Grid className={classes.divide2Col}>
