@@ -4,5 +4,11 @@
     "prettier.jsxSingleQuote": true,
     "prettier.trailingComma": "all",
     "prettier.insertPragma": true,
-    "prettier.requireConfig": true
+    "prettier.requireConfig": true,
+    "[typescriptreact]": {
+        "editor.defaultFormatter": "vscode.typescript-language-features"
+    },
+    "[typescript]": {
+        "editor.defaultFormatter": "vscode.typescript-language-features"
+    }
 }
