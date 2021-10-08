@@ -15,21 +15,21 @@ const localConfig: IConfig = {
 const developmentConfig: IConfig = {
     applicationUrl: `http://localhost:3000`,
     apiGatewayUrl: 'http://localhost:3002',
-    apiProxyUrl: "http://localhost:3001",
+    apiProxyUrl: "https://apiproxy.afivn.com",
     apiSheetConfig: "https://script.google.com/macros/s/AKfycbxW4asrs4ORts7rMBm5iqW0PrJtCJGB9NJ1mnyeVmVqKYbMAQ8N4UP4eYnEYfhHIXg/exec"
 };
 
 const stagingConfig: IConfig = {
     applicationUrl: `http://localhost:3000`,
     apiGatewayUrl: 'http://localhost:3002',
-    apiProxyUrl: "http://localhost:3001",
+    apiProxyUrl: "https://apiproxy.afivn.com",
     apiSheetConfig: "https://script.google.com/macros/s/AKfycbxW4asrs4ORts7rMBm5iqW0PrJtCJGB9NJ1mnyeVmVqKYbMAQ8N4UP4eYnEYfhHIXg/exec"
 };
 
 const productionConfig: IConfig = {
     applicationUrl: `http://localhost:3000`,
     apiGatewayUrl: 'https://api.afi.afivn.com',
-    apiProxyUrl: "http://localhost:3001",
+    apiProxyUrl: "https://apiproxy.afivn.com",
     apiSheetConfig: "https://script.google.com/macros/s/AKfycbxW4asrs4ORts7rMBm5iqW0PrJtCJGB9NJ1mnyeVmVqKYbMAQ8N4UP4eYnEYfhHIXg/exec"
 };
 

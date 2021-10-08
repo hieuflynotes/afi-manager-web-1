@@ -95,7 +95,7 @@ function UserHmManager(props: Props) {
                     onCancel={() => { crudCompany.onCancelPopup() }}
                     onEdit={(item, isRunBot) => crudCompany.onSave(item).then(rst => {
                         isRunBot
-                            && excelController.runBotCheckout(rst.id, rst.username, rst.extraInfor?.verifiedAmount, rst.extraInfor?.wareHouse)
+                            && excelController.runBotCheckout(rst.id, rst.username, rst.extraInfor?.verifiedQuantity, rst.extraInfor?.wareHouse)
                     })}
                 />
                 <Grid md={10}>
