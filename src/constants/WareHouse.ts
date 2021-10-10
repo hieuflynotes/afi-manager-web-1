@@ -3,7 +3,7 @@ export const wareHouses:WareHouse[] = [
     {name:"PLE",codeDefault:"DEAL25",codeOffs:["DEAL25"]},
     {name: "Amy",codeDefault:"OFF40-20",codeOffs:["OFF40-20","OFF30-60"]},
     {name: "Trang",codeDefault:"DEAL60",codeOffs:["DEAL60"]},
-    {name: "Hải Pro",codeDefault:"DEAL25",codeOffs:["DEAL25","DEAL60"]},
+    {name: "Hải pro",codeDefault:"DEAL25",codeOffs:["DEAL25","DEAL60"]},
     {name: "Elisa",codeDefault:"OFF40-18",codeOffs:["OFF50-10","OFF40-18","OFF45-15","OFF30-60","OFF36-25","DEAL10","DEAL60"]},
     {name: "Yến Anh",codeDefault:"DEAL60",codeOffs:["DEAL60"]},
     {name: "Alan",codeDefault:"DEAL10",codeOffs:["DEAL10","DEAL60"]},
