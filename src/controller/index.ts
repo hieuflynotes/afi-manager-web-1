@@ -16,7 +16,7 @@ import { MenuTemplateController } from './MenuTemplateController';
 
 export const appClient = axios.create({
     baseURL: config.apiGatewayUrl,
-    timeout: 10000,
+    timeout: 20000,
     headers: {
         common: {
             'Content-Type': 'application/json',

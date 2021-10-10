@@ -1,26 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import clsx from 'clsx';
 import { FormControlLabel, Grid, makeStyles, Switch, Typography } from '@material-ui/core';
-import TextField from '../../component/common/TextFiled';
-import Button from '../../component/common/Button';
-import ListGrid from '../../component/common/ListGrid';
-import { useGlobalStyles } from '../../theme/GlobalStyle';
-import { useCrudHook } from '../../hook/useCrudHook';
-import { Pagination } from '@material-ui/lab';
-import PopUpConfirm from '../../component/common/PopupConfirm';
+import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { UserHm } from 'src/afi-manager-base-model/model/UserHm';
-import { orderTrackingController, userHmController } from 'src/controller';
-import UserHmItemList from 'src/component/AutoOrderHm/UserHmItemList';
-import PopupInsertUser from 'src/component/AutoOrderHm/PopupInsertUser';
-import theme from 'src/theme/MuiTheme';
-import { handleWithPopupHook } from 'src/hook/HandleWithPopupHook';
-import PopupMergeToUser from 'src/component/AutoOrderHm/PopupMergeToUser';
 import { OrderTracking } from 'src/afi-manager-base-model/model/OrderTracking';
-import SelectBox from 'src/component/common/SelectBox';
-import { dispatch, RootState } from 'src/rematch/store';
-import TextDesc from 'src/component/common/TextDesc';
-import { useSelector } from 'react-redux';
+import Button from '../../component/common/Button';
+import { useGlobalStyles } from '../../theme/GlobalStyle';
 
 type Props = {
     item: OrderTracking;
