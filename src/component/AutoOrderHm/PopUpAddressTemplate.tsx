@@ -1,8 +1,9 @@
 import { Grid, TextField, Typography } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete/Autocomplete';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { OrderAddress } from 'src/afi-manager-base-model/model/OrderAddress';
-import { addressTemplates } from 'src/constants/TemplateAddress';
+import { addressTemplatesConst } from 'src/constants/TemplateAddress';
+import { excelController } from 'src/controller';
 import BaseDialog from '../common/BaseDialog';
 
 interface Props {
@@ -12,6 +13,14 @@ interface Props {
 }
 export default function PopUpAddressTemplate(props:Props) {
     const [selectedAddress, setSelectedAddress] = useState<OrderAddress>()
+    const [addressTemplates, setAddressTemplate] = useState<OrderAddress[]>([])
+
+    useEffect(() => {
+        excelController.getAddress().then(rst=> 
+            setAddressTemplate(rst.length > 0 ? rst:addressTemplatesConst ))
+            .catch(err => setAddressTemplate(addressTemplatesConst))
+    }, [])
+    
     return (
         <Grid>
             <BaseDialog

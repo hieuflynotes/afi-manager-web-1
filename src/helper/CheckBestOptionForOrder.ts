@@ -2,11 +2,18 @@ import { OrderTracking} from "src/afi-manager-base-model/model/OrderTracking";
 import { UserHm } from "src/afi-manager-base-model/model/UserHm";
 import { afiCodes, wareHouses } from "src/constants/WareHouse";
 
+
 // Todo: Find the max price can be bought
 export const maxPriceForOrder = (order:UserHm)=>{
-     let maxPrice = Boolean(order.extraInfor && order.extraInfor.codeOff)
-    ? afiCodes.find(c => c.code == order.extraInfor?.codeOff)?.maxPrice
-    : wareHouses.find(w => w.name == order.extraInfor?.wareHouse)?.defaultMaxPrice
+    let codeDefault = wareHouses.find(w => w.name == order.extraInfor?.wareHouse)?.codeDefault
+    let maxPrice = afiCodes.find(c => c.code == (order.extraInfor?.codeOff||codeDefault))?.maxPrice
+    
+    return maxPrice
+}
+
+export const minPriceForOrder = (order:UserHm)=>{
+    let codeDefault = wareHouses.find(w => w.name == order.extraInfor?.wareHouse)?.codeDefault
+    let maxPrice = afiCodes.find(c => c.code == (order.extraInfor?.codeOff||codeDefault))?.minPrice
     
     return maxPrice
 }

@@ -1,6 +1,6 @@
 import { OrderAddress } from "src/afi-manager-base-model/model/OrderAddress";
 
-export const addressTemplates: OrderAddress[] = [
+export const addressTemplatesConst: OrderAddress[] = [
     {address:'100 The Highway',address2:'Unit 9 Big Yellow Self Storage',town:'London',postcode:'E1W 2BX'},
     {address:'199 East India Dock Road',address2:'199 East India Dock Road',town:'London',postcode:'E14 0ED'}, 
     {address:'27 Northumberland Gardens',address2:'27 Northumberland Gardens',town:'London',postcode:'N9 9LN'}, 

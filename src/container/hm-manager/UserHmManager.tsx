@@ -12,7 +12,7 @@ import { Pagination } from '@material-ui/lab';
 import PopUpConfirm from '../../component/common/PopupConfirm';
 import { useHistory } from 'react-router-dom';
 import { UserHm } from 'src/afi-manager-base-model/model/UserHm';
-import { orderTrackingController, userHmController } from 'src/controller';
+import { excelController, orderTrackingController, userHmController } from 'src/controller';
 import UserHmItemList from 'src/component/AutoOrderHm/UserHmItemList';
 import PopupInsertUser from 'src/component/AutoOrderHm/PopupInsertUser';
 import theme from 'src/theme/MuiTheme';
@@ -47,21 +47,21 @@ function UserHmManager(props: Props) {
     const classes = useStyle();
     const globalStyle = useGlobalStyles();
     const [state, setState] = useState();
-    
+
     useEffect(() => {
-        return () => {};
+        return () => { };
     }, []);
 
-    const normalizeData  =(text: string) => (text || '').trim()
-    const normalizePhone = (phone:string) =>{
-        let trimPhone  = (phone || '').replaceAll(" ","")
-        return trimPhone.startsWith('+44'||'(+44)')
-            ?trimPhone
-            :trimPhone.startsWith('44')
-            ?`+${trimPhone}`
-            :trimPhone.startsWith('0')
-            ?`+44${trimPhone.substring(1,trimPhone.length)}`
-            :`+44${trimPhone}`
+    const normalizeData = (text: string) => (text || '').trim()
+    const normalizePhone = (phone: string) => {
+        let trimPhone = (phone || '').replaceAll(" ", "")
+        return trimPhone.startsWith('+44' || '(+44)')
+            ? trimPhone
+            : trimPhone.startsWith('44')
+                ? `+${trimPhone}`
+                : trimPhone.startsWith('0')
+                    ? `+44${trimPhone.substring(1, trimPhone.length)}`
+                    : `+44${trimPhone}`
     }
     return (
         <Grid
@@ -92,8 +92,11 @@ function UserHmManager(props: Props) {
                 <PopupInsertUser
                     isDisplay={crudCompany.isShowPopup}
                     item={crudCompany.itemSelected}
-                    onCancel={() => {crudCompany.onCancelPopup()}}
-                    onEdit={crudCompany.onSave}
+                    onCancel={() => { crudCompany.onCancelPopup() }}
+                    onEdit={(item, isRunBot) => crudCompany.onSave(item).then(rst => {
+                        isRunBot && rst.id
+                            && excelController.runBotCheckout(rst.id, rst.username, rst.extraInfor?.verifiedQuantity, rst.extraInfor?.wareHouse, rst.extraInfor?.staffEmail)
+                    })}
                 />
                 <Grid md={10}>
                     <Grid container justify="center" className={globalStyle.pb2}>
@@ -245,13 +248,13 @@ function UserHmManager(props: Props) {
                                         firstName: normalizeData(firstName),
                                         lastName: normalizeData(lastName),
                                         phone: normalizePhone(phone),
-                                        // address2: normalizeData(address2).replaceAll(/\(.*\)/g,''),
-                                        address: normalizeData(address).replaceAll(/\(.*\)/g,''),
-                                        // town: normalizeData(town),
-                                        // postcode: normalizeData(postcode),
+                                        address2: normalizeData(address2).replaceAll(/\(.*\)/g, ''),
+                                        address: normalizeData(address).replaceAll(/\(.*\)/g, ''),
+                                        town: normalizeData(town),
+                                        postcode: normalizeData(postcode),
                                         extraInfor: {
-                                            verifiedQuantity: Number((verifiedQuantity || "").replaceAll(',','.')),
-                                            verifiedAmount: Number((verifiedAmount || "").replaceAll(',','.')),
+                                            verifiedQuantity: Number((verifiedQuantity || "").replaceAll(',', '.')),
+                                            verifiedAmount: Number((verifiedAmount || "").replaceAll(',', '.')),
                                         },
                                     });
                                 }}
