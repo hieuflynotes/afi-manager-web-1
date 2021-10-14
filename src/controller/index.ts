@@ -17,7 +17,7 @@ import { ExcelController } from './ExcelController';
 
 export const appClient = axios.create({
     baseURL: config.apiGatewayUrl,
-    timeout: 10000,
+    timeout: 30000,
     headers: {
         common: {
             'Content-Type': 'application/json',
@@ -29,7 +29,7 @@ appClient.interceptors.request.use(
         dispatch.loading.showLoading();
         return res;
     },
-    (err: AxiosError) => {},
+    (err: AxiosError) => { },
 );
 
 appClient.interceptors.response.use(
