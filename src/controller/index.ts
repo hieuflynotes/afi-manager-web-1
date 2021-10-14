@@ -13,10 +13,11 @@ import PermissionContainer from 'src/container/permission/PermissionContainer';
 import { PermissionController } from './PermissionController';
 import { RoleController } from './RoleController';
 import { MenuTemplateController } from './MenuTemplateController';
+import { ExcelController } from './ExcelController';
 
 export const appClient = axios.create({
     baseURL: config.apiGatewayUrl,
-    timeout: 20000,
+    timeout: 30000,
     headers: {
         common: {
             'Content-Type': 'application/json',
@@ -28,7 +29,7 @@ appClient.interceptors.request.use(
         dispatch.loading.showLoading();
         return res;
     },
-    (err: AxiosError) => {},
+    (err: AxiosError) => { },
 );
 
 appClient.interceptors.response.use(
@@ -75,6 +76,7 @@ export const userHmController = new UserHmController(config.apiGatewayUrl, 'afi/
 export const permssionController = new PermissionController(config.apiGatewayUrl, 'permssion', appClient);
 export const roleController = new RoleController(config.apiGatewayUrl, 'role', appClient);
 export const menuTeamplateController = new MenuTemplateController(config.apiGatewayUrl, 'menuTemplate', appClient);
+export const excelController = new ExcelController(appClient);
 
 //
 //
