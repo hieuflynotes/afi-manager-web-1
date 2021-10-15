@@ -83,6 +83,8 @@ export enum OrderStatus {
 }
 function ProgressAutoOrder(props: Props) {
     const { userHmId } = useParams<{ userHmId: string }>();
+    // var getDos = aleFirebaseConfig.firestore().collection('notication_order_update').doc(userHmId.toString());
+
     const [userHm, setUserHm] = useState<UserHm>({} as UserHm);
     const [isConfirmed, setIsConfirmed] = useState(false)
     const [selectedStatus, setSelectedStatus] = useState<OrderStatus>(OrderStatus.none);
@@ -111,7 +113,7 @@ function ProgressAutoOrder(props: Props) {
         },
         onAfterQuery: () => {
             if (state.isListening == false) {
-                onListeningNotication();
+                // onListeningNotication();
             }
         },
     });
@@ -119,39 +121,36 @@ function ProgressAutoOrder(props: Props) {
     const globalStyle = useGlobalStyles();
 
 
-    const onListeningNotication = () => {
-        var getDos = aleFirebaseConfig.firestore().collection('notication_order_update').doc(userHmId.toString());
-        console.log({
-            userHmId,
-        });
-        getDos.onSnapshot(
-            {
-                includeMetadataChanges: true,
-            },
-            function (doc) {
-                setState({
-                    ...state,
-                    isListening: true,
-                });
-                if (doc.data()) {
-                    const dataFromFirbase: DataFirebaseHm | undefined = doc.data();
-                    const checkItem = crudTrackingHM.pagingList.rows?.find((item) => {
-                        return item.orderId == dataFromFirbase?.orderId;
-                    });
+    // const onListeningNotication = () => {
+    //     getDos.onSnapshot(
+    //         {
+    //             includeMetadataChanges: true,
+    //         },
+    //         function (doc) {
+    //             setState({
+    //                 ...state,
+    //                 isListening: true,
+    //             });
+    //             if (doc.data()) {
+    //                 const dataFromFirbase: DataFirebaseHm | undefined = doc.data();
+    //                 const checkItem = crudTrackingHM.pagingList.rows?.find((item) => {
+    //                     return item.orderId == dataFromFirbase?.orderId;
+    //                 });
 
-                    if (!checkItem) {
-                        dispatch.notification.success(
-                            `Cập nhật orderId thành công ${dataFromFirbase?.orderId} - ${dataFromFirbase?.email}`,
-                        );
-                    }
-                    crudTrackingHM.onRefreshList();
-                }
-            },
-        );
-    };
+    //                 if (!checkItem) {
+    //                     dispatch.notification.success(
+    //                         `Cập nhật orderId thành công ${dataFromFirbase?.orderId} - ${dataFromFirbase?.email}`,
+    //                     );
+    //                 }
+    //                 crudTrackingHM.onRefreshList();
+    //             }
+    //         },
+    //     );
+    // };
 
     useEffect(() => {
-        window.scrollTo(0, 0)
+        window.scrollTo(0, 0);
+
         userHmController.list({ filter: { id: userHmId } }).then((paging) => {
             if (paging && paging.rows && paging.rows.length > 0) {
                 setUserHm(paging.rows[0]);

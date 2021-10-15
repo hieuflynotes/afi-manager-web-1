@@ -32,7 +32,7 @@ const stagingConfig: IConfig = {
 
 const productionConfig: IConfig = {
     applicationUrl: `http://localhost:3000`,
-    apiGatewayUrl: 'https://api.bot-checkout.afivn.com',
+    apiGatewayUrl: 'https://api.afi.afivn.com',
     redirectToSaleManager: 'https://pos.afivn.com',
     apiProxyUrl: "https://apiproxy.afivn.com",
     apiSheetConfig: "https://script.google.com/macros/s/AKfycbxW4asrs4ORts7rMBm5iqW0PrJtCJGB9NJ1mnyeVmVqKYbMAQ8N4UP4eYnEYfhHIXg/exec"
